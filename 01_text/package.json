@@ -29,6 +29,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@acab/reset.css": "^0.5.3"
+    "@acab/reset.css": "^0.5.3",
+    "gsap": "^3.11.5"
   }
 }
