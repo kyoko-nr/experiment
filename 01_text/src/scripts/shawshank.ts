@@ -8,7 +8,7 @@ const BG_COLORS = ["#1BA466", "#1DAF9E", "#1E98B9"];
 const texts = document.querySelectorAll(".bl_shawshank_wheelText");
 const block = document.querySelector(".bl_shawshank");
 const bgContainer = document.querySelector(".bl_shawshank_bgc");
-const bgElm: HTMLDivElement[] = [];
+const bgElm: Element[] = [];
 
 const createBgElm = () => {
   BG_COLORS.forEach((c, i) => {
@@ -21,44 +21,40 @@ const createBgElm = () => {
   });
 };
 
+const textRotateTween = () => {
+  return gsap.to(texts, {
+    rotation: "+=180",
+    ease: "none",
+    scrollTrigger: {
+      trigger: block,
+      scrub: 2, // スクロールが終わった後に1sかけてアニメーションが追いつく
+      pin: true,
+      snap: {
+        snapTo: 1 / (texts.length - 1),
+        ease: Expo.easeOut
+      }
+    }
+  });
+};
+
+const bgColorTween = () => {
+  return gsap.to(block, {
+    scrollTrigger: {
+      trigger: block,
+      onUpdate: (self) => {
+        updateBgcolor(self.progress);
+      }
+    }
+  });
+};
+
 export const initShawsank = () => {
   // 背景を作成
   createBgElm();
 
   const tl = gsap.timeline();
-  tl.to(
-    texts,
-    {
-      rotation: "+=180",
-      ease: "none",
-      scrollTrigger: {
-        trigger: block,
-        scrub: 1, // スクロールが終わった後に1sかけてアニメーションが追いつく
-        pin: true,
-        markers: true,
-        snap: {
-          snapTo: 0.5, // 1 / (text.length - 1)
-          duration: 1,
-          ease: Expo.easeOut
-        }
-      }
-    },
-    0
-  );
-
-  tl.to(
-    block,
-    {
-      scrollTrigger: {
-        trigger: block,
-        markers: true,
-        onUpdate: (self) => {
-          updateBgcolor(self.progress);
-        }
-      }
-    },
-    0
-  );
+  tl.add(textRotateTween());
+  tl.add(bgColorTween());
 };
 
 const updateBgcolor = (progress: number) => {
@@ -71,6 +67,6 @@ const updateBgcolor = (progress: number) => {
 
 const distNormalize = (val: number, ref: number, range: number) => {
   const dist = Math.abs(ref - val);
-  const distNorm = dist > range ? 1 : gsap.utils.normalize(0, range, dist);
-  return distNorm;
+  const norm = gsap.utils.normalize(0, range, dist);
+  return gsap.utils.clamp(0, 1, norm);
 };
