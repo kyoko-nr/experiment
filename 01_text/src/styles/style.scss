@@ -7,9 +7,26 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
-  background: #95dfd6;
+
+  &_bgc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    &_item {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      mix-blend-mode: plus-lighter;
+    }
+  }
 
   &_static {
+    position: relative;
     width: 208px;
   }
 
