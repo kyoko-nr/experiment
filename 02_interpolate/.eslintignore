@@ -1,0 +1,7 @@
+public/
+node_modules/
+**/*.min.js
+*.config.js
+.*lintrc.js
+**/*.d.ts
+dist/
