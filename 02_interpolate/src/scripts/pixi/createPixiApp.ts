@@ -5,7 +5,7 @@ export const createPixiApp = (
   height: number,
   view: HTMLCanvasElement
 ) => {
-  return new Application({
+  return new Application<HTMLCanvasElement>({
     width,
     height,
     resolution: 1,
