@@ -738,6 +738,11 @@ cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+curve-interpolator@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/curve-interpolator/-/curve-interpolator-3.1.1.tgz#48841fd0843d2c8b26d2cbdabddec0939075c563"
+  integrity sha512-Pn0sjZbJ/bZT0hxtLtU7AsbNGsKROGQEF5VShIQetvCM84MsmAso8CSsOWECbY/js4EnV7IURbKGiUwELyYv0w==
+
 debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
