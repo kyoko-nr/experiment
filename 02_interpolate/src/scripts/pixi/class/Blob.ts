@@ -6,10 +6,15 @@ export class Blob extends Graphics {
 
   constructor () {
     super();
-    this.beginFill(0x00ff00).drawCircle(0, 0, 100).endFill();
 
-    this.pivot.x = 0;
-    this.pivot.y = 0;
+    this.draw();
+  }
+
+  draw () {
+    this.clear();
+    this.beginFill(0x00ff00);
+    this.drawCircle(0, 0, 100);
+    this.endFill();
   }
 
   move () {

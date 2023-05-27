@@ -8,7 +8,6 @@ export const loadAnimation = (json: string, container: HTMLElement) => {
     autoplay: true,
     animationData: JSON.parse(json) as Record<string, unknown>
   });
-
   const canvas = container.querySelector<HTMLCanvasElement>("canvas");
   if (canvas == null) throw new Error("canvasが存在しません。");
 
