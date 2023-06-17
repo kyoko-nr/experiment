@@ -25,8 +25,7 @@ export class Blob extends Graphics {
       this.points.map((p) => [p.x, p.y]),
       { tension: 0, closed: true }
     );
-    const ps = interp.getPoints(40) as Array<[number, number]>;
-    const newp = Array.from(ps).map(([x, y]) => new Point(x, y));
+    const newp = (interp.getPoints(40) as Array<[number, number]>).map(([x, y]) => new Point(x, y));
     this.clear();
     this.beginFill(0x00ffff);
     this.drawPolygon(newp);
