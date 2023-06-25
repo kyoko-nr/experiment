@@ -32,8 +32,12 @@ const init = () => {
 
   div.appendChild(app.view);
 
-  app.ticker.add(() => {
+  let lastTime = 0;
+
+  app.ticker.add((time: number) => {
+    lastTime += time;
     sprite.texture.update();
+    blob.move(lastTime);
   });
 };
 
