@@ -1,11 +1,17 @@
 <template>
   <div>
-    <Test />
+    <ClipImage />
   </div>
 </template>
 
 <script setup lang="ts">
-import Test from "~/components/Test";
+import ClipImage from "~/components/ClipImage";
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+*, *::before, *::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+</style>
