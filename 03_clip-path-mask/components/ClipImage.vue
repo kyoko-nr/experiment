@@ -1,7 +1,7 @@
 <template>
   <div class="clipImage">
     <BlobMask>
-      <img src="~/assets/images/image1.jpg" width="1920" height="1272" alt=""/>
+      <img src="~/assets/images/image1.jpg" width="1920" height="1272" alt="" />
     </BlobMask>
   </div>
 </template>
