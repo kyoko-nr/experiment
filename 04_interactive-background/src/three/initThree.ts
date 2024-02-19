@@ -4,7 +4,6 @@ import { updateSizes } from "./updateSizes";
 import { createScene } from "./environment/createScene";
 import { createPlane } from "./environment/createPlane";
 import { getWindowSize } from "./logics/getWindowSize";
-import * as THREE from "three";
 
 export const initThree = () => {
   const renderer = createRenderer();
@@ -18,7 +17,12 @@ export const initThree = () => {
   updateSizes(camera, renderer);
   document.addEventListener("resize", () => updateSizes(camera, renderer));
 
-  renderer.render(scene, camera);
+  const tick = () => {
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick)
+  }
+
+  tick();
 
   return {renderer};
 }
