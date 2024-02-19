@@ -4,6 +4,7 @@ import { updateSizes } from "./updateSizes";
 import { createScene } from "./environment/createScene";
 import { createPlane } from "./environment/createPlane";
 import { getWindowSize } from "./logics/getWindowSize";
+import { animatePlane } from "./environment/animatePlane";
 
 export const initThree = () => {
   const renderer = createRenderer();
@@ -19,6 +20,9 @@ export const initThree = () => {
 
   const tick = () => {
     renderer.render(scene, camera);
+    const pos = plane.geometry.getAttribute("position");
+    pos.needsUpdate = true;
+    animatePlane(plane);
     requestAnimationFrame(tick)
   }
 

@@ -10,5 +10,4 @@ const init = () => {
   initGui(app);
 }
 
-
 init();
