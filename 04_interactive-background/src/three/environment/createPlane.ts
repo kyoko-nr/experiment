@@ -1,25 +1,25 @@
 import * as THREE from "three";
 import { getGui } from "../gui/gui";
 
-const PLANE_COLOR = 0x00ff00;
+const PLANE_COLOR = 0xffffff;
+
 
 export const createPlane = (width: number, height: number) => {
-  // const mat = new THREE.MeshLambertMaterial({
-  //   color: PLANE_COLOR,
-  //   side: THREE.DoubleSide
-  // });
+  const mat = new THREE.MeshLambertMaterial({
+    color: PLANE_COLOR,
+    side: THREE.DoubleSide,
+    flatShading: true,
+  });
 
   // TODO codepenのgetRendererSizeでz-axisからsegmentsを計算してそう。解読する。
   // TODO width = width, height = heightにする
-  const geo = new THREE.PlaneGeometry(200, 100, 20, 20);
-  const mat = new THREE.MeshBasicMaterial( { color: PLANE_COLOR, wireframe: true } );
+  const geo = new THREE.PlaneGeometry(200, 100, 80, 80);
   const plane = new THREE.Mesh( geo, mat );
 
   plane.rotation.x = -1.5;
   plane.position.y = -25;
 
   addGUI(plane);
-  // addGeomGUI(plane);
 
   return plane;
 }
