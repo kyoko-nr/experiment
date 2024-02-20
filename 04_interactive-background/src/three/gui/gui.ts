@@ -10,7 +10,6 @@ export const initGui = (elm: Element | null) => {
   if(!elm) {
     return;
   }
-  gui.add(elm, "title");
 }
 
 /** get GUI */
