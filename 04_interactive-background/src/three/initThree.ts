@@ -5,6 +5,7 @@ import { createScene } from "./environment/createScene";
 import { createPlane } from "./environment/createPlane";
 import { getWindowSize } from "./logics/getWindowSize";
 import { animatePlane } from "./environment/animatePlane";
+import { createLights } from "./environment/createLights";
 
 export const initThree = () => {
   const renderer = createRenderer();
@@ -14,6 +15,9 @@ export const initThree = () => {
   const {width, height} = getWindowSize();
   const plane = createPlane(width, height);
   scene.add(plane)
+
+  const lights = createLights();
+  scene.add(...lights)
 
   updateSizes(camera, renderer);
   document.addEventListener("resize", () => updateSizes(camera, renderer));
