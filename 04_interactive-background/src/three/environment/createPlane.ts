@@ -13,7 +13,7 @@ export const createPlane = (width: number, height: number) => {
 
   // TODO codepenのgetRendererSizeでz-axisからsegmentsを計算してそう。解読する。
   // TODO width = width, height = heightにする
-  const geo = new THREE.PlaneGeometry(200, 100, 80, 80);
+  const geo = new THREE.PlaneGeometry(200, 100, 200, 200);
   const plane = new THREE.Mesh( geo, mat );
 
   plane.rotation.x = -1.5;
@@ -31,4 +31,5 @@ const addGUI = (obj: THREE.Mesh) => {
   folder.add(obj.position, "y", -10, 10, 0.01).name("position y");
   folder.add(obj.scale, "x", 0.5, 4, 0.01).name("scale x");
   folder.add(obj.scale, "y", 0.5, 4, 0.01).name("scale y");
+  folder.addColor(obj.material, "color")
 }
