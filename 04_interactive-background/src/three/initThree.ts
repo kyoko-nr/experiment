@@ -20,7 +20,7 @@ export const initThree = () => {
   scene.add(...lights)
 
   updateSizes(camera, renderer);
-  document.addEventListener("resize", () => updateSizes(camera, renderer));
+  window.addEventListener("resize", () => updateSizes(camera, renderer));
 
   const tick = () => {
     renderer.render(scene, camera);
