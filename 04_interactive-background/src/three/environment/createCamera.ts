@@ -1,10 +1,22 @@
 import * as THREE from "three";
+import { getGui } from "../gui/gui";
 
-const FOV = 75;
-const POS = {x: 0, y:0, z:60}
+const FOV = 100;
+const POS_Z = 25;
 
 export const createCamera = () => {
   const camera = new THREE.PerspectiveCamera(FOV);
-  camera.position.z = 60;
+  camera.position.z = POS_Z;
+
+  createGui(camera);
   return camera;
+}
+
+const createGui = (camera: THREE.PerspectiveCamera) => {
+  const gui = getGui();
+  const folder = gui.addFolder("camera");
+  folder.add(camera, "fov", 10, 200);
+  folder.add(camera.position, "x", -200, 200)
+  folder.add(camera.position, "y", -200, 200)
+  folder.add(camera.position, "z", -300, 300)
 }
