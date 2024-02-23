@@ -4,9 +4,9 @@ import { getGui } from "../gui/gui";
 
 const noise = new SimplexNoise();
 const animConfs = {
-  height: 1.5,
-  xVolume: 5,
-  yVolume: 5,
+  height: 2.5,
+  xVolume: 7.5,
+  yVolume: 7.5,
   speed: 0.0001,
 }
 
