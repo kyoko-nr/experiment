@@ -24,8 +24,6 @@ export const initThree = () => {
 
   const tick = () => {
     renderer.render(scene, camera);
-    const pos = plane.geometry.getAttribute("position");
-    pos.needsUpdate = true;
     animatePlane(plane);
     requestAnimationFrame(tick)
   }
