@@ -26,7 +26,7 @@ export const createLights = () => {
     lights.push(light);
     helpers.push(helper);
   }
-  createGui(lights)
+  // createGui(lights)
 
   const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
 

@@ -19,7 +19,7 @@ export const createPlane = (width: number, height: number) => {
   plane.rotation.x = -1.5;
   plane.position.y = -12;
 
-  addGUI(plane);
+  // addGUI(plane);
 
   return plane;
 }

@@ -8,7 +8,7 @@ export const createCamera = () => {
   const camera = new THREE.PerspectiveCamera(FOV);
   camera.position.z = POS_Z;
 
-  createGui(camera);
+  // createGui(camera);
   return camera;
 }
 

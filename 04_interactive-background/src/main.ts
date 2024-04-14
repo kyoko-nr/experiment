@@ -8,7 +8,8 @@ const init = () => {
   const {renderer} = initThree();
   app?.append(renderer.domElement);
 
-  initGui(app);
+  // initGui(app);
+
   setupInteraction();
 }
 
