@@ -11,8 +11,6 @@ export const createPlane = (width: number, height: number) => {
     flatShading: true,
   });
 
-  // TODO codepenのgetRendererSizeでz-axisからsegmentsを計算してそう。解読する。
-  // TODO width = width, height = heightにする
   const geo = new THREE.PlaneGeometry(240, 40, 400, 400);
   const plane = new THREE.Mesh( geo, mat );
 
