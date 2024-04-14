@@ -1,3 +1,4 @@
+import { setupInteraction } from './interaction';
 import './style.css';
 import { initGui } from './three/gui/gui';
 import { initThree } from './three/initThree';
@@ -8,6 +9,7 @@ const init = () => {
   app?.append(renderer.domElement);
 
   initGui(app);
+  setupInteraction();
 }
 
 init();

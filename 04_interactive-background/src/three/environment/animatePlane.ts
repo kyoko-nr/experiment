@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { SimplexNoise } from "three/examples/jsm/Addons.js";
 import { getGui } from "../gui/gui";
+import { interactP } from "../../interaction";
 
 const noise = new SimplexNoise();
 const animConfs = {
-  height: 2.5,
-  xVolume: 7.5,
+  height: 7.5,
+  xVolume: 20.0,
   yVolume: 7.5,
   speed: 0.0001,
 }
@@ -18,7 +19,7 @@ export const animatePlane = (plane: THREE.Mesh) => {
     const x = position.getX(i);
     const y = position.getY(i);
 
-    const n = noise.noise3d(x / animConfs.xVolume, y/animConfs.yVolume, time) * animConfs.height;
+    const n = noise.noise3d(x / (animConfs.xVolume * (1.0 - interactP.x) + 10.0), y/animConfs.yVolume, time) * animConfs.height * (2.0 -interactP.y);
 
     position.setZ(i, n);
   }
