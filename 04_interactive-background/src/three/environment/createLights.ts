@@ -17,20 +17,20 @@ const lightConfs = [
 
 export const createLights = () => {
   const lights: THREE.Object3D[] = [];
-  const helpers: THREE.Object3D[] = []
+  // const helpers: THREE.Object3D[] = []
   for(const conf of lightConfs) {
     const light = new THREE.DirectionalLight(conf.color, conf.intensity);
-    const helper = new THREE.DirectionalLightHelper(light, 3);
+    // const helper = new THREE.DirectionalLightHelper(light, 3);
     light.position.set(conf.x, conf.y, conf.z);
-    helper.position.set(conf.x, conf.y, conf.z);
+    // helper.position.set(conf.x, conf.y, conf.z);
     lights.push(light);
-    helpers.push(helper);
+    // helpers.push(helper);
   }
   // createGui(lights)
 
   const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
 
-  return [...lights, ...helpers, ambLight];
+  return [...lights, ambLight];
 }
 
 const createGui = (lights: THREE.Object3D[]) => {

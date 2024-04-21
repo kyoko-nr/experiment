@@ -1,6 +1,6 @@
 import GUI from 'lil-gui';
 
-const gui = new GUI();
+let gui: GUI | null = null;
 
 /**
  * initialize GUI
@@ -10,6 +10,7 @@ export const initGui = (elm: Element | null) => {
   if(!elm) {
     return;
   }
+  gui = new GUI();
 }
 
 /** get GUI */
