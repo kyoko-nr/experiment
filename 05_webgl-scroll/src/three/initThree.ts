@@ -6,6 +6,7 @@ import {
   MeshNormalMaterial,
   Mesh,
 } from "three";
+import { createPicture } from "./createPicture";
 
 const FOV = 60;
 
@@ -43,7 +44,10 @@ export const initThree = () => {
   const mat = new MeshNormalMaterial();
   const box = new Mesh(geo, mat);
 
+  const picture = createPicture();
+
   scene.add(box);
+  scene.add(picture);
 
   return { renderer, camera, scene };
 };
