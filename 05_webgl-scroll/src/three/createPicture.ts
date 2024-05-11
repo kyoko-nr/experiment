@@ -1,6 +1,6 @@
 import { PlaneGeometry, ShaderMaterial, TextureLoader, Mesh } from "three";
-import vShader from "./shaders/vShader.vert";
-import fShader from "./shaders/fShader.frag";
+import vShader from "./shaders/vShader.glsl";
+import fShader from "./shaders/fShader.glsl";
 
 export const createPicture = () => {
   const loader = new TextureLoader();

@@ -1,11 +1,4 @@
-import {
-  WebGLRenderer,
-  PerspectiveCamera,
-  Scene,
-  BoxGeometry,
-  MeshNormalMaterial,
-  Mesh,
-} from "three";
+import { WebGLRenderer, PerspectiveCamera, Scene } from "three";
 import { createPicture } from "./createPicture";
 
 const FOV = 60;
@@ -40,13 +33,8 @@ export const initThree = () => {
   const camera = createCamera();
   const scene = createScene();
 
-  const geo = new BoxGeometry(100, 100, 100);
-  const mat = new MeshNormalMaterial();
-  const box = new Mesh(geo, mat);
-
   const picture = createPicture();
 
-  scene.add(box);
   scene.add(picture);
 
   return { renderer, camera, scene };
