@@ -4,7 +4,7 @@ import { createPicture } from "./createPicture";
 const FOV = 60;
 
 const createRenderer = () => {
-  const renderer = new WebGLRenderer();
+  const renderer = new WebGLRenderer({ alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   return renderer;
