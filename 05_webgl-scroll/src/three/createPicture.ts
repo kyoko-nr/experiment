@@ -9,6 +9,7 @@ export const createPicture = () => {
     uTexture: { value: texture },
     uImageAspect: { value: 1920 / 1280 },
     uPlaneAspect: { value: 800 / 500 },
+    uTime: { value: 0 },
   };
   const geo = new PlaneGeometry(800, 500, 100, 100);
   const mat = new ShaderMaterial({
