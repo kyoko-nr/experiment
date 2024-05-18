@@ -2,7 +2,9 @@ import { initThree } from "./three/initThree";
 
 const init = () => {
   const webgl = document.querySelector("#webgl");
-  const { renderer, camera, scene } = initThree();
+  const images = document.querySelectorAll("img");
+
+  const { renderer, camera, scene } = initThree(Array.from(images));
 
   webgl?.appendChild(renderer.domElement);
 

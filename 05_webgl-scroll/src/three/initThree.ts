@@ -1,5 +1,5 @@
-import { WebGLRenderer, PerspectiveCamera, Scene } from "three";
-import { createPicture } from "./createPicture";
+import { WebGLRenderer, PerspectiveCamera, Scene, Clock } from "three";
+import { createImagePlane } from "./createImagePlane";
 
 const FOV = 60;
 
@@ -28,14 +28,24 @@ const createScene = () => {
   return new Scene();
 };
 
-export const initThree = () => {
+const createClock = () => {
+  return new Clock();
+};
+
+/**
+ * initialize three objects
+ * @param images HTMLImageElement
+ * @returns
+ */
+export const initThree = (images: HTMLImageElement[]) => {
   const renderer = createRenderer();
   const camera = createCamera();
   const scene = createScene();
+  const clock = createClock();
 
-  const picture = createPicture();
+  const imagePlanes = images.map((img) => createImagePlane(img));
 
-  scene.add(picture);
+  scene.add(...imagePlanes);
 
-  return { renderer, camera, scene };
+  return { renderer, camera, scene, clock };
 };
