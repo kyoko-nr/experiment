@@ -1,5 +1,6 @@
 import { WebGLRenderer, PerspectiveCamera, Scene, Clock } from "three";
 import { createImagePlane } from "./createImagePlane";
+import { animateImagePlane } from "./animateImagePlane";
 
 const FOV = 60;
 
@@ -42,10 +43,15 @@ export const initThree = (images: HTMLImageElement[]) => {
   const camera = createCamera();
   const scene = createScene();
   const clock = createClock();
+  clock.start();
 
   const imagePlanes = images.map((img) => createImagePlane(img));
 
-  scene.add(...imagePlanes);
+  scene.add(...imagePlanes.map((ip) => ip.mesh));
 
-  return { renderer, camera, scene, clock };
+  const updatePlanes = () => {
+    imagePlanes.forEach((ip) => animateImagePlane(ip, clock.getElapsedTime()));
+  };
+
+  return { renderer, camera, scene, updatePlanes };
 };

@@ -1,16 +1,16 @@
 import { createMesh } from "./createMesh";
 import { toCanvasPoint } from "../utils/toCanvasPoint";
+import { ImagePlane } from "./types";
 
 /**
  * create Three.js Mesh from HTMLImageElement
  * @param img image element
  * @returns
  */
-export const createImagePlane = (img: HTMLImageElement) => {
+export const createImagePlane = (img: HTMLImageElement): ImagePlane => {
   const mesh = createMesh(img);
 
   const rect = img.getBoundingClientRect();
-  console.log("debug: createImagePlane", mesh, img, rect);
 
   mesh.scale.x = rect.width;
   mesh.scale.y = rect.height;
@@ -18,5 +18,5 @@ export const createImagePlane = (img: HTMLImageElement) => {
   const { x, y } = toCanvasPoint(rect);
   mesh.position.set(x, y, mesh.position.z);
 
-  return mesh;
+  return { dom: img, mesh };
 };
