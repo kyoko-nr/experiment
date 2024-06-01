@@ -1,5 +1,7 @@
 varying vec2 vUv;
-uniform float uTime;
+uniform float uAmount;
+
+float PI = 3.1415926535897932384626433832795;
 
 void main()
 {
@@ -7,10 +9,14 @@ void main()
 
   vec3 pos = position;
 
-  float speed = 3.0;
-  float freq = 4.0;
+  // horizontal shift
   float amp = 0.02;
-  float x = pos.x + sin((uTime * speed) + (pos.y * freq)) * amp;
+  float freq = 0.03 * uAmount;
+  // vertical shift
+  float tension = -0.001 * uAmount;
 
-  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4( vec3(x, pos.y, pos.z), 1.0);
+  float x = pos.x + sin(pos.y * PI * freq) * amp;
+  float y = pos.y + cos(pos.x * PI) * tension;
+
+  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4( vec3(x, y, pos.z), 1.0);
 }

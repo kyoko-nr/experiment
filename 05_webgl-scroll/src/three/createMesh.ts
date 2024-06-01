@@ -15,7 +15,7 @@ export const createMesh = (img: HTMLImageElement) => {
     uTexture: { value: texture },
     uImageAspect: { value: img.naturalWidth / img.naturalHeight },
     uPlaneAspect: { value: img.clientWidth / img.clientHeight },
-    uTime: { value: 0 },
+    uAmount: { value: 0 },
   };
   const geo = new PlaneGeometry(1, 1, 100, 100);
   const mat = new ShaderMaterial({

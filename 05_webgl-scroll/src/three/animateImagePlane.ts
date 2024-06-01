@@ -4,12 +4,12 @@ import type { ImagePlane } from "./types";
 
 /**
  * animate ImagePlane
- * @param imagePlane
- * @param elapsedTime
+ * @param imagePlane imagePlane to animate
+ * @param animateAmount animation amount
  */
 export const animateImagePlane = (
   imagePlane: ImagePlane,
-  elapsedTime: number,
+  animateAmount: number,
 ) => {
   const rect = imagePlane.dom.getBoundingClientRect();
   const mesh = imagePlane.mesh;
@@ -21,5 +21,5 @@ export const animateImagePlane = (
   mesh.position.set(x, y, mesh.position.z);
 
   const material = mesh.material as ShaderMaterial;
-  material.uniforms.uTime.value = elapsedTime;
+  material.uniforms.uAmount.value = animateAmount;
 };
