@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <img class="image" src="../../assets/umbrella.jpg" alt="umbrellas" width="1197" height="840">
+    <ThreeApp />
     <div class="controller">
       <CheckboxList :list="checkboxList" />
     </div>
@@ -9,19 +9,16 @@
 </template>
 
 <script setup lang="ts">
+import ThreeApp from "./three/ThreeApp.vue";
 import CheckboxList from "../ui/CheckboxList.vue";
 import { checkboxList } from "./defs/def";
-
 
 </script>
 
 <style scoped>
 .wrapper {
   position: relative;
-}
-.image {
   width: 100%;
-  object-fit: contain;
   height: 100%;
 }
 .controller {
@@ -29,4 +26,4 @@ import { checkboxList } from "./defs/def";
   top: 0;
   left: 0;
 }
-</style>../ui/CheckboxList.vue
+</style>
