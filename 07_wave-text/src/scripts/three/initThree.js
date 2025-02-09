@@ -24,13 +24,11 @@ export const initThree = (app) => {
   const composer = postProcess({ renderer, size: SIZE, scene, camera });
 
   const tick = () => {
-    composer.render();
     composer.passes[1].uniforms.uTime.value = clock.getElapsedTime();
+    composer.render();
 
     window.requestAnimationFrame(tick);
   };
-
-  // renderer.render(scene, camera);
   tick();
 };
 

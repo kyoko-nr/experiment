@@ -3,10 +3,10 @@ import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
 import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import noiseSrc from "../../../assets/noise.png";
-import { loader } from "./createTextPlane";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
+const loader = new THREE.TextureLoader();
 /**
  * Add post process effect.
  * @param {THREE.WebGLRenderer} param.renderer
@@ -23,34 +23,34 @@ export const postProcess = ({renderer, size, scene, camera}) => {
   composer.addPass(renderPass);
 
   const noise = loader.load(noiseSrc);
+  noise.wrapS = THREE.RepeatWrapping;
+  noise.wrapT = THREE.RepeatWrapping;
+  noise.needsUpdate = true;
 
   const ShaderObj = {
-    name: 'CopyShader',
+    name: 'WaveShader',
     uniforms: {
       'tDiffuse': { value: null },
-      'opacity': { value: 1.0 },
       "uTime": { value: 0.0 },
       "uNoise": { value: noise },
     },
     vertexShader: /* glsl */`
-    uniform sampler2D uNoise;
-    uniform float uTime;
       varying vec2 vUv;
       void main() {
         vUv = uv;
-        vec3 newPos = position;
-        vec2 waveUv = uv * 0.3 - uTime * 0.01;
-        vec4 wave = texture2D(uNoise, waveUv);
-        newPos.z -= (wave.r + wave.g) * 0.1;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
       }`,
     fragmentShader: /* glsl */`
-      uniform float opacity;
       uniform sampler2D tDiffuse;
+      uniform sampler2D uNoise;
+      uniform float uTime;
       varying vec2 vUv;
       void main() {
-        vec4 texel = texture2D( tDiffuse, vUv );
-        gl_FragColor = opacity * texel;
+        vec2 waveUv = vUv + uTime * 0.01;
+        vec4 noise = texture2D(uNoise, waveUv);
+        vec2 newUv = vec2(noise.r * 0.02 + vUv.x, vUv.y + noise.g * 0.02);
+        vec4 texel = texture2D( tDiffuse, newUv);
+        gl_FragColor = texel;
       }`
   };
   const shaderPass = new ShaderPass(ShaderObj)
