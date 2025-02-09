@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createTextPlane } from "./createTextPlane";
+import { postProcess } from "./postProcess";
 
 const SIZE = {
   width: 0,
@@ -20,10 +21,13 @@ export const initThree = (app) => {
 
   const clock = new THREE.Clock();
 
+  const composer = postProcess({ renderer, size: SIZE, scene, camera });
+
   const tick = () => {
-    renderer.render(scene, camera);
+    composer.render();
+    composer.passes[1].uniforms.uTime.value = clock.getElapsedTime();
+
     window.requestAnimationFrame(tick);
-    plane.material.uniforms.uTime.value = clock.getElapsedTime();
   };
 
   // renderer.render(scene, camera);
@@ -36,8 +40,6 @@ const createEnvironment = () => {
 
   const scene = new THREE.Scene();
 
-  // const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
   const camera = new THREE.PerspectiveCamera(
     60,
     SIZE.width / SIZE.height,
@@ -45,7 +47,6 @@ const createEnvironment = () => {
     10
   );
   camera.position.set(0, 0, 1.5);
-  // scene.add(camera);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(SIZE.width, SIZE.height);

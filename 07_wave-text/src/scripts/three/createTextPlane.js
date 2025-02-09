@@ -1,39 +1,37 @@
 import * as THREE from "three";
 import textureSrc from "../../../assets/text.png";
-import noiseSrc from "../../../assets/noise.png";
-import vertexShader from "./shaders/vertex.glsl";
-import fragmentShader from "./shaders/fragment.glsl";
 
-const loader = new THREE.TextureLoader();
+const TextureSize = {
+  width: 2218,
+  height: 540,
+}
+
+export const loader = new THREE.TextureLoader();
 
 /**
  * Create text plane.
  * @returns THREE.Mesh
  */
 export const createTextPlane = () => {
-  const texture = loader.load(textureSrc);
-  texture.offset.x = 0.5;
-
-  const noise = loader.load(noiseSrc);
-  noise.wrapS = THREE.RepeatWrapping;
-  noise.wrapT = THREE.RepeatWrapping;
-
-  const geometry = new THREE.PlaneGeometry(2, 2, 64, 64);
-
-  // const material = new THREE.MeshBasicMaterial({
-  //   map: texture,
-  // });
-  const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    uniforms: {
-      uNoise: new THREE.Uniform(noise),
-      uTexture: new THREE.Uniform(texture),
-      uTime: new THREE.Uniform(0),
-    },
-    wireframe: true,
+  const geometry = new THREE.PlaneGeometry(4, 2, 1, 1);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x6EB7DB,
   });
   const plane = new THREE.Mesh(geometry, material);
 
-  return plane;
+  const texture = loader.load(textureSrc);
+  const textGeometry = new THREE.PlaneGeometry(
+    TextureSize.width, TextureSize.height, 1, );
+  const textMaterial = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+  });
+  const text = new THREE.Mesh(textGeometry, textMaterial);
+  text.scale.set(0.001, 0.001, 1);
+
+  const group = new THREE.Group();
+  group.add(plane);
+  group.add(text);
+
+  return group;
 };
