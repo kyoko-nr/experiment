@@ -3,8 +3,6 @@ import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
 import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import noiseSrc from "../../../assets/noise.png";
-import vertexShader from "./shaders/vertex.glsl";
-import fragmentShader from "./shaders/fragment.glsl";
 
 const loader = new THREE.TextureLoader();
 /**
