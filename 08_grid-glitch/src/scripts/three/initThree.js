@@ -33,15 +33,21 @@ export const initThree = (app) => {
       mesh.rotation.y = elapsedTime * 0.1;
       mesh.rotation.z = elapsedTime * 0.15;
     });
-
-    // renderer.render(scene, camera);
-    
+  
     // composer.passes[1].uniforms.uTime.value = clock.getElapsedTime();
     composer.render();
 
     window.requestAnimationFrame(tick);
   };
   tick();
+
+  window.addEventListener("resize", () => {
+    onResize(camera, composer, renderer);
+  });
+  document.addEventListener("mousemove", (e) => {
+    const mousePos = onMousemove(e);
+    composer.passes[1].uniforms.uMouse.value = mousePos;
+  });
 };
 
 const createEnvironment = () => {
@@ -64,3 +70,26 @@ const createEnvironment = () => {
 
   return { renderer, camera, scene };
 };
+
+const onResize = (camera, composer, renderer) => {
+  SIZE.width = window.innerWidth;
+  SIZE.height = window.innerHeight;
+
+  camera.aspect = SIZE.width / SIZE.height;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(SIZE.width, SIZE.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  composer.setSize(SIZE.width, SIZE.height);
+  composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+}
+
+const onMousemove = (e) => {
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  const posNormalized = new THREE.Vector2(
+    (e.clientX / window.innerWidth) * dpr,
+    (1.0 - (e.clientY / window.innerHeight)) * dpr
+  );
+  return posNormalized;
+}

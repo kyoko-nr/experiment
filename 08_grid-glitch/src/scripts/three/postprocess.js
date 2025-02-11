@@ -30,7 +30,9 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     name: 'WaveShader',
     uniforms: {
       'tDiffuse': { value: null },
-      // "uTime": { value: 0.0 },
+      "uResolution": { value: new THREE.Vector2(size.width, size.height) },
+      "uMouse": { value: new THREE.Vector2(0.5, 0.5) },
+      "uTime": { value: 0.0 },
       // "uNoise": { value: noise },
     },
     vertexShader: vertexShader,
