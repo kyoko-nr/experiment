@@ -7,9 +7,9 @@ import * as THREE from "three";
 export const createMeshes = () => {
   const group = new THREE.Group();
 
-  const material = new THREE.MeshBasicMaterial({
-    color: 0xff0000,
-    wireframe: true,
+  const material = new THREE.MeshNormalMaterial({
+    // color: 0xff0000,
+    // wireframe: true,
   });
 
   // Torus knot

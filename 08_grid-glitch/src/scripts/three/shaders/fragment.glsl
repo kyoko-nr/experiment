@@ -41,7 +41,7 @@ void main() {
 
   // expand mouse influence to 20x20 grid
   float incluence = getMouseInfluence(st, mouse, vec2(GRID_SCALE));
-  float scale = mix(1.0, 2.0, incluence);
+  float scale = mix(1.0, 1.2, incluence);
 
   vec2 center = vec2(0.5);
   vec2 scaledUv = (vUv - center) / scale + center;
