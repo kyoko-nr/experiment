@@ -38,16 +38,5 @@ export const createMeshes = () => {
   cube.name = 'cube';
   group.add(cube);
 
-  // suzanne
-  // gltfLoader.load("/assets/suzanne.glb", (gltf) => {
-  //   console.log(gltf)
-  //     suzanne = gltf.scene
-  //     suzanne.traverse((child) => {
-  //       if(child.isMesh)
-  //           child.material = material
-  //     })
-  //     group.add(suzanne)
-  //   }
-  // )
   return group;
 }

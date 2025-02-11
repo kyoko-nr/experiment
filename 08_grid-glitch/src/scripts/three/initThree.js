@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { createMeshes } from "./createMeshes";
+import { postprocess } from "./postprocess";
 
 const SIZE = {
   width: 0,
@@ -24,7 +25,7 @@ export const initThree = (app) => {
 
   const clock = new THREE.Clock();
 
-  // const composer = postProcess({ renderer, size: SIZE, scene, camera });
+  const composer = postprocess({ renderer, size: SIZE, scene, camera });
 
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
@@ -33,10 +34,10 @@ export const initThree = (app) => {
       mesh.rotation.z = elapsedTime * 0.15;
     });
 
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
     
     // composer.passes[1].uniforms.uTime.value = clock.getElapsedTime();
-    // composer.render();
+    composer.render();
 
     window.requestAnimationFrame(tick);
   };
@@ -55,7 +56,7 @@ const createEnvironment = () => {
     0.1,
     10
   );
-  camera.position.set(0, 0, 1.5);
+  camera.position.set(0, 0, 5);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(SIZE.width, SIZE.height);
