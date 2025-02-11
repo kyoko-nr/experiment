@@ -33,8 +33,8 @@ export const initThree = (app) => {
       mesh.rotation.y = elapsedTime * 0.1;
       mesh.rotation.z = elapsedTime * 0.15;
     });
-  
-    // composer.passes[1].uniforms.uTime.value = clock.getElapsedTime();
+
+    composer.passes[1].uniforms.uTime.value = clock.getDelta();
     composer.render();
 
     window.requestAnimationFrame(tick);
@@ -45,8 +45,11 @@ export const initThree = (app) => {
     onResize(camera, composer, renderer);
   });
   document.addEventListener("mousemove", (e) => {
+    console.log("movement", e.movementX + e.movementY);
     const mousePos = onMousemove(e);
     composer.passes[1].uniforms.uMouse.value = mousePos;
+    const mouseSpeed = Math.abs(e.movementX) + Math.abs(e.movementY);
+    composer.passes[1].uniforms.uMouseSpeed.value = mouseSpeed;
   });
 };
 
@@ -83,6 +86,11 @@ const onResize = (camera, composer, renderer) => {
 
   composer.setSize(SIZE.width, SIZE.height);
   composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  composer.passes[1].uniforms.uResolution.value = new THREE.Vector2(
+    SIZE.width,
+    SIZE.height
+  );
 }
 
 const onMousemove = (e) => {

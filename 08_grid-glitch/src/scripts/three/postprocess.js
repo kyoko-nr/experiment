@@ -31,8 +31,9 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     uniforms: {
       'tDiffuse': { value: null },
       "uResolution": { value: new THREE.Vector2(size.width, size.height) },
-      "uMouse": { value: new THREE.Vector2(0.5, 0.5) },
+      "uMouse": { value: new THREE.Vector2(-1, -1) },
       "uTime": { value: 0.0 },
+      "uMouseSpeed": { value: 0.0 },
       // "uNoise": { value: noise },
     },
     vertexShader: vertexShader,
