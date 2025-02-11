@@ -27,7 +27,14 @@ export const initThree = (app) => {
   // const composer = postProcess({ renderer, size: SIZE, scene, camera });
 
   const tick = () => {
+    const elapsedTime = clock.getElapsedTime();
+    meshes.children.forEach((mesh) => {
+      mesh.rotation.y = elapsedTime * 0.1;
+      mesh.rotation.z = elapsedTime * 0.15;
+    });
+
     renderer.render(scene, camera);
+    
     // composer.passes[1].uniforms.uTime.value = clock.getElapsedTime();
     // composer.render();
 

@@ -32,7 +32,7 @@ export const createMeshes = () => {
 
   // Cube
   const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1.5, 1.5, 1.5),
+    new THREE.IcosahedronGeometry(1, 1),
     material
   );
   cube.name = 'cube';
