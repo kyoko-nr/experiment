@@ -2,10 +2,9 @@ import * as THREE from "three";
 import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
 import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import vertexShader from './shaders/vertex.glsl?raw';
-import fragmentShader from './shaders/fragment.glsl?raw';
+import fishEyeVertex from './shaders/fisheye/vertex.glsl?raw';
+import fishEyeFragment from './shaders/fisheye/fragment.glsl?raw';
 
-// const loader = new THREE.TextureLoader();
 /**
  * Add post process effect.
  * @param {THREE.WebGLRenderer} param.renderer
@@ -26,19 +25,22 @@ export const postprocess = ({renderer, size, scene, camera}) => {
   // noise.wrapT = THREE.RepeatWrapping;
   // noise.needsUpdate = true;
 
-  const ShaderObj = {
-    name: 'WaveShader',
+  // Fish eye effect
+  const fishEyeEffectObj = {
+    name: 'fisheye',
     uniforms: {
       'tDiffuse': { value: null },
       "uResolution": { value: new THREE.Vector2(size.width, size.height) },
       "uMouse": { value: new THREE.Vector2(-1, -1) },
       "uTime": { value: 0.0 },
       "uMouseSpeed": { value: 0.0 },
-      // "uNoise": { value: noise },
     },
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
+    vertexShader: fishEyeVertex,
+    fragmentShader: fishEyeFragment,
   }
+  const fishEyeEffectpass = new ShaderPass(fishEyeEffectObj)
+  // fishEyeEffectpass.setSize(size.width*dpr, size.height*dpr);
+  composer.addPass(fishEyeEffectpass);
 
   const shaderPass = new ShaderPass(ShaderObj)
   composer.addPass(shaderPass);
