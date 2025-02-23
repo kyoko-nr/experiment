@@ -29,21 +29,27 @@ float random(vec2 st) {
 }
 
 void main() {
-    vec2 st = gl_FragCoord.xy / uResolution.xy;
+  vec2 st = gl_FragCoord.xy / uResolution.xy;
 
   // add random offset to mouse position
   vec2 gridCoord = floor(st * gridScale);
   float offsetX = random(gridCoord.xy) * randomMagnitude;
   float ofsetY = random(gridCoord.yx) * randomMagnitude;
   vec2 mouse = uMouse + vec2(offsetX, ofsetY);
-  // mouse = uMouse;
+  mouse = uMouse;
 
   // expand mouse influence to 20x20 grid
   float incluence = getGlitchInfluence(st, mouse, vec2(gridScale));
   float scale = mix(1.0, 1.5, incluence);
   vec2 scaledUv = vUv / scale;
 
-  vec4 texel = texture2D(tDiffuse, scaledUv);
+  // vec4 texel = texture2D(tDiffuse, scaledUv);
+  vec4 texel = texture2D(tDiffuse, vUv);
+
+  float dist = distance(st, mouse);
+  vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+  texel = mix(texel, blue, dist);
+
 
   gl_FragColor = texel;
 
