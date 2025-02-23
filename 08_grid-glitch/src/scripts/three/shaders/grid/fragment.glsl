@@ -5,7 +5,7 @@ uniform float uMouseSpeed;
 
 varying vec2 vUv;
 
-float gridScale = 50.0;
+float gridScale = 100.0;
 float randomMagnitude = 0.1;
 float influenceDistance = 20.0;
 
@@ -29,26 +29,27 @@ float random(vec2 st) {
 }
 
 void main() {
-  vec2 st = gl_FragCoord.xy / uResolution.xy;
+  // TODO uResolutionとuMouseが合わない。
+  vec2 st = gl_FragCoord.xy / uResolution.xy / 2.0;
 
   // add random offset to mouse position
-  vec2 gridCoord = floor(st * gridScale);
-  float offsetX = random(gridCoord.xy) * randomMagnitude;
-  float ofsetY = random(gridCoord.yx) * randomMagnitude;
-  vec2 mouse = uMouse + vec2(offsetX, ofsetY);
-  mouse = uMouse;
+  vec2 gridCoord = floor(st * gridScale) / gridScale;
+  // float offsetX = random(gridCoord.xy) * randomMagnitude;
+  // float ofsetY = random(gridCoord.yx) * randomMagnitude;
+  // vec2 mouse = uMouse + vec2(offsetX, ofsetY);
+  // mouse = uMouse;
 
-  // expand mouse influence to 20x20 grid
-  float incluence = getGlitchInfluence(st, mouse, vec2(gridScale));
-  float scale = mix(1.0, 1.5, incluence);
-  vec2 scaledUv = vUv / scale;
+  // // expand mouse influence to 20x20 grid
+  // float incluence = getGlitchInfluence(st, mouse, vec2(gridScale));
+  // float scale = mix(1.0, 1.5, incluence);
+  // vec2 scaledUv = vUv / scale;
 
-  // vec4 texel = texture2D(tDiffuse, scaledUv);
-  vec4 texel = texture2D(tDiffuse, vUv);
+  vec4 texel = texture2D(tDiffuse, gridCoord);
+  // vec4 texel = texture2D(tDiffuse, vUv);
 
-  float dist = distance(st, mouse);
-  vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
-  texel = mix(texel, blue, dist);
+  // float dist = distance(st, uMouse);
+  // vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+  // texel = mix(texel, blue, dist);
 
 
   gl_FragColor = texel;
