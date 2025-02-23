@@ -8,6 +8,9 @@ const SIZE = {
   height: 0,
 };
 
+let mouseSpeed = 0;
+let prevTime = 0;
+
 /**
  * Initiate Three.js
  * @param {HTMLDivElement} app
@@ -24,6 +27,7 @@ export const initThree = (app) => {
   app.appendChild(renderer.domElement);
 
   const clock = new THREE.Clock();
+  prevTime = clock.getElapsedTime();
 
   const composer = postprocess({ renderer, size: SIZE, scene, camera });
 
@@ -34,8 +38,11 @@ export const initThree = (app) => {
       mesh.rotation.z = elapsedTime * 0.15;
     });
 
-    composer.passes[1].uniforms.uTime.value = clock.getDelta();
+    mouseSpeed -= (elapsedTime - prevTime) * 0.2;
+    composer.passes[1].uniforms.uMouseSpeed.value = Math.max( mouseSpeed, 0);
     composer.render();
+
+    prevTime = elapsedTime
 
     window.requestAnimationFrame(tick);
   };
@@ -45,11 +52,11 @@ export const initThree = (app) => {
     onResize(camera, composer, renderer);
   });
   document.addEventListener("mousemove", (e) => {
-    console.log("movement", e.movementX + e.movementY);
     const mousePos = onMousemove(e);
     composer.passes[1].uniforms.uMouse.value = mousePos;
-    const mouseSpeed = Math.abs(e.movementX) + Math.abs(e.movementY);
-    composer.passes[1].uniforms.uMouseSpeed.value = mouseSpeed;
+    composer.passes[2].uniforms.uMouse.value = mousePos;
+
+    mouseSpeed = 1;
   });
 };
 
@@ -69,7 +76,9 @@ const createEnvironment = () => {
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(SIZE.width, SIZE.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(dpr);
+  renderer.setViewport(0, 0, SIZE.width, SIZE.height);
 
   return { renderer, camera, scene };
 };
@@ -82,12 +91,18 @@ const onResize = (camera, composer, renderer) => {
   camera.updateProjectionMatrix();
 
   renderer.setSize(SIZE.width, SIZE.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(dpr);
+  renderer.setViewport(0, 0, SIZE.width, SIZE.height);
 
   composer.setSize(SIZE.width, SIZE.height);
-  composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  composer.setPixelRatio(dpr);
 
   composer.passes[1].uniforms.uResolution.value = new THREE.Vector2(
+    SIZE.width,
+    SIZE.height
+  );
+  composer.passes[2].uniforms.uResolution.value = new THREE.Vector2(
     SIZE.width,
     SIZE.height
   );

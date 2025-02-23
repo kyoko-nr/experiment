@@ -4,6 +4,8 @@ import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import fishEyeVertex from './shaders/fisheye/vertex.glsl?raw';
 import fishEyeFragment from './shaders/fisheye/fragment.glsl?raw';
+import gridVertex from "./shaders/grid/vertex.glsl?raw";
+import gridFragment from "./shaders/grid/fragment.glsl?raw";
 
 /**
  * Add post process effect.
@@ -15,15 +17,11 @@ import fishEyeFragment from './shaders/fisheye/fragment.glsl?raw';
 export const postprocess = ({renderer, size, scene, camera}) => {
   const composer = new EffectComposer(renderer);
   composer.setSize(size.width, size.height);
-  composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  composer.setPixelRatio(dpr);
 
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
-
-  // const noise = loader.load(noiseSrc);
-  // noise.wrapS = THREE.RepeatWrapping;
-  // noise.wrapT = THREE.RepeatWrapping;
-  // noise.needsUpdate = true;
 
   // Fish eye effect
   const fishEyeEffectObj = {
@@ -39,11 +37,22 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     fragmentShader: fishEyeFragment,
   }
   const fishEyeEffectpass = new ShaderPass(fishEyeEffectObj)
-  // fishEyeEffectpass.setSize(size.width*dpr, size.height*dpr);
   composer.addPass(fishEyeEffectpass);
 
-  const shaderPass = new ShaderPass(ShaderObj)
-  composer.addPass(shaderPass);
+  const gridEffectObj = {
+    name: 'grid',
+    uniforms: {
+      'tDiffuse': { value: null },
+      "uResolution": { value: new THREE.Vector2(size.width, size.height) },
+      "uMouse": { value: new THREE.Vector2(0.5, 0.5) },
+      "uTime": { value: 0.0 },
+      "uMouseSpeed": { value: 0.0 },
+    },
+    vertexShader: gridVertex,
+    fragmentShader: gridFragment,
+  }
+  const gridEffectpass = new ShaderPass(gridEffectObj)
+  composer.addPass(gridEffectpass);
 
   return composer;
 };
