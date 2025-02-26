@@ -29,8 +29,7 @@ float random(vec2 st) {
 }
 
 void main() {
-  // TODO uResolutionとuMouseが合わない。
-  vec2 st = gl_FragCoord.xy / uResolution.xy / 2.0;
+  vec2 st = gl_FragCoord.xy / uResolution.xy;
 
   // add random offset to mouse position
   vec2 gridCoord = floor(st * gridScale) / gridScale;
@@ -53,6 +52,9 @@ void main() {
 
 
   gl_FragColor = texel;
+
+  // color debug
+  // gl_FragColor = vec4(st, 1.0, 1.0);
 
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

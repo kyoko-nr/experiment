@@ -51,7 +51,7 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     fragmentShader: gridFragment,
   }
   const gridEffectpass = new ShaderPass(gridEffectObj)
-  // composer.addPass(gridEffectpass);
+  composer.addPass(gridEffectpass);
 
   return composer;
 };
