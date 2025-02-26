@@ -18,7 +18,6 @@ export const postprocess = ({renderer, size, scene, camera}) => {
   const composer = new EffectComposer(renderer);
   composer.setSize(size.width, size.height);
   const dpr = Math.min(window.devicePixelRatio, 2);
-  composer.setPixelRatio(dpr);
 
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
@@ -28,7 +27,7 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     name: 'fisheye',
     uniforms: {
       'tDiffuse': { value: null },
-      "uResolution": { value: new THREE.Vector2(size.width, size.height) },
+      "uResolution": { value: new THREE.Vector2(size.width * dpr, size.height * dpr) },
       "uMouse": { value: new THREE.Vector2(-1, -1) },
       "uTime": { value: 0.0 },
       "uMouseSpeed": { value: 0.0 },
@@ -43,7 +42,7 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     name: 'grid',
     uniforms: {
       'tDiffuse': { value: null },
-      "uResolution": { value: new THREE.Vector2(size.width, size.height) },
+      "uResolution": { value: new THREE.Vector2(size.width * dpr, size.height * dpr) },
       "uMouse": { value: new THREE.Vector2(0.5, 0.5) },
       "uTime": { value: 0.0 },
       "uMouseSpeed": { value: 0.0 },
@@ -52,7 +51,7 @@ export const postprocess = ({renderer, size, scene, camera}) => {
     fragmentShader: gridFragment,
   }
   const gridEffectpass = new ShaderPass(gridEffectObj)
-  composer.addPass(gridEffectpass);
+  // composer.addPass(gridEffectpass);
 
   return composer;
 };

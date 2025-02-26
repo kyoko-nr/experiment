@@ -54,7 +54,7 @@ export const initThree = (app) => {
   document.addEventListener("mousemove", (e) => {
     const mousePos = onMousemove(e);
     composer.passes[1].uniforms.uMouse.value = mousePos;
-    composer.passes[2].uniforms.uMouse.value = mousePos;
+    // composer.passes[2].uniforms.uMouse.value = mousePos;
 
     mouseSpeed = 1;
   });
@@ -99,21 +99,19 @@ const onResize = (camera, composer, renderer) => {
   composer.setPixelRatio(dpr);
 
   composer.passes[1].uniforms.uResolution.value = new THREE.Vector2(
-    SIZE.width,
-    SIZE.height
+    SIZE.width * dpr,
+    SIZE.height * dpr
   );
-  composer.passes[2].uniforms.uResolution.value = new THREE.Vector2(
-    SIZE.width,
-    SIZE.height
-  );
+  // composer.passes[2].uniforms.uResolution.value = new THREE.Vector2(
+  //   SIZE.width * dpr,
+  //   SIZE.height * dpr
+  // );
 }
 
 const onMousemove = (e) => {
-  // TODO ここでdprをかけるとpostprocess[1]のマウスの位置とuResolutionがズレる
-  const dpr = Math.min(window.devicePixelRatio, 2);
   const posNormalized = new THREE.Vector2(
-    (e.clientX / window.innerWidth) * dpr,
-    (1.0 - (e.clientY / window.innerHeight)) * dpr
+    (e.clientX / window.innerWidth),
+    (1.0 - (e.clientY / window.innerHeight))
   );
   return posNormalized;
 }
