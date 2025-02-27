@@ -7,7 +7,7 @@ float gridScale = 80.0;
 float randomMagnitude = 0.1;
 // Influence magnitude around the mouse.
 // Larger values will narrow  the influence area.
-float influenceMagnitude = 4.0;
+float influenceMagnitude = 5.0;
 
 // returns 0.0 to 1.0 value.
 float random(vec2 st) {
@@ -22,7 +22,8 @@ void main() {
   // Get mouse influence area with some randomeness
   float mouseInfluence = distance(gridCoord, uMouse) * influenceMagnitude;
   mouseInfluence += random(gridCoord.xy) * randomMagnitude;
-  mouseInfluence = clamp(1.0 - mouseInfluence, 0.0, 1.0);
+  mouseInfluence = 1.0 - mouseInfluence;
+  mouseInfluence = clamp(mouseInfluence * 4.0, 0.0, 1.0);
 
   vec4 texel = texture2D(tDiffuse, st);
   vec4 gridTexel = texture2D(tDiffuse, gridCoord);
@@ -31,7 +32,7 @@ void main() {
   gl_FragColor = texel;
 
   // color debug
-  // gl_FragColor = vec4(st, 1.0, 1.0);
+  // gl_FragColor = vec4(mouseInfluence, mouseInfluence, mouseInfluence, 1.0);
 
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
