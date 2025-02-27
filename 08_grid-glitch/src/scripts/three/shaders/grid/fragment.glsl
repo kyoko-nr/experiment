@@ -8,6 +8,9 @@ varying vec2 vUv;
 float gridScale = 100.0;
 float randomMagnitude = 0.1;
 float influenceDistance = 20.0;
+// Influence magnitude around the mouse.
+// Larger values will narrow  the influence area.
+float influenceMagnitude = 5.0;
 
 float getGlitchInfluence(vec2 st, vec2 mouseCoord, vec2 scale) {
   // Get the grid cell coordinates
@@ -31,24 +34,32 @@ float random(vec2 st) {
 void main() {
   vec2 st = gl_FragCoord.xy / uResolution.xy;
 
-  // add random offset to mouse position
+  // Get the grid cell coordinates
   vec2 gridCoord = floor(st * gridScale) / gridScale;
-  // float offsetX = random(gridCoord.xy) * randomMagnitude;
-  // float ofsetY = random(gridCoord.yx) * randomMagnitude;
-  // vec2 mouse = uMouse + vec2(offsetX, ofsetY);
-  // mouse = uMouse;
+  // Get mouse influence area with some randomeness
+  float mouseInfluence = distance(gridCoord, uMouse) * influenceMagnitude;
+  mouseInfluence += random(gridCoord.xy) * randomMagnitude;
 
-  // // expand mouse influence to 20x20 grid
+
+  // vec2 inf = vec2(clamp(mouseDist, 0.0, 1.0), clamp(mouseDist, 0.0, 1.0));
+  // float offsetX = random(gridCoord.xy) * randomMagnitude;
+  // float offsetY = random(gridCoord.yx) * randomMagnitude;
+  // vec2 mouse = uMouse + vec2(offsetX, offsetY);
+  // vec2 mouse = uMouse;
+  // vec2 mouse = inf;
+
+  // expand mouse influence to 20x20 grid
   // float incluence = getGlitchInfluence(st, mouse, vec2(gridScale));
   // float scale = mix(1.0, 1.5, incluence);
   // vec2 scaledUv = vUv / scale;
 
-  vec4 texel = texture2D(tDiffuse, gridCoord);
+  vec4 texel = texture2D(tDiffuse, st);
+  // vec4 texel = texture2D(tDiffuse, scaledUv);
   // vec4 texel = texture2D(tDiffuse, vUv);
 
-  // float dist = distance(st, uMouse);
-  // vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
-  // texel = mix(texel, blue, dist);
+  // float dist = distance(st, mouse);
+  vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+  texel = mix(texel, blue, mouseInfluence);
 
 
   gl_FragColor = texel;

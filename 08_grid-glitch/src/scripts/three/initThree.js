@@ -54,7 +54,7 @@ export const initThree = (app) => {
   document.addEventListener("mousemove", (e) => {
     const mousePos = onMousemove(e);
     composer.passes[1].uniforms.uMouse.value = mousePos;
-    // composer.passes[2].uniforms.uMouse.value = mousePos;
+    composer.passes[2].uniforms.uMouse.value = mousePos;
 
     mouseSpeed = 1;
   });
@@ -102,10 +102,10 @@ const onResize = (camera, composer, renderer) => {
     SIZE.width * dpr,
     SIZE.height * dpr
   );
-  // composer.passes[2].uniforms.uResolution.value = new THREE.Vector2(
-  //   SIZE.width * dpr,
-  //   SIZE.height * dpr
-  // );
+  composer.passes[2].uniforms.uResolution.value = new THREE.Vector2(
+    SIZE.width * dpr,
+    SIZE.height * dpr
+  );
 }
 
 const onMousemove = (e) => {
