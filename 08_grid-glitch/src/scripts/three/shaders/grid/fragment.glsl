@@ -3,28 +3,11 @@ uniform vec2 uResolution;
 uniform vec2 uMouse;
 uniform float uMouseSpeed;
 
-varying vec2 vUv;
-
-float gridScale = 100.0;
+float gridScale = 80.0;
 float randomMagnitude = 0.1;
-float influenceDistance = 20.0;
 // Influence magnitude around the mouse.
 // Larger values will narrow  the influence area.
-float influenceMagnitude = 5.0;
-
-float getGlitchInfluence(vec2 st, vec2 mouseCoord, vec2 scale) {
-  // Get the grid cell coordinates
-  vec2 gridCoord = floor(st * scale);
-  vec2 mouseGridCoord = floor(mouseCoord * scale);
-
-  // Calculate Manhattan distance in grid space
-  vec2 gridDist = abs(gridCoord - mouseGridCoord);
-  float gridDistance = max(gridDist.x, gridDist.y); // Use max for diamond-shaped influence
-
-  float influence = 1.0 - smoothstep(0.0, influenceDistance, gridDistance);
-
-  return influence;
-}
+float influenceMagnitude = 4.0;
 
 // returns 0.0 to 1.0 value.
 float random(vec2 st) {
@@ -39,28 +22,11 @@ void main() {
   // Get mouse influence area with some randomeness
   float mouseInfluence = distance(gridCoord, uMouse) * influenceMagnitude;
   mouseInfluence += random(gridCoord.xy) * randomMagnitude;
-
-
-  // vec2 inf = vec2(clamp(mouseDist, 0.0, 1.0), clamp(mouseDist, 0.0, 1.0));
-  // float offsetX = random(gridCoord.xy) * randomMagnitude;
-  // float offsetY = random(gridCoord.yx) * randomMagnitude;
-  // vec2 mouse = uMouse + vec2(offsetX, offsetY);
-  // vec2 mouse = uMouse;
-  // vec2 mouse = inf;
-
-  // expand mouse influence to 20x20 grid
-  // float incluence = getGlitchInfluence(st, mouse, vec2(gridScale));
-  // float scale = mix(1.0, 1.5, incluence);
-  // vec2 scaledUv = vUv / scale;
+  mouseInfluence = clamp(1.0 - mouseInfluence, 0.0, 1.0);
 
   vec4 texel = texture2D(tDiffuse, st);
-  // vec4 texel = texture2D(tDiffuse, scaledUv);
-  // vec4 texel = texture2D(tDiffuse, vUv);
-
-  // float dist = distance(st, mouse);
-  vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
-  texel = mix(texel, blue, mouseInfluence);
-
+  vec4 gridTexel = texture2D(tDiffuse, gridCoord);
+  texel = mix(texel, gridTexel, mouseInfluence);
 
   gl_FragColor = texel;
 
