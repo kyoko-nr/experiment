@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import GUI from "lil-gui";
 import { createMeshes } from "./createMeshes";
+import { getGui } from "./getGui";
 
 const SIZE = {
   width: 0,
@@ -81,10 +81,9 @@ const onResize = (camera, renderer) => {
 }
 
 //--------GUI--------
-const gui = new GUI();
 const addGui = (renderer) => {
+  const gui = getGui();
   gui.addColor(rendererParams, "clearColor")
-  .onChange(() => renderer.setClearColor(rendererParams.clearColor));
-
+    .onChange(() => renderer.setClearColor(rendererParams.clearColor));
 }
 
