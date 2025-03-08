@@ -2,12 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { createMeshes } from "./createMeshes";
 import { getGui } from "./getGui";
-
-const SIZE = {
-  width: 0,
-  height: 0,
-  dpr: 0,
-};
+import { createMaterial } from "./createMaterial";
+import { getSize } from "./getSize";
 
 const rendererParams = {
   clearColor: "#d5d1b3",
@@ -23,13 +19,12 @@ export const initThree = (app) => {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
 
-  const meshes  = createMeshes();
+  const material = createMaterial();
+  const meshes  = createMeshes(material);
   scene.add(meshes);
 
   app.appendChild(renderer.domElement);
-  
-  // const clock = new THREE.Clock();
-  
+
   addGui(renderer);
 
   const tick = () => {
@@ -39,45 +34,44 @@ export const initThree = (app) => {
   tick();
 
   window.addEventListener("resize", () => {
-    onResize(camera, composer, renderer);
+    onResize(camera, renderer, material);
   });
 };
 
 const createEnvironment = () => {
-  SIZE.width = window.innerWidth;
-  SIZE.height = window.innerHeight;
+  const size = getSize();
 
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
     60,
-    SIZE.width / SIZE.height,
+    size.width / size.height,
     0.1,
     10
   );
   camera.position.set(0, 0, 5);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(SIZE.width, SIZE.height);
-  SIZE.dpr = Math.min(window.devicePixelRatio, 2);
-  renderer.setPixelRatio(SIZE.dpr);
-  renderer.setViewport(0, 0, SIZE.width, SIZE.height);
+  renderer.setSize(size.width, size.height);
+  size.dpr = Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(size.dpr);
+  renderer.setViewport(0, 0, size.width, size.height);
   renderer.setClearColor(rendererParams.clearColor);
 
   return { renderer, camera, scene };
 };
 
-const onResize = (camera, renderer) => {
-  SIZE.width = window.innerWidth;
-  SIZE.height = window.innerHeight;
+const onResize = (camera, renderer, material) => {
+  const size = getSize();
 
-  camera.aspect = SIZE.width / SIZE.height;
+  camera.aspect = size.width / size.height;
   camera.updateProjectionMatrix();
 
-  renderer.setSize(SIZE.width, SIZE.height);
-  SIZE.dpr = Math.min(window.devicePixelRatio, 2);
-  renderer.setPixelRatio(SIZE.dpr);
-  renderer.setViewport(0, 0, SIZE.width, SIZE.height);
+  renderer.setSize(size.width, size.height);
+  renderer.setPixelRatio(size.dpr);
+  renderer.setViewport(0, 0, size.width, size.height);
+
+  material.uniforms.uResolution.value = new THREE.Vector2(size.width * size.dpr, size.height * size.dpr);
 }
 
 //--------GUI--------
