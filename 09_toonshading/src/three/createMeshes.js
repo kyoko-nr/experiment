@@ -23,7 +23,6 @@ export const createMeshes = () => {
   const material = new THREE.ShaderMaterial({
     vertexShader: toonVertexShader,
     fragmentShader: toonFragmentShader,
-    vertexColors: true,
     uniforms: {
       uIsEdge: new THREE.Uniform(false),
       uEdgeWidth: new THREE.Uniform(materialParams.edgeWidth),
