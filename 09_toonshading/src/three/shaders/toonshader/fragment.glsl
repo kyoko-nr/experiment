@@ -1,4 +1,6 @@
 uniform sampler2D uTexture;
+uniform vec3 uLightPosition;
+uniform vec3 uColor;
 
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -24,10 +26,10 @@ void main() {
   vec3 viewDirection = normalize(vPosition - cameraPosition);
 
   vec3 light = directionalLight(
-    vec3(1.0, 1.0, 1.0),
+    vec3(1.0),
     1.0,
     vNormal,
-    vec3(0.5, 1.0, 0.0),
+    uLightPosition,
     viewDirection,
     10.0
   );
@@ -35,6 +37,7 @@ void main() {
   float diffuse = clamp(dot(vNormal, light), 0.0, 1.0);
 
   vec3 tex = texture2D(uTexture, vec2(diffuse)).rgb;
+  tex *= uColor;
 
   gl_FragColor = vec4(tex, 1.0);
 }
