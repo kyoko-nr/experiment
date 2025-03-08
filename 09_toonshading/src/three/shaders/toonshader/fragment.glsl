@@ -73,7 +73,7 @@ void main() {
   // Halftone
   color = halftone(
     color,
-    50.0,
+    100.0,
     uHalftonePosition,
     -0.4,
     1.3,

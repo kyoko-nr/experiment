@@ -2,6 +2,7 @@ import * as THREE from "three";
 import toonVertexShader from "./shaders/toonshader/vertex.glsl?raw";
 import toonFragmentShader from "./shaders/toonshader/fragment.glsl?raw";
 import { getGui } from "./getGui";
+import { getSize } from "./getSize";
 
 const loader = new THREE.TextureLoader();
 
@@ -15,6 +16,7 @@ const materialParams = {
 }
 
 export const createMaterial = () => {
+  const size = getSize();
   const texture = loader.load("/assets/toon.png");
   const material = new THREE.ShaderMaterial({
     vertexShader: toonVertexShader,
@@ -25,7 +27,7 @@ export const createMaterial = () => {
       uTexture: new THREE.Uniform(texture),
       uLightPosition: new THREE.Uniform(materialParams.lightPosition),
       uColor: new THREE.Uniform(new THREE.Color(materialParams.color)),
-      uResolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight)),
+      uResolution: new THREE.Uniform(new THREE.Vector2(size.width * size.dpr, size.height * size.dpr)),
       uHalftoneColor: new THREE.Uniform(new THREE.Color(materialParams.halftoneColor)),
       uHalftonePosition: new THREE.Uniform(materialParams.halftonePosition),
     }
