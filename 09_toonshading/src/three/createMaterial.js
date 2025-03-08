@@ -9,9 +9,9 @@ const materialParams = {
   isEdge: false,
   edgeWidth: 0.05,
   lightPosition: new THREE.Vector3(-1.1, 1, 0.2),
-  color: "#a9eecc",
-  halftoneColor: "#7492b9",
-  halftonePosition: new THREE.Vector3(0.4, -1.3, -0.001),
+  color: "#faeecc",
+  halftoneColor: "#e18eb6",
+  halftonePosition: new THREE.Vector3(0.6, -1.3, -0.001),
 }
 
 export const createMaterial = () => {

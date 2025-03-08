@@ -75,8 +75,8 @@ void main() {
     color,
     50.0,
     uHalftonePosition,
-    -0.8,
-    1.5,
+    -0.4,
+    1.3,
     uHalftoneColor,
     normal
   );
