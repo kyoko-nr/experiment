@@ -8,6 +8,8 @@ const materialParams = {
   edgeWidth: 0.05,
 }
 
+const loader = new THREE.TextureLoader();
+
 /**
  * Create meshes
  * @returns {THREE.Group}
@@ -16,12 +18,16 @@ export const createMeshes = () => {
   const group = new THREE.Group();
   const gui = getGui();
 
+  const texture = loader.load("/assets/toon.png");
+
   const material = new THREE.ShaderMaterial({
     vertexShader: toonVertexShader,
     fragmentShader: toonFragmentShader,
+    vertexColors: true,
     uniforms: {
       uIsEdge: new THREE.Uniform(false),
       uEdgeWidth: new THREE.Uniform(materialParams.edgeWidth),
+      uTexture: new THREE.Uniform(texture),
     }
   })
 
