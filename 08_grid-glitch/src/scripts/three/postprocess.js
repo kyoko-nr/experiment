@@ -9,6 +9,16 @@ import fishEyeVertex from './shaders/fisheye/vertex.glsl?raw';
 import fishEyeFragment from './shaders/fisheye/fragment.glsl?raw';
 import gridVertex from "./shaders/grid/vertex.glsl?raw";
 import gridFragment from "./shaders/grid/fragment.glsl?raw";
+import gui from "./addGui";
+
+const easing = ["power3.in", "power3.out", "power3.inOut", "power4.in", "power4.out", "power4.inOut", "power5.in", "power5.out", "power5.inOut", "sine.in", "sine.out", "sine.inOut", "quad.in", "quad.out", "quad.inOut", "cubic.in", "cubic.out", "cubic.inOut", "exp.in", "exp.out", "exp.inOut"];
+
+const animParams = {
+  expandDuration: 0.4,
+  expandEase: "expo.out",
+  shrinkDuration: 1.2,
+  shrinkEase: "power5.inOut",
+}
 
 /**
  * Post process effect.
@@ -29,6 +39,9 @@ export class Postprocess {
     this.initGridEffect(size);
 
     this.animating = false;
+
+    // ----------GUI----------
+    addGui();
   }
 
   /**
@@ -93,27 +106,30 @@ export class Postprocess {
   }
 
   updateProgress() {
-    if(this.animating) {
-      return;
-    }
-    this.animating = true;
-    gsap.fromTo(this.fisheyeEffect.uniforms.uProgress, {
+    const tlfy = gsap.timeline();
+    tlfy.to(this.fisheyeEffect.uniforms.uProgress, {
       value: 1,
-    }, {
-      value: 0,
-      duration: 2,
-      ease: 'power4.out',
-      onComplete: () => {
-        this.animating = false;
-      }
+      duration: animParams.expandDuration,
+      ease: animParams.expandEase,
+      overwrite: true,
     });
-    gsap.fromTo(this.gridEffect.uniforms.uProgress, {
+    tlfy.to(this.fisheyeEffect.uniforms.uProgress, {
+      value: 0,
+      duration: animParams.shrinkDuration,
+      ease: animParams.shrinkEase,
+    }, "-=0.4");
+    const tlgr = gsap.timeline();
+    tlgr.to(this.gridEffect.uniforms.uProgress, {
       value: 1,
-    }, {
-      value: 0,
-      duration: 2,
-      ease: 'power4.out',
+      duration: animParams.expandDuration,
+      ease: animParams.expandEase,
+      overwrite: true,
     });
+    tlgr.to(this.gridEffect.uniforms.uProgress, {
+      value: 0,
+      duration: animParams.shrinkDuration,
+      ease: animParams.shrinkEase,
+    }, "-=0.4");
   }
 
   /**
@@ -126,4 +142,11 @@ export class Postprocess {
     this.fisheyeEffect.uniforms.uResolution.value = new THREE.Vector2(size.width * size.dpr, size.height * size.dpr);
     this.gridEffect.uniforms.uResolution.value = new THREE.Vector2(size.width * size.dpr, size.height * size.dpr);
   }
+}
+
+const addGui = () => {
+  gui.add(animParams, 'expandDuration').min(0.1).max(5).step(0.1).onChange((val) => animParams.expandDuration = val);
+  gui.add(animParams, 'expandEase', easing).onChange((val) => animParams.expandEase = val);
+  gui.add(animParams, 'shrinkDuration').min(0.1).max(5).step(0.1).onChange((val) => animParams.shrinkDuration = val);
+  gui.add(animParams, 'shrinkEase', easing).onChange((val) => animParams.shrinkEase = val);
 }

@@ -19,7 +19,7 @@ export class Models {
 
     // Donut
     this.donut = new THREE.Mesh(
-      new THREE.TorusGeometry(0.8, 0.3, 128, 32),
+      new THREE.TorusGeometry(0.65, 0.3, 128, 32),
       material
     );
     this.donut.position.x = - 3;
