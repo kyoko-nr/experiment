@@ -7,10 +7,7 @@ import * as THREE from "three";
 export const createMeshes = () => {
   const group = new THREE.Group();
 
-  const material = new THREE.MeshNormalMaterial({
-    // color: 0xff0000,
-    // wireframe: true,
-  });
+  const material = new THREE.MeshNormalMaterial();
 
   // Torus knot
   const torusKnot = new THREE.Mesh(
@@ -21,18 +18,18 @@ export const createMeshes = () => {
   torusKnot.name = 'torusKnot';
   group.add(torusKnot);
 
-  // Sphere
-  const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(),
+  // Donut
+  const donut = new THREE.Mesh(
+    new THREE.TorusGeometry(0.8, 0.3, 128, 32),
     material
   );
-  sphere.position.x = - 3;
-  sphere.name = 'sphere';
-  group.add(sphere);
+  donut.position.x = - 3;
+  donut.name = 'donut';
+  group.add(donut);
 
   // Cube
   const cube = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1, 1),
+    new THREE.BoxGeometry(1.5, 1.5, 1.5),
     material
   );
   cube.name = 'cube';

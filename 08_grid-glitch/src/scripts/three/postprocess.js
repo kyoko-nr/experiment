@@ -1,58 +1,100 @@
 import * as THREE from "three";
-import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
-import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { Environment } from "./Environment";
+import { getSize } from "../utils/getSize";
 import fishEyeVertex from './shaders/fisheye/vertex.glsl?raw';
 import fishEyeFragment from './shaders/fisheye/fragment.glsl?raw';
 import gridVertex from "./shaders/grid/vertex.glsl?raw";
 import gridFragment from "./shaders/grid/fragment.glsl?raw";
 
 /**
- * Add post process effect.
- * @param {THREE.WebGLRenderer} param.renderer
- * @parama {Object} param.size
- * @param {THREE.Scene} param.scene
- * @param {THREE.Camera} param.camera
+ * Post process effect.
  */
-export const postprocess = ({renderer, size, scene, camera}) => {
-  const composer = new EffectComposer(renderer);
-  composer.setSize(size.width, size.height);
-  const dpr = Math.min(window.devicePixelRatio, 2);
+export class Postprocess {
+  /**
+   * constructor
+   * @param {Environment} environment
+   */
+  constructor(environment) {
+    const size = getSize();
+    this.composer = new EffectComposer(environment.renderer);
+    this.composer.setSize(size.width, size.height);
+    const renderPass = new RenderPass(environment.scene, environment.camera);
+    this.composer.addPass(renderPass);
 
-  const renderPass = new RenderPass(scene, camera);
-  composer.addPass(renderPass);
-
-  // Fish eye effect
-  const fishEyeEffectObj = {
-    name: 'fisheye',
-    uniforms: {
-      'tDiffuse': { value: null },
-      "uResolution": { value: new THREE.Vector2(size.width * dpr, size.height * dpr) },
-      "uMouse": { value: new THREE.Vector2(-1, -1) },
-      "uTime": { value: 0.0 },
-      "uMouseSpeed": { value: 0.0 },
-    },
-    vertexShader: fishEyeVertex,
-    fragmentShader: fishEyeFragment,
+    this.initFisheyeEffect(size);
+    this.initGridEffect(size);
   }
-  const fishEyeEffectpass = new ShaderPass(fishEyeEffectObj)
-  composer.addPass(fishEyeEffectpass);
 
-  const gridEffectObj = {
-    name: 'grid',
-    uniforms: {
-      'tDiffuse': { value: null },
-      "uResolution": { value: new THREE.Vector2(size.width * dpr, size.height * dpr) },
-      "uMouse": { value: new THREE.Vector2(0.5, 0.5) },
-      "uTime": { value: 0.0 },
-      "uMouseSpeed": { value: 0.0 },
-    },
-    vertexShader: gridVertex,
-    fragmentShader: gridFragment,
+  /**
+   * initialize fish eye effect
+   * @param {Object} size
+   */
+  initFisheyeEffect(size) {
+    const fishEyeEffectObj = {
+      name: 'fisheye',
+      uniforms: {
+        'tDiffuse': { value: null },
+        "uResolution": { value: new THREE.Vector2(size.width * size.dpr, size.height * size.dpr) },
+        "uMouse": { value: new THREE.Vector2(-1, -1) },
+      },
+      vertexShader: fishEyeVertex,
+      fragmentShader: fishEyeFragment,
+    }
+    const fishEyeEffectpass = new ShaderPass(fishEyeEffectObj)
+    this.composer.addPass(fishEyeEffectpass);
   }
-  const gridEffectpass = new ShaderPass(gridEffectObj)
-  composer.addPass(gridEffectpass);
 
-  return composer;
-};
+  /**
+   * initialize grid effect
+   * @param {Object} size
+   */
+  initGridEffect(size) {
+    const gridEffectObj = {
+      name: 'grid',
+      uniforms: {
+        'tDiffuse': { value: null },
+        "uResolution": { value: new THREE.Vector2(size.width * size.dpr, size.height * size.dpr) },
+        "uMouse": { value: new THREE.Vector2(-1, -1) },
+      },
+      vertexShader: gridVertex,
+      fragmentShader: gridFragment,
+    }
+    const gridEffectpass = new ShaderPass(gridEffectObj)
+    this.composer.addPass(gridEffectpass);
+  }
 
+  get fisheyeEffect() {
+    return this.composer.passes[1];
+  }
+
+  get gridEffect() {
+    return this.composer.passes[2];
+  }
+
+  render() {
+    this.composer.render();
+  }
+
+  /**
+   * update mouse position of each effect
+   * @param {Object} mousePos
+   */
+  updateMouse(mousePos) {
+    this.fisheyeEffect.uniforms.uMouse.value = mousePos;
+    this.gridEffect.uniforms.uMouse.value = mousePos;
+  }
+
+  /**
+   * on resize
+   */
+  onResize() {
+    const size = getSize();
+    this.composer.setSize(size.width, size.height);
+    this.composer.setPixelRatio(size.dpr);
+    this.fisheyeEffect.uniforms.uResolution.value = new THREE.Vector2(size.width * size.dpr, size.height * size.dpr);
+    this.gridEffect.uniforms.uResolution.value = new THREE.Vector2(size.width * size.dpr, size.height * size.dpr);
+  }
+}

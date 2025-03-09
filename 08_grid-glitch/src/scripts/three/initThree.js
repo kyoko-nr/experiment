@@ -1,7 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { createMeshes } from "./createMeshes";
-import { postprocess } from "./postprocess";
+import { postprocess } from "./temppostprocess";
+import { Environment } from "./Environment";
+import { Postprocess } from "./postprocess";
 
 const SIZE = {
   width: 0,
@@ -16,20 +18,14 @@ let prevTime = 0;
  * @param {HTMLDivElement} app
  */
 export const initThree = (app) => {
-  const { scene, camera, renderer } = createEnvironment();
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
+  const environment = new Environment(app);
 
   const meshes  = createMeshes();
-  scene.add(meshes);
+  environment.addMesh(meshes);
 
-  app.appendChild(renderer.domElement);
+  const postprocess = new Postprocess(environment);
 
   const clock = new THREE.Clock();
-  prevTime = clock.getElapsedTime();
-
-  const composer = postprocess({ renderer, size: SIZE, scene, camera });
 
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
@@ -38,25 +34,22 @@ export const initThree = (app) => {
       mesh.rotation.z = elapsedTime * 0.15;
     });
 
-    mouseSpeed -= (elapsedTime - prevTime) * 0.2;
-    composer.passes[1].uniforms.uMouseSpeed.value = Math.max( mouseSpeed, 0);
-    composer.render();
-
-    prevTime = elapsedTime
+    postprocess.render();
 
     window.requestAnimationFrame(tick);
   };
   tick();
 
   window.addEventListener("resize", () => {
-    onResize(camera, composer, renderer);
+    environment.onResize();
+    postprocess.onResize();
   });
   document.addEventListener("mousemove", (e) => {
-    const mousePos = onMousemove(e);
-    composer.passes[1].uniforms.uMouse.value = mousePos;
-    composer.passes[2].uniforms.uMouse.value = mousePos;
-
-    mouseSpeed = 1;
+    const posNormalized = new THREE.Vector2(
+      (e.clientX / window.innerWidth),
+      (1.0 - (e.clientY / window.innerHeight))
+    );
+    postprocess.updateMouse(posNormalized);
   });
 };
 
