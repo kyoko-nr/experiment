@@ -1,7 +1,7 @@
 uniform sampler2D tDiffuse;
 uniform vec2 uResolution;
 uniform vec2 uMouse;
-uniform float uMouseSpeed;
+uniform float uProgress;
 
 float gridScale = 80.0;
 float randomMagnitude = 0.1;
@@ -24,6 +24,7 @@ void main() {
   mouseInfluence += random(gridCoord.xy) * randomMagnitude;
   mouseInfluence = 1.0 - mouseInfluence;
   mouseInfluence = clamp(mouseInfluence * 4.0, 0.0, 1.0);
+  mouseInfluence *= uProgress;
 
   vec4 texel = texture2D(tDiffuse, st);
   vec4 gridTexel = texture2D(tDiffuse, gridCoord);
