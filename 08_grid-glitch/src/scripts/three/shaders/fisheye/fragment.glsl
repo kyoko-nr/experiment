@@ -1,7 +1,7 @@
 uniform sampler2D tDiffuse;
 uniform vec2 uResolution;
 uniform vec2 uMouse;
-uniform float uMouseSpeed;
+uniform float uProgress;
 
 varying vec2 vUv;
 
@@ -16,7 +16,7 @@ void main() {
   vec2 diff = st - mouse;
   float dist = distance(st, mouse);
   vec2 scaledUv = vUv;
-  radius *= uMouseSpeed;
+  radius *= uProgress;
   if(dist < radius) {
     float scale = (1.0 - cos(dist / radius * PI * 0.5));
     scaledUv = (mouse + normalize(diff) * radius * scale);

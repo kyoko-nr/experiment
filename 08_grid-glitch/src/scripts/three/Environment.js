@@ -36,7 +36,7 @@ export class Environment {
 
   /**
    * Add mesh to scene
-   * @param {THREE.Mesh} mesh
+   * @param {THREE.Group} mesh
    */
   addMesh(mesh) {
     this.scene.add(mesh);

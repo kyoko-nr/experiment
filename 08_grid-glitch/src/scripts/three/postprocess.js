@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import gsap from 'gsap';
 import { Environment } from "./Environment";
 import { getSize } from "../utils/getSize";
 import fishEyeVertex from './shaders/fisheye/vertex.glsl?raw';
@@ -26,6 +27,8 @@ export class Postprocess {
 
     this.initFisheyeEffect(size);
     this.initGridEffect(size);
+
+    this.animating = false;
   }
 
   /**
@@ -39,6 +42,7 @@ export class Postprocess {
         'tDiffuse': { value: null },
         "uResolution": { value: new THREE.Vector2(size.width * size.dpr, size.height * size.dpr) },
         "uMouse": { value: new THREE.Vector2(-1, -1) },
+        "uProgress": new THREE.Uniform(0),
       },
       vertexShader: fishEyeVertex,
       fragmentShader: fishEyeFragment,
@@ -58,6 +62,7 @@ export class Postprocess {
         'tDiffuse': { value: null },
         "uResolution": { value: new THREE.Vector2(size.width * size.dpr, size.height * size.dpr) },
         "uMouse": { value: new THREE.Vector2(-1, -1) },
+        "uProgress": new THREE.Uniform(0),
       },
       vertexShader: gridVertex,
       fragmentShader: gridFragment,
@@ -85,6 +90,30 @@ export class Postprocess {
   updateMouse(mousePos) {
     this.fisheyeEffect.uniforms.uMouse.value = mousePos;
     this.gridEffect.uniforms.uMouse.value = mousePos;
+  }
+
+  updateProgress() {
+    if(this.animating) {
+      return;
+    }
+    this.animating = true;
+    gsap.fromTo(this.fisheyeEffect.uniforms.uProgress, {
+      value: 1,
+    }, {
+      value: 0,
+      duration: 2,
+      ease: 'power4.out',
+      onComplete: () => {
+        this.animating = false;
+      }
+    });
+    gsap.fromTo(this.gridEffect.uniforms.uProgress, {
+      value: 1,
+    }, {
+      value: 0,
+      duration: 2,
+      ease: 'power4.out',
+    });
   }
 
   /**
