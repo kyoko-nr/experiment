@@ -5,6 +5,7 @@ import gui from "../gui/addGui";
 
 const rendererParams = {
   clearColor: "#d8d3b0",
+  cameraPos: new THREE.Vector3(0, 0, 5),
 };
 
 /**
@@ -26,7 +27,7 @@ export class Environment {
       0.1,
       10
     );
-    this.camera.position.set(0, 0, 5);
+    this.camera.position.copy(rendererParams.cameraPos);
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(size.width, size.height);
@@ -40,7 +41,7 @@ export class Environment {
     app.appendChild(this.renderer.domElement);
 
     // ----------GUI----------
-    addGui(this.renderer);
+    this.addGui();
   }
 
   /**
@@ -69,12 +70,14 @@ export class Environment {
     this.renderer.setPixelRatio(size.dpr);
     this.renderer.setViewport(0, 0, size.width, size.height);
   }
+
+  addGui = () => {
+    gui.addColor(rendererParams, "clearColor")
+      .onChange(() => {
+        this.renderer.setClearColor(rendererParams.clearColor);
+      });
+    gui.add(rendererParams.cameraPos, "z").min(-10).max(10).step(0.01)
+      .onChange(() => this.camera.position.copy(rendererParams.cameraPos));
+  }
 }
 
-const addGui = (renderer) => {
-  gui.addColor(rendererParams, "clearColor")
-    .onChange(() => {
-      renderer.setClearColor(rendererParams.clearColor);
-    });
-
-}
