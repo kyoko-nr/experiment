@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Environment } from "./Environment";
+import { Models } from "./Models";
 
 /**
  * Initiate Three.js
@@ -8,12 +9,9 @@ import { Environment } from "./Environment";
 export const initThree = (app) => {
   const environment = new Environment(app);
 
-  const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-  );
+  const models = new Models();
 
-  environment.addMesh(cube);
+  environment.addMesh(models.group);
 
   const tick = () => {
     environment.render();

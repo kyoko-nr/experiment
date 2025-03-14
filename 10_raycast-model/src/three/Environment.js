@@ -80,4 +80,3 @@ export class Environment {
       .onChange(() => this.camera.position.copy(rendererParams.cameraPos));
   }
 }
-
