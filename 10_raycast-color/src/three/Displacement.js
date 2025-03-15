@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { getSize } from "../utils/getSize.js";
 import { normalizePos, deNormalizePos } from "../utils/normalizePos.js";
 import { currentFullscreen } from "../utils/calcFullscreenSize.js";
-import glowImage from "../assets/glow.png";
+import { Cursor } from "./Cursor.js";
 
 const canvasScale = 0.25;
 
@@ -27,6 +27,8 @@ export class Displacement {
     this.canvas.classList.add("displacement");
     this.canvas.width = size.width * canvasScale;
     this.canvas.height = size.height * canvasScale;
+
+    this.texture = new THREE.CanvasTexture(this.canvas);
 
     this.ctx = this.canvas.getContext("2d");
     this.ctx.fillStyle = "#000";
@@ -62,11 +64,10 @@ export class Displacement {
   }
 
   /**
-   * Update canvas and texture based on cursor position
+   * animate canvas and texture based on cursor position
    * @param {THREE.Camera} camera
    */
-  update(camera) {
-
+  animate(camera) {
     // update raycaster
     this.raycaster.setFromCamera(this.screenCursor.current, camera);
     const intersects = this.raycaster.intersectObject(this.plane);
@@ -85,6 +86,8 @@ export class Displacement {
       this.canvasCursor.imageSize,
       this.canvasCursor.imageSize,
     )
+
+    this.texture.needsUpdate = true;
   }
 
   /**
@@ -99,38 +102,5 @@ export class Displacement {
     this.plane.matrixWorldNeedsUpdate = true;
     const {width, height} = currentFullscreen(camera);
     this.plane.scale.set(width, height, 1);
-  }
-}
-
-/**
- * Cursor class
- */
-class Cursor  {
-  constructor() {
-    this.current = new THREE.Vector2(9999, 9999);
-    this.previous = new THREE.Vector2(9999, 9999);
-    this.image = new Image();
-    this.image.src = glowImage;
-    this.imageSize = 50;
-  }
-
-  get delta() {
-    return this.current.distanceTo(this.previous);
-  }
-
-  get imagePos() {
-    return new THREE.Vector2(
-      this.current.x - this.imageSize / 2,
-      this.current.y - this.imageSize / 2
-    );
-  }
-
-  /**
-   * update cursor position
-   * @param {THREE.Vector2} pos
-   */
-  update(pos) {
-    this.previous.copy(this.current);
-    this.current.copy(pos);
   }
 }

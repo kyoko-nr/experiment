@@ -13,15 +13,15 @@ export const initThree = (app, canvas) => {
   updateSizeOnResize();
   const environment = new Environment(app);
 
-  const models = new Models();
+  const models = new Models(canvas, environment.camera);
   environment.addMesh(models.group);
 
-  const displacement = new Displacement(canvas, environment.camera);
-  environment.addMesh(displacement.plane);
+  const clock = new THREE.Clock();
 
   const tick = () => {
-    displacement.update(environment.camera)
+    const elapsedTime = clock.getElapsedTime();
     environment.render();
+    models.animate(elapsedTime, environment.camera);
 
     window.requestAnimationFrame(tick);
   };
