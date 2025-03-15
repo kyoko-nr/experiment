@@ -24,7 +24,6 @@ export class Displacement {
   setupCanvas(canvas) {
     const size = getSize();
     this.canvas = canvas;
-    this.canvas.classList.add("displacement");
     this.canvas.width = size.width * canvasScale;
     this.canvas.height = size.height * canvasScale;
 

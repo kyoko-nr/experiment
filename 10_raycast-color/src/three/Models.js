@@ -1,7 +1,4 @@
 import * as THREE from "three";
-import { Displacement } from "./Displacement";
-// import meltVertexShader from "./shaders/melt/vertex.glsl";
-// import meltFragmentShader from "./shaders/melt/fragment.glsl?raw";
 
 /**
  * Models
@@ -9,18 +6,10 @@ import { Displacement } from "./Displacement";
 export class Models {
   /**
    * Constructor
-   * @param {HTMLCanvasElement} canvas
-   * @param {THREE.Camera} camera
    */
-  constructor(canvas, camera) {
-    this.displacement = new Displacement(canvas, camera);
+  constructor() {
 
-    const material = new THREE.ShaderMaterial({
-      wireframe: true,
-      uniforms: {
-        uTexture: new THREE.Uniform(this.displacement.texture),
-      }
-    });
+    const material = new THREE.ShaderMaterial();
 
     // Torus knot
     this.torusKnot = new THREE.Mesh(
@@ -48,7 +37,6 @@ export class Models {
     group.add(this.torusKnot);
     group.add(this.donut);
     group.add(this.cube);
-    group.add(this.displacement.plane);
     return group;
   }
 
@@ -64,15 +52,5 @@ export class Models {
     this.torusKnot.rotation.z = elapsedTime * 0.15;
     this.donut.rotation.y = elapsedTime * 0.12;
     this.donut.rotation.z = elapsedTime * 0.14;
-
-    this.displacement.animate(camera)
-  }
-
-  /**
-   * on resize
-   * @param {THIREE.Camera} camera 
-   */
-  onResize(camera) {
-    this.displacement.onResize(camera);
   }
 }
