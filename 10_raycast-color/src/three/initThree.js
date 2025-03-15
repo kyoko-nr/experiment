@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Environment } from "./Environment";
 import { Models } from "./Models";
-import { Displacement } from "./Displacement";
+import { Lights } from "./Lights";
 import {updateSizeOnResize} from "../utils/getSize";
 
 /**
@@ -13,6 +13,9 @@ export const initThree = (app, canvas) => {
   updateSizeOnResize();
   const environment = new Environment(app);
 
+  const lights = new Lights();
+  environment.addMesh(lights.lights);
+
   const models = new Models(canvas, environment.camera);
   environment.addMesh(models.group);
 
@@ -21,7 +24,7 @@ export const initThree = (app, canvas) => {
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
     environment.render();
-    models.animate(elapsedTime, environment.camera);
+    models.animate(elapsedTime);
 
     window.requestAnimationFrame(tick);
   };
@@ -30,6 +33,5 @@ export const initThree = (app, canvas) => {
   window.addEventListener("resize", () => {
     updateSizeOnResize();
     environment.onResize();
-    models.onResize(environment.camera);
   });
 };
