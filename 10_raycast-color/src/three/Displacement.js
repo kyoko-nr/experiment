@@ -96,8 +96,8 @@ export class Displacement {
    */
   onResize(camera) {
     const size = getSize();
-    this.canvas.width = `${size.width * canvasScale}px`;
-    this.canvas.height = `${size.height * canvasScale}px`;
+    this.canvas.width = size.width * canvasScale;
+    this.canvas.height = size.height * canvasScale;
 
     this.plane.matrixWorldNeedsUpdate = true;
     const {width, height} = currentFullscreen(camera);

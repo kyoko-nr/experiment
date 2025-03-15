@@ -67,4 +67,12 @@ export class Models {
 
     this.displacement.animate(camera)
   }
+
+  /**
+   * on resize
+   * @param {THIREE.Camera} camera 
+   */
+  onResize(camera) {
+    this.displacement.onResize(camera);
+  }
 }

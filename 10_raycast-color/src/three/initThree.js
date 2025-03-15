@@ -30,6 +30,6 @@ export const initThree = (app, canvas) => {
   window.addEventListener("resize", () => {
     updateSizeOnResize();
     environment.onResize();
-    displacement.onResize(environment.camera);
+    models.onResize(environment.camera);
   });
 };
