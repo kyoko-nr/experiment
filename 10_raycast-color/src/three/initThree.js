@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Environment } from "./Environment";
 import { Models } from "./Models";
 import { Lights } from "./Lights";
+import { Postprocess } from "./Postprocess";
 import {updateSizeOnResize} from "../utils/getSize";
 
 /**
@@ -19,12 +20,17 @@ export const initThree = (app, canvas) => {
   const models = new Models(canvas, environment.camera);
   environment.addMesh(models.group);
 
+  const postprocess = new Postprocess(environment, canvas);
+
   const clock = new THREE.Clock();
 
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
-    environment.render();
+
     models.animate(elapsedTime);
+    postprocess.animate();
+
+    postprocess.render();
 
     window.requestAnimationFrame(tick);
   };

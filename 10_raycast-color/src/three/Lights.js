@@ -4,11 +4,11 @@ import gui from "../gui/addGui";
 const lightParams = {
   ambientLight: {
     color: new THREE.Color("#ffffff"),
-    intensity: 0.5,
+    intensity: 0.7,
   },
   directionalLight: {
     color: new THREE.Color("#ffffff"),
-    intensity: 0.9,
+    intensity: 1.0,
     position: new THREE.Vector3(10, 10, -3.8),
   },
 }
@@ -20,7 +20,10 @@ export class Lights {
   constructor() {
     this.ambientLight = new THREE.AmbientLight(lightParams.ambientLight.color, lightParams.ambientLight.intensity);
 
-    this.directionalLight = new THREE.DirectionalLight(lightParams.directionalLight.color, lightParams.directionalLight.intensity);
+    this.directionalLight = new THREE.DirectionalLight(
+      lightParams.directionalLight.color,
+      lightParams.directionalLight.intensity
+    );
     this.directionalLight.position.copy(lightParams.directionalLight.position);
     this.dHelper = new THREE.DirectionalLightHelper(this.directionalLight);
 
