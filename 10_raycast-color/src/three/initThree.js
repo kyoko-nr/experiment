@@ -1,17 +1,21 @@
 import * as THREE from "three";
 import { Environment } from "./Environment";
 import { Models } from "./Models";
+import { Displacement } from "./Displacement";
 
 /**
- * Initiate Three.js
+ * Initiate Three.js scene
  * @param {HTMLDivElement} app
+ * @param {HTMLCanvasElement} displacement canvas
  */
-export const initThree = (app) => {
+export const initThree = (app, canvas) => {
   const environment = new Environment(app);
 
   const models = new Models();
 
   environment.addMesh(models.group);
+
+  const displacement = new Displacement(canvas);
 
   const tick = () => {
     environment.render();
@@ -22,6 +26,6 @@ export const initThree = (app) => {
 
   window.addEventListener("resize", () => {
     environment.onResize();
-    postprocess.onResize();
+    displacement.onResize();
   });
 };
