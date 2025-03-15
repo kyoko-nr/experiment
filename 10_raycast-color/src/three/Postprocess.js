@@ -1,8 +1,12 @@
+import * as THREE from "three";
 import { Environment } from "./Environment";
 import { Displacement} from "./Displacement";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { getSize } from "../utils/getSize";
+import vertexShader from "./shaders/vertex.glsl";
+import fragmentShader from "./shaders/fragment.glsl";
 
 /**
  * Post process effect.
@@ -27,6 +31,22 @@ export class Postprocess {
 
     this.displacement = new Displacement(canvas, this.environment.camera);
     this.environment.addMesh(this.displacement.plane);
+
+    this.setupColorEffect();
+  }
+
+  setupColorEffect() {
+    const colorEffectObj = {
+      name: "color",
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        uTexture: new THREE.Uniform(this.displacement.texture),
+        tDiffuse: new THREE.Uniform(null),
+      }
+    }
+    const pass = new ShaderPass(colorEffectObj);
+    this.composer.addPass(pass);
   }
 
   render() {
