@@ -24,16 +24,18 @@ export const initThree = async (app, canvas) => {
   const postprocess = new Postprocess(environment, canvas);
 
   const clock = new THREE.Clock();
+  let prev = clock.getElapsedTime();
 
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
 
-    models.animate(elapsedTime);
+    models.animate(prev - elapsedTime);
     postprocess.animate(elapsedTime);
 
     postprocess.render();
 
     window.requestAnimationFrame(tick);
+    prev = elapsedTime;
   };
   tick();
 

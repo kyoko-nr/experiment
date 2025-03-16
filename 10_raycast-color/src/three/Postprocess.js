@@ -98,12 +98,12 @@ export class Postprocess {
 
   /**
    * animate
-   * @param {Number} delta
+   * @param {Number} elapsedTime
    */
-  animate(delta) {
+  animate(elapsedTime) {
     this.displacement.animate(this.environment.camera);
     this.colorPass.uniforms.uTexture.value = this.displacement.texture;
-    this.colorPass.uniforms.uTime.value = delta;
+    this.colorPass.uniforms.uTime.value = elapsedTime;
   }
 
   onResize() {

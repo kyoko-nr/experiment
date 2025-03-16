@@ -28,7 +28,6 @@ export class Models {
   async loadModel() {
     const rabbit = await modelLoader.loadAsync(rabbitSrc);
     const model = rabbit.scene;
-    model.rotation.y -= Math.PI * 0.5;
     model.scale.set(0.35, 0.35, 0.35);
     return model;
   }
@@ -49,6 +48,7 @@ export class Models {
         copy.children.forEach((child) => child.material = material);
         const offset = i % 2;
         copy.position.set(- 3.5 + i * 1.2, 1.5 - j * 1.8 - offset, 0);
+        copy.rotation.y = Math.PI * 2 * Math.random();
         this.group.add(copy);
       }
     }
@@ -57,11 +57,12 @@ export class Models {
 
   /**
    * Animate models
-   * @param {number} elapsedTime
+   * @param {number} delta
    */
-  animate(elapsedTime) {
+  animate(delta) {
+    // console.log("delta", delta)
     this.group.children.forEach((child) => {
-      child.rotation.y = elapsedTime * 0.2;
+      child.rotation.y -= delta * 0.2;
     });
   }
 
