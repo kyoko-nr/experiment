@@ -28,7 +28,7 @@ export const initThree = (app, canvas) => {
     const elapsedTime = clock.getElapsedTime();
 
     models.animate(elapsedTime);
-    postprocess.animate();
+    postprocess.animate(elapsedTime);
 
     postprocess.render();
 
