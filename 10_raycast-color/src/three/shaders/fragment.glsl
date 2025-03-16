@@ -24,7 +24,8 @@ void main() {
 
   // pointer color
   result = mix(result, color, colorIntensity);
-  // result = vec3(noise);
+
+  // result = color;
 
   gl_FragColor = vec4(result, 1.0);
 

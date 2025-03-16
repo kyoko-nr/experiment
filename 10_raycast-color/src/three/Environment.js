@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import gui from "../gui/addGui";
 
 const rendererParams = {
-  clearColor: "#d8d3b0",
-  cameraPos: new THREE.Vector3(0, 0, 4),
+  clearColor: "#F89CA7",
+  cameraPos: new THREE.Vector3(0, 0, 6),
 };
 
 /**
@@ -22,7 +22,7 @@ export class Environment {
     this.scene = new THREE.Scene();
     // Camera
     this.camera = new THREE.PerspectiveCamera(
-      60,
+      45,
       size.width / size.height,
       0.1,
       10

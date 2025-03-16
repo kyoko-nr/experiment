@@ -9,7 +9,7 @@ const lightParams = {
   directionalLight: {
     color: new THREE.Color("#ffffff"),
     intensity: 1.0,
-    position: new THREE.Vector3(10, 10, -3.8),
+    position: new THREE.Vector3(10, 10, -2.8),
   },
 }
 

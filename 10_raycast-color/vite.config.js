@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     host: true
   },
+  assetsInclude: ['**/*.glb'],
   plugins: [
     glsl()
   ],

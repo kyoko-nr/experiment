@@ -10,7 +10,7 @@ import {updateSizeOnResize} from "../utils/getSize";
  * @param {HTMLDivElement} app
  * @param {HTMLCanvasElement} displacement canvas
  */
-export const initThree = (app, canvas) => {
+export const initThree = async (app, canvas) => {
   updateSizeOnResize();
   const environment = new Environment(app);
 
@@ -18,7 +18,8 @@ export const initThree = (app, canvas) => {
   environment.addMesh(lights.lights);
 
   const models = new Models(canvas, environment.camera);
-  environment.addMesh(models.group);
+  const rabbit = await models.getModel();
+  environment.addMesh(rabbit);
 
   const postprocess = new Postprocess(environment, canvas);
 

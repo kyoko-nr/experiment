@@ -1,20 +1,23 @@
 import * as THREE from "three";
+import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import gui from "../gui/addGui";
 import toonTextureSrc from "../assets/toon.png";
+import rabbitSrc from "../assets/rabbit.glb";
 
 const modelParams = {
-  torusKnot: {
-    color: new THREE.Color("#b919e6")
+  model1: {
+    color: new THREE.Color("#C9FDBF")
   },
-  donut: {
-    color: new THREE.Color("#ff00dd")
+  model2: {
+    color: new THREE.Color("#68E3EC")
   },
-  cube: {
-    color: new THREE.Color("#ffd500")
+  model3: {
+    color: new THREE.Color("#FFEC62")
   },
 }
 
-const loader = new THREE.TextureLoader();
+const TextureLoader = new THREE.TextureLoader();
+const modelLoader = new GLTFLoader();
 
 /**
  * Models
@@ -24,38 +27,37 @@ export class Models {
    * Constructor
    */
   constructor() {
-    const toonTexture = loader.load(toonTextureSrc);
-
-    // Torus knot
-    this.torusKnot = new THREE.Mesh(
-      new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
-      new THREE.MeshToonMaterial({color: modelParams.torusKnot.color, gradientMap: toonTexture})
-    );
-    this.torusKnot.position.x = 3
-
-    // Donut
-    this.donut = new THREE.Mesh(
-      new THREE.TorusGeometry(0.65, 0.3, 32, 32),
-      new THREE.MeshToonMaterial({color: modelParams.donut.color, gradientMap: toonTexture})
-    );
-    this.donut.position.x = - 3;
-
-    // Cube
-    this.cube = new THREE.Mesh(
-      new THREE.BoxGeometry(1.5, 1.5, 1.5),
-      new THREE.MeshToonMaterial({color: modelParams.cube.color, gradientMap: toonTexture})
-    );
-
     // ----------GUI----------
     this.addGui();
   }
 
-  get group() {
-    const group = new THREE.Group();
-    group.add(this.torusKnot);
-    group.add(this.donut);
-    group.add(this.cube);
-    return group;
+  async loadModel() {
+    const rabbit = await modelLoader.loadAsync(rabbitSrc);
+    const model = rabbit.scene;
+    model.rotation.y -= Math.PI * 0.5;
+    model.scale.set(0.35, 0.35, 0.35);
+    return model;
+  }
+
+  async getModel() {
+    const toonTexture = TextureLoader.load(toonTextureSrc);
+    const xNum = 6;
+    const yNum = 3;
+    this.group = new THREE.Group();
+
+    const model = await this.loadModel();
+    for(let i = 0; i < xNum; i++) {
+      for(let j = 0; j < yNum; j++) {
+        const coloridx = (i + j) % 3;
+        const color = new THREE.Color(modelParams[`model${coloridx + 1}`].color);
+        const material = new THREE.MeshToonMaterial({gradientMap: toonTexture, color});
+        const copy = model.clone();
+        copy.children.forEach((child) => child.material = material);
+        copy.position.set(- 4 + i * 1.5, 1.5 - j * 2, 0);
+        this.group.add(copy);
+      }
+    }
+    return this.group;
   }
 
   /**
@@ -63,12 +65,9 @@ export class Models {
    * @param {number} elapsedTime
    */
   animate(elapsedTime) {
-    this.cube.rotation.y = elapsedTime * 0.18;
-    this.cube.rotation.z = elapsedTime * 0.19;
-    this.torusKnot.rotation.y = elapsedTime * 0.1;
-    this.torusKnot.rotation.z = elapsedTime * 0.15;
-    this.donut.rotation.y = elapsedTime * 0.2;
-    this.donut.rotation.z = elapsedTime * 0.15;
+    this.group.children.forEach((child) => {
+      child.rotation.y = elapsedTime * 0.2;
+    });
   }
 
   /**
@@ -76,20 +75,29 @@ export class Models {
    */
   addGui() {
     const folder = gui.addFolder("Models");
-    folder.addColor(modelParams.torusKnot, "color")
-      .name("TorusKnot color")
+    folder.addColor(modelParams.model1, "color")
+      .name("color1")
       .onChange(() => {
-        this.torusKnot.material.color.set(modelParams.torusKnot.color);
+        for(let i = 0; i < this.group.children.length; i += 3) {
+          const child = this.group.children[i];
+          child.children.forEach((c) => c.material.color.set(modelParams.model1.color));
+        }
       });
-    folder.addColor(modelParams.donut, "color")
-      .name("Donut color")
+    folder.addColor(modelParams.model2, "color")
+      .name("color2")
       .onChange(() => {
-        this.donut.material.color.set(modelParams.donut.color);
+        for(let i = 1; i < this.group.children.length; i += 3) {
+          const child = this.group.children[i];
+          child.children.forEach((c) => c.material.color.set(modelParams.model2.color));
+        }
       });
-    folder.addColor(modelParams.cube, "color")
-      .name("Cube color")
+    folder.addColor(modelParams.model3, "color")
+      .name("color3")
       .onChange(() => {
-        this.cube.material.color.set(modelParams.cube.color);
+        for(let i = 2; i < this.group.children.length; i += 3) {
+          const child = this.group.children[i];
+          child.children.forEach((c) => c.material.color.set(modelParams.model3.color));
+        }
       });
   }
 }
