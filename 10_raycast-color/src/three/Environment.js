@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import gui from "../gui/addGui";
 
 const rendererParams = {
-  clearColor: "#F89CA7",
+  clearColor: "#f89bc3",
   cameraPos: new THREE.Vector3(0, 0, 6),
 };
 

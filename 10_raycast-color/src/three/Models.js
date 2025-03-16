@@ -5,15 +5,10 @@ import toonTextureSrc from "../assets/toon.png";
 import rabbitSrc from "../assets/rabbit.glb";
 
 const modelParams = {
-  model1: {
-    color: new THREE.Color("#C9FDBF")
-  },
-  model2: {
-    color: new THREE.Color("#68E3EC")
-  },
-  model3: {
-    color: new THREE.Color("#FFEC62")
-  },
+  // model1: {color: "#fd7aff"},
+  model1: {color: "#ff4dde"},
+  model2: {color: "#fb609e"},
+  model3: {color: "#ff5c74"},
 }
 
 const TextureLoader = new THREE.TextureLoader();
@@ -41,8 +36,8 @@ export class Models {
 
   async getModel() {
     const toonTexture = TextureLoader.load(toonTextureSrc);
-    const xNum = 6;
-    const yNum = 3;
+    const xNum = 7;
+    const yNum = 4;
     this.group = new THREE.Group();
 
     const model = await this.loadModel();
@@ -53,7 +48,8 @@ export class Models {
         const material = new THREE.MeshToonMaterial({gradientMap: toonTexture, color});
         const copy = model.clone();
         copy.children.forEach((child) => child.material = material);
-        copy.position.set(- 4 + i * 1.5, 1.5 - j * 2, 0);
+        const offset = i % 2;
+        copy.position.set(- 4 + i * 1.2, 1.5 - j * 1.8 - offset, 0);
         this.group.add(copy);
       }
     }
@@ -99,5 +95,13 @@ export class Models {
           child.children.forEach((c) => c.material.color.set(modelParams.model3.color));
         }
       });
+    // folder.addColor(modelParams.model4, "color")
+    //   .name("color4")
+    //   .onChange(() => {
+    //     for(let i = 2; i < this.group.children.length; i += 4) {
+    //       const child = this.group.children[i];
+    //       child.children.forEach((c) => c.material.color.set(modelParams.model4.color));
+    //     }
+    //   });
   }
 }

@@ -17,7 +17,7 @@ export const initThree = async (app, canvas) => {
   const lights = new Lights();
   environment.addMesh(lights.lights);
 
-  const models = new Models(canvas, environment.camera);
+  const models = new Models();
   const rabbit = await models.getModel();
   environment.addMesh(rabbit);
 
