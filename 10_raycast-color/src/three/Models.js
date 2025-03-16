@@ -49,7 +49,7 @@ export class Models {
         const copy = model.clone();
         copy.children.forEach((child) => child.material = material);
         const offset = i % 2;
-        copy.position.set(- 4 + i * 1.2, 1.5 - j * 1.8 - offset, 0);
+        copy.position.set(- 3.5 + i * 1.2, 1.5 - j * 1.8 - offset, 0);
         this.group.add(copy);
       }
     }
