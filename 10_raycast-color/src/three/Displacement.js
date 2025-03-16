@@ -38,7 +38,7 @@ export class Displacement {
 
   /**
    * setup interactive plane
-   * @param {THREE.Camera} camera 
+   * @param {THREE.Camera} camera
    */
   setupInteractivePlane(camera) {
 

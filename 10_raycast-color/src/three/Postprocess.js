@@ -49,12 +49,17 @@ export class Postprocess {
     this.composer.addPass(pass);
   }
 
+  get colorPass() {
+    return this.composer.passes[1];
+  }
+
   render() {
     this.composer.render();
   }
 
   animate() {
     this.displacement.animate(this.environment.camera);
+    this.colorPass.uniforms.uTexture.value = this.displacement.texture;
   }
 
   onResize() {

@@ -4,7 +4,7 @@ import toonTextureSrc from "../assets/toon.png";
 
 const modelParams = {
   torusKnot: {
-    color: new THREE.Color("#5df4db")
+    color: new THREE.Color("#b919e6")
   },
   donut: {
     color: new THREE.Color("#ff00dd")
