@@ -7,8 +7,11 @@ varying vec2 vUv;
 
 void main() {
   vec2 newUv = vUv;
-  newUv = vec2((newUv.x + (cos(uTime * 0.1)) * 0.5), (newUv.y + (sin( uTime * 0.15)) * 0.5));
+  float sinval = (1.0 + sin(uTime)) * 0.5 + 0.25;
+  newUv = vec2((newUv.x + (cos(uTime * 0.1)) * 0.2), (newUv.y + (1.0 - sin( uTime * 0.15))) * 0.2);
   float noise = texture2D(uNoise, newUv).r;
+  noise = pow(noise, 2.0);
+  noise *= sinval;
   float colorIntensity = texture2D(uTexture, vUv).r;
 
   vec3 result = vec3(0.0);
@@ -20,6 +23,7 @@ void main() {
 
   // pointer color
   result = mix(result, color, colorIntensity);
+  // result = vec3(noise);
 
   gl_FragColor = vec4(result, 1.0);
 

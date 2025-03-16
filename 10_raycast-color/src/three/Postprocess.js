@@ -13,6 +13,7 @@ import noise2Src from "../assets/noise_2.png";
 import noise3Src from "../assets/noise_3.png";
 import noise4Src from "../assets/noise_4.png";
 import noise5Src from "../assets/noise_5.png";
+import noise6Src from "../assets/noise_6.png";
 
 const loader = new THREE.TextureLoader();
 
@@ -31,8 +32,11 @@ noise4.wrapT = THREE.RepeatWrapping;
 const noise5 = loader.load(noise5Src);
 noise5.wrapS = THREE.RepeatWrapping;
 noise5.wrapT = THREE.RepeatWrapping;
+const noise6 = loader.load(noise6Src);
+noise6.wrapS = THREE.RepeatWrapping;
+noise6.wrapT = THREE.RepeatWrapping;
 
-const Noises = {"noise1": noise1, "noise2": noise2, "noise3": noise3, "noise4": noise4, "noise5": noise5}
+const Noises = {"noise1": noise1, "noise2": noise2, "noise3": noise3, "noise4": noise4, "noise5": noise5, "noise6": noise6};
 
 const postprocessParams = {
   noise: noise4,
