@@ -5,10 +5,9 @@ import toonTextureSrc from "../assets/toon.png";
 import rabbitSrc from "../assets/rabbit.glb";
 
 const modelParams = {
-  // model1: {color: "#fd7aff"},
-  model1: {color: "#ff4dde"},
-  model2: {color: "#fb609e"},
-  model3: {color: "#ff5c74"},
+  model1: {color: "#ffc7ea"},
+  model2: {color: "#ff94bf"},
+  model3: {color: "#ffadba"},
 }
 
 const TextureLoader = new THREE.TextureLoader();

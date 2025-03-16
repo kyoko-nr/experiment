@@ -3,8 +3,13 @@ import { getSize } from "../utils/getSize.js";
 import { normalizePos, deNormalizePos } from "../utils/normalizePos.js";
 import { currentFullscreen } from "../utils/calcFullscreenSize.js";
 import { Cursor } from "./Cursor.js";
+import gui from "../gui/addGui.js";
 
 const canvasScale = 0.25;
+
+const canvasParams = {
+  visible: true,
+}
 
 /**
  * Displacement class
@@ -19,6 +24,9 @@ export class Displacement {
     this.setupCanvas(canvas);
     this.setupInteractivePlane(camera);
     this.setupPointerMove();
+
+    // ----------GUI----------
+    this.addGui();
   }
 
   setupCanvas(canvas) {
@@ -26,6 +34,7 @@ export class Displacement {
     this.canvas = canvas;
     this.canvas.width = size.width * canvasScale;
     this.canvas.height = size.height * canvasScale;
+    this.canvas.style.visibility = canvasParams.visible ? "visible" : "hidden";
 
     this.texture = new THREE.CanvasTexture(this.canvas);
 
@@ -110,5 +119,11 @@ export class Displacement {
     this.plane.matrixWorldNeedsUpdate = true;
     const {width, height} = currentFullscreen(camera);
     this.plane.scale.set(width, height, 1);
+  }
+
+  addGui() {
+    const folder = gui.addFolder("Dispacement canvas");
+    folder.add(canvasParams, "visible")
+      .onChange((value) => this.canvas.style.visibility = value ? "visible" : "hidden");
   }
 }

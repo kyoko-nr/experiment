@@ -19,7 +19,7 @@ void main() {
 
   // noise color
   vec3 color = texture2D(tDiffuse, vUv).rgb;
-  vec3 bw = vec3(color.r + color.b) * 0.5;
+  vec3 bw = vec3(color.r);
   result = mix(bw, color, noise);
 
   // pointer color

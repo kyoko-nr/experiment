@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import gui from "../gui/addGui";
 
 const rendererParams = {
-  clearColor: "#f89bc3",
+  clearColor: "#f9c8d0",
   cameraPos: new THREE.Vector3(0, 0, 6),
 };
 
@@ -35,8 +35,8 @@ export class Environment {
     this.renderer.setViewport(0, 0, size.width, size.height);
     this.renderer.setClearColor(rendererParams.clearColor);
     // Controls
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls.enableDamping = true;
 
     app.appendChild(this.renderer.domElement);
 
