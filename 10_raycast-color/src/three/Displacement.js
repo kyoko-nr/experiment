@@ -44,8 +44,9 @@ export class Displacement {
 
     this.plane = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1),
-      new THREE.MeshBasicMaterial({wireframe: true}),
+      new THREE.MeshBasicMaterial(),
     )
+    this.plane.visible = false;
     const {width, height} = currentFullscreen(camera);
     this.plane.scale.set(width, height, 1);
 

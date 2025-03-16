@@ -25,7 +25,6 @@ export class Lights {
       lightParams.directionalLight.intensity
     );
     this.directionalLight.position.copy(lightParams.directionalLight.position);
-    this.dHelper = new THREE.DirectionalLightHelper(this.directionalLight);
 
     // ----------GUI----------
     this.addGui();
@@ -35,18 +34,11 @@ export class Lights {
     const group = new THREE.Group();
     group.add(this.ambientLight);
     group.add(this.directionalLight);
-    group.add(this.dHelper);
     return group;
   }
 
   addGui() {
     const folder = gui.addFolder("Lights");
-    folder.add(this.ambientLight, "intensity").min(0).max(1)
-      .name("Ambient Light Intensity")
-      .onChange(value => this.ambientLight.intensity = value);
-    folder.addColor(this.ambientLight, "color")
-      .name("Ambient Light Color")
-      .onChange(value => this.ambientLight.color = value);
     folder.add(this.directionalLight, "intensity").min(0).max(1)
       .name("Directional Light Intensity")
       .onChange(value => this.directionalLight.intensity = value);
