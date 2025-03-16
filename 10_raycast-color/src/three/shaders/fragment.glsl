@@ -13,6 +13,7 @@ void main() {
   noise = pow(noise, 2.0);
   noise *= sinval;
   float colorIntensity = texture2D(uTexture, vUv).r;
+  colorIntensity = smoothstep(0.1, 0.9, colorIntensity);
 
   vec3 result = vec3(0.0);
 

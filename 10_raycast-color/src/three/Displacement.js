@@ -76,9 +76,17 @@ export class Displacement {
       const pos = deNormalizePos(uv, this.canvas.width, this.canvas.height)
       this.canvasCursor.update(pos);
     }
+
+    // Fill rect
+    this.ctx.globalCompositeOperation = "source-over";
+    this.ctx.globalAlpha = 0.01;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // draw cursor image
+    const dist = this.canvasCursor.delta;
+    const alpha = Math.min(dist * 0.1, 1);
+    this.ctx.globalCompositeOperation = "lighten";
+    this.ctx.globalAlpha = alpha;
     this.ctx.drawImage(
       this.canvasCursor.image,
       this.canvasCursor.imagePos.x,
