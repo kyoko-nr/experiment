@@ -46,11 +46,17 @@ const init = () => {
   const material = new THREE.ShaderMaterial({
     uniforms: {
       time: { value: 0.0 },
-      mouse: { value: new THREE.Vector2() },
+      mouse: { value: new THREE.Vector3() },
+      mouseRadius: { value: 1.0 },
+      returnSpeed: { value: 2.0 },
+      interaction: { value: 0.0 },
     },
     vertexShader: `
         uniform float time;
-        uniform vec2 mouse;
+        uniform vec3 mouse;
+        uniform float mouseRadius;
+        uniform float returnSpeed;
+        uniform float interaction;
 
         attribute vec3 initialPosition;
 
@@ -67,6 +73,15 @@ const init = () => {
                 pos.x += sin(pos.y * 3.0 + time * 2.0) * 0.2;
                 pos.y += cos(pos.z * 3.0 + time * 1.5) * 0.2;
                 pos.z += sin(pos.x * 3.0 + time * 2.5) * 0.2;
+            }
+
+            // Mouse interaction
+            float dist = distance(pos, mouse);
+            if (dist < mouseRadius && interaction > 0.0) {
+                vec3 direction = normalize(pos - mouse);
+                pos += direction * (mouseRadius - dist);
+            } else {
+                pos = mix(pos, initialPosition, returnSpeed * (dist/10.0) * clamp(time-1.0, 0.0, 1.0)); // Return over time
             }
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos * 2.0, 1.0);
@@ -89,11 +104,27 @@ const init = () => {
   scene.add(particles);
 
   // Mouse interaction
-  const mouse = new THREE.Vector2();
+  const mouse = new THREE.Vector3();
+  const raycaster = new THREE.Raycaster();
+  let mouseIsInteracting = false;
+
   window.addEventListener("mousemove", (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    const mouseNormalized = new THREE.Vector2();
+    mouseNormalized.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseNormalized.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouseNormalized, camera);
+    const intersects = raycaster.intersectObjects([particles]);
+
+    if (intersects.length > 0) {
+      mouse.copy(intersects[0].point);
+      mouseIsInteracting = true;
+    } else {
+      mouseIsInteracting = false;
+    }
+
     material.uniforms.mouse.value.copy(mouse);
+    material.uniforms.interaction.value = mouseIsInteracting ? 1.0 : 0.0;
   });
 
   // Animation loop
