@@ -62,17 +62,19 @@ const init = () => {
 
         void main() {
             vec3 pos = initialPosition;
+            float loopTime = mod(time, 3.0);
 
-            if (time < 1.0) { // Sphere
-                pos = initialPosition; // Using the sphere geometry positions
-            } else if (time < 2.0) { // Sine wave
-                float wave = sin(pos.x * 5.0 + time * 5.0);
-                pos.y += wave * 0.5 + (sin(pos.z * 5.0 + time * 3.0) * .2);
-                pos.z += (cos(pos.x * 7.0 + time * 4.0) * .2);
+            if (loopTime < 1.0) { // Sphere
+                float pulse = sin(time * 2.0) * 0.1; // ⭐️ Pulsating effect
+                pos = initialPosition * (1.0 + pulse); // ⭐️ Pulsating effect
+            } else if (loopTime < 2.0) { // Sine wave
+                float wave = sin(pos.x * 5.0 + loopTime * 5.0); // ⭐️ Use loopTime
+                pos.y += wave * 0.5 + (sin(pos.z * 5.0 + loopTime * 3.0) * .2); // ⭐️ Use loopTime
+                pos.z += (cos(pos.x * 7.0 + loopTime * 4.0) * .2); // ⭐️ Use loopTime
             } else { // Cloud
-                pos.x += sin(pos.y * 3.0 + time * 2.0) * 0.2;
-                pos.y += cos(pos.z * 3.0 + time * 1.5) * 0.2;
-                pos.z += sin(pos.x * 3.0 + time * 2.5) * 0.2;
+                pos.x += sin(pos.y * 3.0 + loopTime * 2.0) * 0.2; // ⭐️ Use loopTime
+                pos.y += cos(pos.z * 3.0 + loopTime * 1.5) * 0.2; // ⭐️ Use loopTime
+                pos.z += sin(pos.x * 3.0 + loopTime * 2.5) * 0.2; // ⭐️ Use loopTime
             }
 
             // Mouse interaction
@@ -92,7 +94,8 @@ const init = () => {
         uniform float time;
 
         void main() {
-            gl_FragColor = vec4(sin(time * 2.0), cos(time * 3.0), sin(time * 4.0), 1.0);
+            vec3 color = vec3(0.3 + sin(time * 2.0) * 0.2, 0.5 + cos(time * 3.0) * 0.2, 0.8 + sin(time * 4.0) * 0.2);
+            gl_FragColor = vec4(color, 1.0);
         }
     `,
     blending: THREE.AdditiveBlending,
