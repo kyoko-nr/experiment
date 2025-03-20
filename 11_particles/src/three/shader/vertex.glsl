@@ -1,6 +1,7 @@
 uniform float uPointSize;
 uniform vec2 uResolution;
 uniform float uTime;
+uniform float uProgress;
 uniform float uIndex;
 
 // uniform vec3 mouse;
@@ -16,10 +17,13 @@ void main() {
     vec3 pos = position;
     float noiseX = simplexNoise3d(vec3(pos.x));
     float noiseY = simplexNoise3d(vec3(pos.y));
+    // float noiseZ = simplexNoise3d(vec3(pos.z));
     float animX = cos(uTime + noiseX * 10.0);
     float animY = sin(uTime + noiseY * 10.0);
+    // float animZ = sin(uTime + noiseZ);
     pos.x += noiseY * 0.15 + animY * 0.2;
     pos.y += noiseX * 0.15 + animX * 0.2;
+    // pos.z += (sin(pos.x + uTime)) * 0.01;
 
 
 

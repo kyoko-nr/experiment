@@ -121,6 +121,9 @@ export class Particles {
     gui.add(params, "pointSize", 0.01, 5, 0.01).onChange(() => {
       this.material.uniforms.uPointSize.value = params.pointSize;
     });
+    gui.add(params, "minPointSize", 0.01, 1, 0.01).onChange(() => {
+      this.material.uniforms.uPointSize.value = params.pointSize;
+    });
     gui.addColor(params, "pointColor").onChange(() => {
       this.material.uniforms.uPointColor.value.set(params.pointColor);
     });
