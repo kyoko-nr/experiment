@@ -9,7 +9,7 @@ import { getSize } from "../utils/getSize";
 const params = {
   pointSize: 1.8,
   minPointSize: 0.3,
-  pointColor: "#eff25a",
+  pointColor: "#dee137",
   moveIntensity: 0.2,
   minMoveIntensity: 0.03,
 };
