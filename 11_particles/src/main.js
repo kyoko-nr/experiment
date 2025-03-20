@@ -1,3 +1,8 @@
 import { initThree } from "./three/initThree";
 
-document.addEventListener("DOMContentLoaded", initThree);
+const init = () => {
+  const app = document.querySelector("#app");
+  initThree(app);
+};
+
+document.addEventListener("DOMContentLoaded", init);

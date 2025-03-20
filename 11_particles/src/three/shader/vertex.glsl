@@ -19,16 +19,16 @@ void main() {
     // pos += fireflyOffset;
 
     // if (loopTime < 1.0) { // Sphere
-    //     float pulse = sin(time * 2.0) * 0.1; // ⭐️ Pulsating effect
-    //     pos = initialPosition * (1.0 + pulse); // ⭐️ Pulsating effect
+        // float pulse = sin(time * 2.0) * 0.1; // ⭐️ Pulsating effect
+        // pos = initialPosition * (1.0 + pulse); // ⭐️ Pulsating effect
     // } else if (loopTime < 2.0) { // Sine wave
-    //     float wave = sin(pos.x * 5.0 + loopTime * 5.0); // ⭐️ Use loopTime
-    //     pos.y += wave * 0.5 + (sin(pos.z * 5.0 + loopTime * 3.0) * .2); // ⭐️ Use loopTime
-    //     pos.z += (cos(pos.x * 7.0 + loopTime * 4.0) * .2); // ⭐️ Use loopTime
+        // float wave = sin(pos.x * 5.0 + loopTime * 5.0); // ⭐️ Use loopTime
+        // pos.y += wave * 0.5 + (sin(pos.z * 5.0 + loopTime * 3.0) * .2); // ⭐️ Use loopTime
+        // pos.z += (cos(pos.x * 7.0 + loopTime * 4.0) * .2); // ⭐️ Use loopTime
     // } else { // Cloud
-    //     pos.x += sin(pos.y * 3.0 + loopTime * 2.0) * 0.2; // ⭐️ Use loopTime
-    //     pos.y += cos(pos.z * 3.0 + loopTime * 1.5) * 0.2; // ⭐️ Use loopTime
-    //     pos.z += sin(pos.x * 3.0 + loopTime * 2.5) * 0.2; // ⭐️ Use loopTime
+        // pos.x += sin(pos.y * 3.0 + loopTime * 2.0) * 0.2; // ⭐️ Use loopTime
+        // pos.y += cos(pos.z * 3.0 + loopTime * 1.5) * 0.2; // ⭐️ Use loopTime
+        // pos.z += sin(pos.x * 3.0 + loopTime * 2.5) * 0.2; // ⭐️ Use loopTime
     // }
 
     // Mouse interaction
