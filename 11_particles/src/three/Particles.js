@@ -9,10 +9,8 @@ const params = {
   pointSize: 1.8,
   minPointSize: 0.3,
   pointColor: "#eff25a",
-  currentIndex: 0,
-  targetIndex: 1,
-  positions: [],
-  positionProgress: 0,
+  moveIntensity: 0.2,
+  minMoveIntensity: 0.03,
 };
 
 /**
@@ -36,12 +34,12 @@ export class Particles {
     this.geometry = new THREE.BufferGeometry();
     this.geometry.setAttribute(
       "position",
-      new THREE.BufferAttribute(positions[params.currentIndex], 3)
+      new THREE.BufferAttribute(positions[0], 3)
     );
     this.geometry.setAttribute("aRandom", new THREE.BufferAttribute(random, 1));
     this.geometry.setAttribute(
       "aTargetPosition",
-      new THREE.BufferAttribute(positions[params.targetIndex], 3)
+      new THREE.BufferAttribute(positions[1], 3)
     );
 
     const particle = new THREE.Points(this.geometry, this.material);
@@ -85,12 +83,20 @@ export class Particles {
 
   /**
    * Update point size animation
-   * @memberof Particles
+   * @param {number} progress animation progress
    */
   updatePointSizeAnim(progress) {
     const size = (params.pointSize - params.minPointSize) * progress;
     const newSize = params.pointSize - size;
     this.material.uniforms.uPointSize.value = newSize;
+  }
+
+  /**
+   * Update morph animation
+   * @param {Number} progress
+   */
+  updateMorphAnim(progress) {
+    this.material.uniforms.uPositionProgress.value = progress;
   }
 
   addGui() {
@@ -102,9 +108,6 @@ export class Particles {
     });
     gui.addColor(params, "pointColor").onChange(() => {
       this.material.uniforms.uPointColor.value.set(params.pointColor);
-    });
-    gui.add(params, "positionProgress", 0, 1, 0.01).onChange(() => {
-      this.material.uniforms.uPositionProgress.value = params.positionProgress;
     });
   }
 

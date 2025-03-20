@@ -5,8 +5,8 @@ import { updateSizeOnResize } from "../utils/getSize";
 import gui from "../gui/addGui";
 
 const params = {
-  animationIndex: 0,
-  progress: 0,
+  progress1: 0,
+  progress2: 0,
 };
 
 /**
@@ -38,19 +38,30 @@ export const initThree = (app) => {
     particles.onResize();
   });
 
-  const updateAnim = (progress) => {
+  const updateCameraAnim = (progress) => {
     environment.updateCameraAnim(progress);
     particles.updatePointSizeAnim(progress);
+  };
+
+  const updateMorphAnim = (progress) => {
+    particles.updateMorphAnim(progress);
+    particles.updatePointSizeAnim(1 - progress);
   };
 
   const addGui = () => {
     const folder = gui.addFolder("Animation");
     folder
-      .add(params, "progress")
+      .add(params, "progress1")
       .min(0)
       .max(1)
       .step(0.01)
-      .onChange((val) => updateAnim(val));
+      .onChange((val) => updateCameraAnim(val));
+    folder
+      .add(params, "progress2")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .onChange((val) => updateMorphAnim(val));
   };
   addGui();
 };
