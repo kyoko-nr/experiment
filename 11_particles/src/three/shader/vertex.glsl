@@ -24,6 +24,7 @@ void main() {
 
 
 
+
     // vec3 pos = initialPosition;
     // float loopTime = mod(time, 3.0);
 
@@ -58,5 +59,5 @@ void main() {
     // }
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-    gl_PointSize = uPointSize * uResolution.y * 0.05;
+    gl_PointSize = uPointSize * 0.1 * uResolution.y;
 }

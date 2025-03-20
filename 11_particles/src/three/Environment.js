@@ -17,12 +17,12 @@ export class Environment {
     // Scene setup
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
-      75,
+      120,
       size.width / size.height,
       0.1,
       100
     );
-    this.camera.position.z = 5;
+    this.camera.position.z = 2;
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(size.width, size.height);

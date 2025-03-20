@@ -6,7 +6,8 @@ import gui from "../gui/addGui";
 import { getSize } from "../utils/getSize";
 
 const params = {
-  pointSize: 2,
+  pointSize: 1.8,
+  pointColor: "#eff25a",
 };
 
 /**
@@ -80,6 +81,7 @@ export class Particles {
       uniforms: {
         uPointSize: new THREE.Uniform(params.pointSize),
         uResolution: new THREE.Uniform(resolution),
+        uPointColor: new THREE.Uniform(new THREE.Color(params.pointColor)),
         uIndex: new THREE.Uniform(0),
         uTime: new THREE.Uniform(0),
         mouse: { value: new THREE.Vector3() },
@@ -108,5 +110,18 @@ export class Particles {
     gui.add(params, "pointSize", 0.01, 5, 0.01).onChange(() => {
       this.material.uniforms.uPointSize.value = params.pointSize;
     });
+    gui.addColor(params, "pointColor").onChange(() => {
+      this.material.uniforms.uPointColor.value.set(params.pointColor);
+    });
+  }
+
+  onResize() {
+    const size = getSize();
+    const resolution = new THREE.Vector2(
+      size.width * size.dpr,
+      size.height * size.dpr
+    );
+    console.log(resolution);
+    this.material.uniforms.uResolution.value = resolution;
   }
 }

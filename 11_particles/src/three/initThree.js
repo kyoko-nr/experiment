@@ -53,5 +53,6 @@ export const initThree = (app) => {
   window.addEventListener("resize", () => {
     updateSizeOnResize();
     environment.onResize();
+    particles.onResize();
   });
 };
