@@ -1,5 +1,8 @@
+uniform float uPointSize;
+uniform vec2 uResolution;
+uniform float uTime;
+
 uniform float uIndex;
-uniform float time;
 uniform vec3 mouse;
 uniform float mouseRadius;
 uniform float returnSpeed;
@@ -11,7 +14,12 @@ attribute vec3 initialPosition;
 
 void main() {
     vec3 pos = position;
-    pos.z += simplexNoise3d(pos);
+    float noiseX = simplexNoise3d(vec3(pos.x));
+    float noiseY = simplexNoise3d(vec3(pos.y));
+    float animX = cos(uTime + noiseX * 10.0);
+    float animY = sin(uTime + noiseY * 10.0);
+    pos.x += noiseY * 0.15 + animY * 0.2;
+    pos.y += noiseX * 0.15 + animX * 0.2;
 
 
 
@@ -50,5 +58,5 @@ void main() {
     // }
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-    // gl_PointSize = 30.0;
+    gl_PointSize = uPointSize * uResolution.y * 0.05;
 }

@@ -1,10 +1,12 @@
 import * as THREE from "three";
 import vertexShader from "./shader/vertex.glsl";
 import fragmentShader from "./shader/fragment.glsl";
-import { createNoise2D } from "simplex-noise";
+import { geomToParticle } from "../utils/geomToParticle";
+import gui from "../gui/addGui";
+import { getSize } from "../utils/getSize";
 
-const gridParam = {
-  columns: 100,
+const params = {
+  pointSize: 2,
 };
 
 /**
@@ -14,8 +16,9 @@ export class Particles {
   constructor() {
     this.createMaterial();
     const planeGeom = this.createPlaneGeom();
-    const plane = new THREE.Mesh(planeGeom, this.material);
-    // plane.rotation.x = Math.PI * 0.25;
+    // const plane = new THREE.Mesh(planeGeom, this.material);
+    const plane = new THREE.Points(planeGeom, this.material);
+
     this.particles = plane;
 
     // const sphereGeometry = new THREE.SphereGeometry(1, 64, 32);
@@ -47,6 +50,9 @@ export class Particles {
     // );
 
     // this.particles = new THREE.Points(this.geometry, this.material);
+
+    // ----------GUI----------
+    this.addGui();
   }
 
   /**
@@ -55,15 +61,27 @@ export class Particles {
    */
   createPlaneGeom() {
     const planeGeometry = new THREE.PlaneGeometry(5, 5, 20, 20);
-    // planeGeometry.setIndex(null);
-    return planeGeometry;
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute(
+      "position",
+      new THREE.BufferAttribute(geomToParticle(planeGeometry), 3)
+    );
+    planeGeometry.setIndex(null);
+    return geom;
   }
 
   createMaterial() {
+    const size = getSize();
+    const resolution = new THREE.Vector2(
+      size.width * size.dpr,
+      size.height * size.dpr
+    );
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        uIndes: new THREE.Uniform(0),
-        time: { value: 0.0 },
+        uPointSize: new THREE.Uniform(params.pointSize),
+        uResolution: new THREE.Uniform(resolution),
+        uIndex: new THREE.Uniform(0),
+        uTime: new THREE.Uniform(0),
         mouse: { value: new THREE.Vector3() },
         mouseRadius: { value: 1.0 },
         returnSpeed: { value: 2.0 },
@@ -71,9 +89,9 @@ export class Particles {
       },
       vertexShader,
       fragmentShader,
-      // blending: THREE.AdditiveBlending,
-      // depthTest: false,
-      // transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+      transparent: true,
       wireframe: true,
     });
   }
@@ -83,6 +101,12 @@ export class Particles {
    * @param {number} elapsedTime elapsed time
    */
   updateMaterial(elapsedTime) {
-    this.material.uniforms.time.value = elapsedTime;
+    this.material.uniforms.uTime.value = elapsedTime;
+  }
+
+  addGui() {
+    gui.add(params, "pointSize", 0.01, 5, 0.01).onChange(() => {
+      this.material.uniforms.uPointSize.value = params.pointSize;
+    });
   }
 }

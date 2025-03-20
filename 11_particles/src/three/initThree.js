@@ -51,6 +51,7 @@ export const initThree = (app) => {
 
   // Resize handling
   window.addEventListener("resize", () => {
+    updateSizeOnResize();
     environment.onResize();
   });
 };
