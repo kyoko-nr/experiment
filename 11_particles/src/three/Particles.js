@@ -7,6 +7,7 @@ import { getSize } from "../utils/getSize";
 
 const params = {
   pointSize: 1.8,
+  minPointSize: 0.3,
   pointColor: "#eff25a",
 };
 
@@ -82,12 +83,12 @@ export class Particles {
         uPointSize: new THREE.Uniform(params.pointSize),
         uResolution: new THREE.Uniform(resolution),
         uPointColor: new THREE.Uniform(new THREE.Color(params.pointColor)),
-        uIndex: new THREE.Uniform(0),
         uTime: new THREE.Uniform(0),
-        mouse: { value: new THREE.Vector3() },
-        mouseRadius: { value: 1.0 },
-        returnSpeed: { value: 2.0 },
-        interaction: { value: 0.0 },
+        // uIndex: new THREE.Uniform(0),
+        // mouse: { value: new THREE.Vector3() },
+        // mouseRadius: { value: 1.0 },
+        // returnSpeed: { value: 2.0 },
+        // interaction: { value: 0.0 },
       },
       vertexShader,
       fragmentShader,
@@ -106,6 +107,16 @@ export class Particles {
     this.material.uniforms.uTime.value = elapsedTime;
   }
 
+  /**
+   * Update point size animation
+   * @memberof Particles
+   */
+  updatePointSizeAnim(progress) {
+    const size = (params.pointSize - params.minPointSize) * progress;
+    const newSize = params.pointSize - size;
+    this.material.uniforms.uPointSize.value = newSize;
+  }
+
   addGui() {
     gui.add(params, "pointSize", 0.01, 5, 0.01).onChange(() => {
       this.material.uniforms.uPointSize.value = params.pointSize;
@@ -115,6 +126,9 @@ export class Particles {
     });
   }
 
+  /**
+   * Update on resize
+   */
   onResize() {
     const size = getSize();
     const resolution = new THREE.Vector2(

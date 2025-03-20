@@ -1,14 +1,14 @@
 uniform float uPointSize;
 uniform vec2 uResolution;
 uniform float uTime;
-
 uniform float uIndex;
-uniform vec3 mouse;
-uniform float mouseRadius;
-uniform float returnSpeed;
-uniform float interaction;
 
-attribute vec3 initialPosition;
+// uniform vec3 mouse;
+// uniform float mouseRadius;
+// uniform float returnSpeed;
+// uniform float interaction;
+
+// attribute vec3 initialPosition;
 
 #include "./includes/simplexNoise3d.glsl"
 

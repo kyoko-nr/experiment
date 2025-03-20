@@ -5,6 +5,7 @@ import gui from "../gui/addGui";
 
 const params = {
   clearColor: "#d7e3e5",
+  progress: 0,
 };
 
 export class Environment {
@@ -22,7 +23,11 @@ export class Environment {
       0.1,
       100
     );
-    this.camera.position.z = 2;
+    this.cameraSpherical = new THREE.Spherical(2, Math.PI * 0.5, 0);
+    this.cameraDirection = new THREE.Vector3();
+    this.cameraDirection.setFromSpherical(this.cameraSpherical);
+    this.camera.position.copy(this.cameraDirection);
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(size.width, size.height);
@@ -32,7 +37,7 @@ export class Environment {
 
     app.appendChild(this.renderer.domElement);
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     // ----------GUI----------
     this.addGui();
@@ -66,11 +71,24 @@ export class Environment {
   }
 
   /**
+   * Update camera animation
+   * @param {Number} progress 0 ~ 1
+   */
+  updateCameraAnim(progress) {
+    const phi = (Math.PI - Math.PI * 0.5) * progress + Math.PI * 0.5;
+    const theta = -Math.PI * 0.25 * progress;
+    this.cameraSpherical.set(2, phi, theta);
+    this.cameraDirection.setFromSpherical(this.cameraSpherical);
+    this.camera.position.copy(this.cameraDirection);
+    this.camera.lookAt(0, 0, 0);
+  }
+
+  /**
    * Add GUI
    */
-  addGui = () => {
+  addGui() {
     gui.addColor(params, "clearColor").onChange(() => {
       this.renderer.setClearColor(params.clearColor);
     });
-  };
+  }
 }
