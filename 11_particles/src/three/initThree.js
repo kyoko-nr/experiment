@@ -2,12 +2,6 @@ import * as THREE from "three";
 import { Environment } from "./Environment";
 import { Particles } from "./Particles";
 import { updateSizeOnResize } from "../utils/getSize";
-import gui from "../gui/addGui";
-
-const params = {
-  progress1: 0,
-  progress2: 0,
-};
 
 /**
  * Initialize Three.js
@@ -38,30 +32,26 @@ export const initThree = (app) => {
     particles.onResize();
   });
 
-  const updateCameraAnim = (progress) => {
-    environment.updateCameraAnim(progress);
-    particles.updatePointSizeAnim(progress);
+  /**
+   * Update camera animation
+   * @param {boolean} isForward
+   */
+  const updateCameraAnim = (isForward) => {
+    environment.updateCameraAnim(isForward);
+    particles.updatePointSizeAnim(isForward);
   };
 
-  const updateMorphAnim = (progress) => {
-    particles.updateMorphAnim(progress);
-    particles.updatePointSizeAnim(1 - progress);
+  /**
+   * Update morphing animation
+   * @param {boolean} isForward
+   */
+  const updateMorphAnim = (isForward) => {
+    particles.updateMorphAnim(isForward);
+    particles.updatePointSizeAnim(!isForward);
   };
 
-  const addGui = () => {
-    const folder = gui.addFolder("Animation");
-    folder
-      .add(params, "progress1")
-      .min(0)
-      .max(1)
-      .step(0.01)
-      .onChange((val) => updateCameraAnim(val));
-    folder
-      .add(params, "progress2")
-      .min(0)
-      .max(1)
-      .step(0.01)
-      .onChange((val) => updateMorphAnim(val));
+  return {
+    updateCameraAnim,
+    updateMorphAnim,
   };
-  addGui();
 };

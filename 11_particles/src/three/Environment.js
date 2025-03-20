@@ -1,11 +1,16 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { getSize } from "../utils/getSize";
 import gui from "../gui/addGui";
+import gsap from "gsap";
+import { easing } from "../defs/easing";
 
 const params = {
   clearColor: "#d7e3e5",
   progress: 0,
+  phi: Math.PI * 0.5,
+  theta: 0,
+  easing: "cubic.out",
+  duration: 1.5,
 };
 
 export class Environment {
@@ -23,7 +28,7 @@ export class Environment {
       0.1,
       100
     );
-    this.cameraSpherical = new THREE.Spherical(2, Math.PI * 0.5, 0);
+    this.cameraSpherical = new THREE.Spherical(2, params.phi, params.theta);
     this.cameraDirection = new THREE.Vector3();
     this.cameraDirection.setFromSpherical(this.cameraSpherical);
     this.camera.position.copy(this.cameraDirection);
@@ -72,12 +77,40 @@ export class Environment {
 
   /**
    * Update camera animation
-   * @param {Number} progress 0 ~ 1
+   * @param {boolean} isForward
    */
-  updateCameraAnim(progress) {
-    const phi = (Math.PI - Math.PI * 0.5) * progress + Math.PI * 0.5;
-    const theta = -Math.PI * 0.25 * progress;
-    this.cameraSpherical.set(2, phi, theta);
+  updateCameraAnim(isForward) {
+    if (isForward) {
+      gsap.fromTo(
+        params,
+        { phi: Math.PI * 0.5, theta: 0 },
+        {
+          phi: Math.PI,
+          theta: -Math.PI * 0.25,
+          duration: params.duration,
+          ease: params.easing,
+          overwrite: true,
+          onUpdate: () => this.updateCamera(),
+        }
+      );
+    } else {
+      gsap.fromTo(
+        params,
+        { phi: Math.PI, theta: -Math.PI * 0.25 },
+        {
+          phi: Math.PI * 0.5,
+          theta: 0,
+          duration: params.duration,
+          ease: params.easing,
+          overwrite: true,
+          onUpdate: () => this.updateCamera(),
+        }
+      );
+    }
+  }
+
+  updateCamera() {
+    this.cameraSpherical.set(2, params.phi, params.theta);
     this.cameraDirection.setFromSpherical(this.cameraSpherical);
     this.camera.position.copy(this.cameraDirection);
     this.camera.lookAt(0, 0, 0);

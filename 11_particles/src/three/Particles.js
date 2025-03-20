@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import gsap from "gsap";
 import vertexShader from "./shader/vertex.glsl";
 import fragmentShader from "./shader/fragment.glsl";
 import { geomToParticle } from "../utils/geomToParticle";
@@ -83,27 +84,57 @@ export class Particles {
 
   /**
    * Update point size animation
-   * @param {number} progress animation progress
+   * @param {boolean} isForward animation progress
    */
-  updatePointSizeAnim(progress) {
-    const size = (params.pointSize - params.minPointSize) * progress;
-    const newSize = params.pointSize - size;
-    this.material.uniforms.uPointSize.value = newSize;
+  updatePointSizeAnim(isForward) {
+    if (isForward) {
+      gsap.fromTo(
+        this.material.uniforms.uPointSize,
+        { value: params.pointSize },
+        {
+          value: params.minPointSize,
+          ease: "cubic.out",
+          duration: 1.5,
+          overwrite: true,
+        }
+      );
+    } else {
+      gsap.fromTo(
+        this.material.uniforms.uPointSize,
+        { value: params.minPointSize },
+        {
+          value: params.pointSize,
+          ease: "cubic.out",
+          duration: 1.5,
+          overwrite: true,
+        }
+      );
+    }
   }
 
   /**
    * Update morph animation
-   * @param {Number} progress
+   * @param {boolean} isForward
    */
-  updateMorphAnim(progress) {
-    this.material.uniforms.uPositionProgress.value = progress;
+  updateMorphAnim(isForward) {
+    if (isForward) {
+      gsap.fromTo(
+        this.material.uniforms.uPositionProgress,
+        { value: 0 },
+        { value: 1, ease: "cubic.out", duration: 1.5, overwrite: true }
+      );
+    } else {
+      gsap.fromTo(
+        this.material.uniforms.uPositionProgress,
+        { value: 1 },
+        { value: 0, ease: "cubic.out", duration: 1.5, overwrite: true }
+      );
+    }
+    // this.material.uniforms.uPositionProgress.value = progress;
   }
 
   addGui() {
     gui.add(params, "pointSize", 0.01, 5, 0.01).onChange(() => {
-      this.material.uniforms.uPointSize.value = params.pointSize;
-    });
-    gui.add(params, "minPointSize", 0.01, 1, 0.01).onChange(() => {
       this.material.uniforms.uPointSize.value = params.pointSize;
     });
     gui.addColor(params, "pointColor").onChange(() => {
