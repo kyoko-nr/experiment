@@ -1,8 +1,4 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import GUI from "lil-gui";
-import vertexShader from "./shader/vertex.glsl";
-import fragmentShader from "./shader/fragment.glsl";
 import { Environment } from "./Environment";
 import { Particles } from "./Particles";
 import { updateSizeOnResize } from "../utils/getSize";
