@@ -13,10 +13,13 @@ const colorParams = {
   clearColor: { ...colors[0] },
 };
 
+// Camera position
+const startPos = { phi: Math.PI * 0.5, theta: 0 };
+const targetPos = { phi: Math.PI, theta: -Math.PI * 0.25 };
+
 const params = {
   progress: 0,
-  phi: Math.PI * 0.5,
-  theta: 0,
+  ...startPos,
   easing: "cubic.out",
   duration: 1.5,
 };
@@ -86,33 +89,19 @@ export class Environment {
    * @param {boolean} isForward
    */
   animateCamera(isForward) {
-    if (isForward) {
-      gsap.fromTo(
-        params,
-        { phi: Math.PI * 0.5, theta: 0 },
-        {
-          phi: Math.PI,
-          theta: -Math.PI * 0.25,
-          duration: params.duration,
-          ease: params.easing,
-          overwrite: true,
-          onUpdate: () => this.updateCamera(),
-        }
-      );
-    } else {
-      gsap.fromTo(
-        params,
-        { phi: Math.PI, theta: -Math.PI * 0.25 },
-        {
-          phi: Math.PI * 0.5,
-          theta: 0,
-          duration: params.duration,
-          ease: params.easing,
-          overwrite: true,
-          onUpdate: () => this.updateCamera(),
-        }
-      );
-    }
+    const from = isForward ? startPos : targetPos;
+    const to = isForward ? targetPos : startPos;
+    gsap.fromTo(
+      params,
+      { ...from },
+      {
+        ...to,
+        duration: params.duration,
+        ease: params.easing,
+        overwrite: true,
+        onUpdate: () => this.updateCamera(),
+      }
+    );
   }
 
   updateCamera() {

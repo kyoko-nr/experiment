@@ -87,29 +87,18 @@ export class Particles {
    * @param {boolean} isForward animation progress
    */
   updatePointSizeAnim(isForward) {
-    if (isForward) {
-      gsap.fromTo(
-        this.material.uniforms.uPointSize,
-        { value: params.pointSize },
-        {
-          value: params.minPointSize,
-          ease: "cubic.out",
-          duration: 1.5,
-          overwrite: true,
-        }
-      );
-    } else {
-      gsap.fromTo(
-        this.material.uniforms.uPointSize,
-        { value: params.minPointSize },
-        {
-          value: params.pointSize,
-          ease: "cubic.out",
-          duration: 1.5,
-          overwrite: true,
-        }
-      );
-    }
+    const current = isForward ? params.pointSize : params.minPointSize;
+    const target = isForward ? params.minPointSize : params.pointSize;
+    gsap.fromTo(
+      this.material.uniforms.uPointSize,
+      { value: current },
+      {
+        value: target,
+        ease: "cubic.out",
+        duration: 1.5,
+        overwrite: true,
+      }
+    );
   }
 
   /**
@@ -117,20 +106,13 @@ export class Particles {
    * @param {boolean} isForward
    */
   updateMorphAnim(isForward) {
-    if (isForward) {
-      gsap.fromTo(
-        this.material.uniforms.uPositionProgress,
-        { value: 0 },
-        { value: 1, ease: "cubic.out", duration: 1.5, overwrite: true }
-      );
-    } else {
-      gsap.fromTo(
-        this.material.uniforms.uPositionProgress,
-        { value: 1 },
-        { value: 0, ease: "cubic.out", duration: 1.5, overwrite: true }
-      );
-    }
-    // this.material.uniforms.uPositionProgress.value = progress;
+    const from = isForward ? 0 : 1;
+    const to = isForward ? 1 : 0;
+    gsap.fromTo(
+      this.material.uniforms.uPositionProgress,
+      { value: from },
+      { value: to, ease: "cubic.out", duration: 1.5, overwrite: true }
+    );
   }
 
   addGui() {
