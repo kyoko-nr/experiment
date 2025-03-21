@@ -12,20 +12,20 @@ export const triggerAnimation = (updateCameraAnim, updateMorphAnim) => {
 
   ScrollTrigger.create({
     trigger: squareElm,
-    end: "bottom 50%",
+    end: "bottom 40%",
     onEnterBack: () => updateCameraAnim(false),
   });
   ScrollTrigger.create({
     trigger: lineElm,
-    start: "top 50%",
-    end: "bottom 50%",
+    start: "top 40%",
+    end: "bottom 40%",
     onEnter: () => updateCameraAnim(true),
     onEnterBack: () => updateMorphAnim(false),
   });
   ScrollTrigger.create({
     trigger: circleElm,
-    start: "top 50%",
-    end: "bottom 50%",
+    start: "top 40%",
+    end: "bottom 40%",
     onEnter: () => updateMorphAnim(true),
   });
 };

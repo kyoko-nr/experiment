@@ -1,11 +1,19 @@
 import * as THREE from "three";
 import { getSize } from "../utils/getSize";
-import gui from "../gui/addGui";
 import gsap from "gsap";
-import { easing } from "../defs/easing";
+
+const colors = [
+  { r: 215, g: 227, b: 239 },
+  { r: 199, g: 225, b: 213 },
+  { r: 218, g: 215, b: 229 },
+];
+
+const colorParams = {
+  clearColorIdx: 0,
+  clearColor: { ...colors[0] },
+};
 
 const params = {
-  clearColor: "#d7e3e5",
   progress: 0,
   phi: Math.PI * 0.5,
   theta: 0,
@@ -38,14 +46,12 @@ export class Environment {
     this.renderer.setSize(size.width, size.height);
     this.renderer.setPixelRatio(size.dpr);
     this.renderer.setViewport(0, 0, size.width, size.height);
-    this.renderer.setClearColor(params.clearColor);
+    const color = colorParams.clearColor;
+    this.renderer.setClearColor(
+      new THREE.Color(`rgb(${color.r}, ${color.g}, ${color.b})`)
+    );
 
     app.appendChild(this.renderer.domElement);
-
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
-    // ----------GUI----------
-    this.addGui();
   }
 
   /**
@@ -79,7 +85,7 @@ export class Environment {
    * Update camera animation
    * @param {boolean} isForward
    */
-  updateCameraAnim(isForward) {
+  animateCamera(isForward) {
     if (isForward) {
       gsap.fromTo(
         params,
@@ -117,11 +123,48 @@ export class Environment {
   }
 
   /**
-   * Add GUI
+   * Animate clear color
+   * @param {boolean} isForward
    */
-  addGui() {
-    gui.addColor(params, "clearColor").onChange(() => {
-      this.renderer.setClearColor(params.clearColor);
-    });
+  animateColor(isForward) {
+    const currentColor = colors[colorParams.clearColorIdx];
+    const nextIndex = isForward
+      ? colorParams.clearColorIdx + 1
+      : colorParams.clearColorIdx - 1;
+    const nextColor = colors[nextIndex];
+    if (!nextColor) {
+      return;
+    }
+    gsap.fromTo(
+      colorParams.clearColor,
+      {
+        r: currentColor.r,
+        g: currentColor.g,
+        b: currentColor.b,
+      },
+      {
+        r: nextColor.r,
+        g: nextColor.g,
+        b: nextColor.b,
+        duration: 1,
+        overwrite: true,
+        immediateRender: false,
+        onUpdate: () => this.updateColor(),
+        onComplete: () => {
+          colorParams.clearColorIdx = nextIndex;
+        },
+      }
+    );
+  }
+
+  updateColor() {
+    const color = { ...colorParams.clearColor };
+    this.renderer.setClearColor(
+      new THREE.Color(
+        `rgb(${Math.floor(color.r)}, ${Math.floor(color.g)}, ${Math.floor(
+          color.b
+        )})`
+      )
+    );
   }
 }

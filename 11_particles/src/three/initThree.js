@@ -37,7 +37,8 @@ export const initThree = (app) => {
    * @param {boolean} isForward
    */
   const updateCameraAnim = (isForward) => {
-    environment.updateCameraAnim(isForward);
+    environment.animateCamera(isForward);
+    environment.animateColor(isForward);
     particles.updatePointSizeAnim(isForward);
   };
 
@@ -46,6 +47,7 @@ export const initThree = (app) => {
    * @param {boolean} isForward
    */
   const updateMorphAnim = (isForward) => {
+    environment.animateColor(isForward);
     particles.updateMorphAnim(isForward);
     particles.updatePointSizeAnim(!isForward);
   };
