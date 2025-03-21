@@ -1,15 +1,15 @@
-uniform float uTime;
 uniform vec3 uPointColor;
+uniform vec3 uTargetPointColor;
+uniform float uPointColorProgress;
 
 void main() {
-  // vec3 color = vec3(0.3 + sin(uTime * 2.0) * 0.2, 0.5 + cos(uTime * 3.0) * 0.2, 0.8 + sin(uTime * 4.0) * 0.2);
-    // gl_FragColor = vec4(color, 1.0);
-
   vec2 uv = gl_PointCoord;
   float distanceToCenter = length(uv - 0.5);
   float alpha = 0.03 / distanceToCenter - 0.1;
 
-  gl_FragColor = vec4(vec3(uPointColor), alpha);
+  vec3 color = mix(uPointColor, uTargetPointColor, uPointColorProgress);
+
+  gl_FragColor = vec4(color, alpha);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }

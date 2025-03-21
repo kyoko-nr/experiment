@@ -3,15 +3,16 @@ import gsap from "gsap";
 import vertexShader from "./shader/vertex.glsl";
 import fragmentShader from "./shader/fragment.glsl";
 import { geomToParticle } from "../utils/geomToParticle";
-import gui from "../gui/addGui";
 import { getSize } from "../utils/getSize";
+
+const colors = ["#dee137", "#378fe1", "#e15937"];
 
 const params = {
   pointSize: 1.8,
   minPointSize: 0.3,
-  pointColor: "#dee137",
   moveIntensity: 0.2,
   minMoveIntensity: 0.03,
+  currentColorIdx: 0,
 };
 
 /**
@@ -46,9 +47,6 @@ export class Particles {
     const particle = new THREE.Points(this.geometry, this.material);
 
     this.particles = particle;
-
-    // ----------GUI----------
-    this.addGui();
   }
 
   createMaterial() {
@@ -61,9 +59,11 @@ export class Particles {
       uniforms: {
         uPointSize: new THREE.Uniform(params.pointSize),
         uResolution: new THREE.Uniform(resolution),
-        uPointColor: new THREE.Uniform(new THREE.Color(params.pointColor)),
+        uPointColor: new THREE.Uniform(new THREE.Color(colors[0])),
+        uTargetPointColor: new THREE.Uniform(new THREE.Color(colors[1])),
         uTime: new THREE.Uniform(0),
         uPositionProgress: new THREE.Uniform(params.positionProgress),
+        uPointColorProgress: new THREE.Uniform(0),
       },
       vertexShader,
       fragmentShader,
@@ -86,7 +86,7 @@ export class Particles {
    * Update point size animation
    * @param {boolean} isForward animation progress
    */
-  updatePointSizeAnim(isForward) {
+  animatePointSize(isForward) {
     const current = isForward ? params.pointSize : params.minPointSize;
     const target = isForward ? params.minPointSize : params.pointSize;
     gsap.fromTo(
@@ -105,7 +105,7 @@ export class Particles {
    * Update morph animation
    * @param {boolean} isForward
    */
-  updateMorphAnim(isForward) {
+  animateMorph(isForward) {
     const from = isForward ? 0 : 1;
     const to = isForward ? 1 : 0;
     gsap.fromTo(
@@ -115,13 +115,25 @@ export class Particles {
     );
   }
 
-  addGui() {
-    gui.add(params, "pointSize", 0.01, 5, 0.01).onChange(() => {
-      this.material.uniforms.uPointSize.value = params.pointSize;
-    });
-    gui.addColor(params, "pointColor").onChange(() => {
-      this.material.uniforms.uPointColor.value.set(params.pointColor);
-    });
+  /**
+   * Animate point color
+   * @param {boolean} isForward
+   */
+  animatePointColor(isForward) {
+    const currentIdx = params.currentColorIdx;
+    const targetIdx = isForward ? currentIdx + 1 : currentIdx - 1;
+    const currentColor = colors[currentIdx];
+    const targetColor = colors[targetIdx];
+    this.material.uniforms.uPointColor.value.set(new THREE.Color(currentColor));
+    this.material.uniforms.uTargetPointColor.value.set(
+      new THREE.Color(targetColor)
+    );
+    gsap.fromTo(
+      this.material.uniforms.uPointColorProgress,
+      { value: 0 },
+      { value: 1, ease: "cubic.out", duration: 1.5, overwrite: true }
+    );
+    params.currentColorIdx = targetIdx;
   }
 
   /**

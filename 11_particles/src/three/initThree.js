@@ -39,7 +39,8 @@ export const initThree = (app) => {
   const updateCameraAnim = (isForward) => {
     environment.animateCamera(isForward);
     environment.animateColor(isForward);
-    particles.updatePointSizeAnim(isForward);
+    particles.animatePointSize(isForward);
+    particles.animatePointColor(isForward);
   };
 
   /**
@@ -48,8 +49,9 @@ export const initThree = (app) => {
    */
   const updateMorphAnim = (isForward) => {
     environment.animateColor(isForward);
-    particles.updateMorphAnim(isForward);
-    particles.updatePointSizeAnim(!isForward);
+    particles.animateMorph(isForward);
+    particles.animatePointSize(!isForward);
+    particles.animatePointColor(isForward);
   };
 
   return {
