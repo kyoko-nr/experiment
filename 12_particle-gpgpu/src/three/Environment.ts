@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { getSize } from "../utils/getSize";
 
 /**
@@ -8,6 +9,7 @@ export class Environment {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
+  private control: OrbitControls;
   /**
    * Constructor
    * @param app application root element
@@ -17,17 +19,20 @@ export class Environment {
     // Scene setup
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
-      120,
+      45,
       size.width / size.height,
       0.1,
       100
     );
+    this.camera.position.set(0, 0, 10);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(size.width, size.height);
     this.renderer.setPixelRatio(size.dpr);
     this.renderer.setViewport(0, 0, size.width, size.height);
-    this.renderer.setClearColor(new THREE.Color("#D7E3EF"));
+    // this.renderer.setClearColor(new THREE.Color("#D7E3EF"));
+
+    this.control = new OrbitControls(this.camera, this.renderer.domElement);
 
     app.appendChild(this.renderer.domElement);
   }
