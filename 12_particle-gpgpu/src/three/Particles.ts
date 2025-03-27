@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { getSize } from "../utils/getSize";
+import vertexShader from "./shaders/particles/vertex.glsl";
+import fragmentShader from "./shaders/particles/fragment.glsl";
 
 /**
  * Particles class
@@ -28,16 +30,17 @@ export class Particles {
       size.width * size.dpr,
       size.height * size.dpr
     );
-    const material = new THREE.MeshBasicMaterial();
-    // const material = new THREE.ShaderMaterial({
-    //   uniforms: {
-    //     uResolution: new THREE.Uniform(resolution),
-    //   },
-    //   blending: THREE.AdditiveBlending,
-    //   depthTest: false,
-    //   transparent: true,
-    //   wireframe: true,
-    // });
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uResolution: new THREE.Uniform(resolution),
+      },
+      vertexShader,
+      fragmentShader,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+      transparent: true,
+      wireframe: true,
+    });
     return material;
   }
 
