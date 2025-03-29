@@ -13,6 +13,7 @@ const size = {
 // -------------------------------------------------
 
 const createMesh = () => {
+  // Wobble
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
     color: "#ffffff",
@@ -25,13 +26,38 @@ const createMesh = () => {
   //  wobble.customDepthMaterial = depthMaterial;
   wobble.receiveShadow = true;
   wobble.castShadow = true;
-  return wobble;
+
+  // Plane
+  const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 10, 1, 1),
+    new THREE.MeshStandardMaterial({
+      color: "#ffffff",
+      side: THREE.DoubleSide,
+    })
+  );
+  plane.position.set(0, 0, 3.5);
+  plane.rotation.x = Math.PI;
+  plane.receiveShadow = true;
+  return { wobble, plane };
 };
 
 const createLights = () => {
-  const ambientLight = new THREE.AmbientLight("#ffffff", 1.5);
+  const ambientLight = new THREE.AmbientLight("#ffffff", 1);
+  const directionalLight1 = new THREE.DirectionalLight("#ffffff", 1.5);
+  directionalLight1.castShadow = true;
+  directionalLight1.shadow.mapSize.set(1024, 1024);
+  directionalLight1.shadow.camera.far = 20;
+  directionalLight1.shadow.normalBias = 0.05;
+  directionalLight1.position.set(-3, 1.5, -4);
 
-  return { ambientLight };
+  const directionalLight2 = new THREE.DirectionalLight("#ffffff", 0.5);
+  directionalLight2.castShadow = true;
+  directionalLight2.shadow.mapSize.set(1024, 1024);
+  directionalLight2.shadow.camera.far = 25;
+  directionalLight2.shadow.normalBias = 0.05;
+  directionalLight2.position.set(2, 1.3, -7);
+
+  return { ambientLight, directionalLight1, directionalLight2 };
 };
 
 /**
@@ -48,7 +74,7 @@ const createEnvironment = () => {
     0.1,
     100
   );
-  camera.position.set(13, -3, -5);
+  camera.position.set(0, 0, -10);
   scene.add(camera);
   // Renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -79,11 +105,11 @@ const initThree = (app: HTMLDivElement) => {
   const { scene, camera, renderer } = createEnvironment();
   app.appendChild(renderer.domElement);
 
-  const lights = createLights();
-  scene.add(lights.ambientLight);
+  const { ambientLight, directionalLight1, directionalLight2 } = createLights();
+  scene.add(ambientLight, directionalLight1, directionalLight2);
 
-  const mesh = createMesh();
-  scene.add(mesh);
+  const { wobble, plane } = createMesh();
+  scene.add(wobble, plane);
 
   const animate = () => {
     requestAnimationFrame(animate);
@@ -98,6 +124,8 @@ const initThree = (app: HTMLDivElement) => {
     camera.aspect = size.width / size.height;
     camera.updateProjectionMatrix();
   });
+
+  addGui({ dirLight1: directionalLight1, dirLight2: directionalLight2 });
 };
 
 // -----------------------------------------------------------
@@ -112,3 +140,21 @@ const init = () => {
 };
 
 document.addEventListener("DOMContentLoaded", init);
+
+// -----------------------------------------------------------
+const addGui = ({
+  dirLight1,
+  dirLight2,
+}: {
+  dirLight1: THREE.Light;
+  dirLight2: THREE.Light;
+}) => {
+  const gui = new GUI();
+  const lights = gui.addFolder("Lights");
+  lights.add(dirLight1.position, "x", -20, 20, 0.1).name("DirLight1 X");
+  lights.add(dirLight1.position, "y", -20, 20, 0.1).name("DirLight1 Y");
+  lights.add(dirLight1.position, "z", -20, 20, 0.1).name("DirLight1 Z");
+  lights.add(dirLight2.position, "x", -20, 20, 0.1).name("DirLight2 X");
+  lights.add(dirLight2.position, "y", -20, 20, 0.1).name("DirLight2 Y");
+  lights.add(dirLight2.position, "z", -20, 20, 0.1).name("DirLight2 Z");
+};
