@@ -17,13 +17,18 @@ const createMesh = () => {
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
     color: "#ffffff",
+    thickness: 1,
+  });
+  const depthMaterial = new CustomShaderMaterial({
+    baseMaterial: THREE.MeshPhysicalMaterial,
+    // depthPacking: THREE.RGBADepthPacking,
   });
   const geometry = new THREE.IcosahedronGeometry(2.5, 50);
   const mergedGeometry = mergeVertices(geometry);
   mergedGeometry.computeTangents();
   // Mesh
   const wobble = new THREE.Mesh(mergedGeometry, material);
-  //  wobble.customDepthMaterial = depthMaterial;
+  wobble.customDepthMaterial = depthMaterial;
   wobble.receiveShadow = true;
   wobble.castShadow = true;
 
