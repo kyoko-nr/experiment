@@ -3,11 +3,17 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import GUI from "lil-gui";
+import WobbleVertexShader from "./shaders/wobble/vertex.glsl";
+import { depth } from "three/tsl";
 
 const size = {
   width: 0,
   height: 0,
   dpr: 0,
+};
+
+const uniforms = {
+  uTime: new THREE.Uniform(0),
 };
 
 // -------------------------------------------------
@@ -16,13 +22,17 @@ const createMesh = () => {
   // Wobble
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
+    vertexShader: WobbleVertexShader,
     color: "#ffffff",
     thickness: 1,
+    uniforms,
   });
   const depthMaterial = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
-    // depthPacking: THREE.RGBADepthPacking,
+    vertexShader: WobbleVertexShader,
+    uniforms,
   });
+  // depthMaterial.packi
   const geometry = new THREE.IcosahedronGeometry(2.5, 50);
   const mergedGeometry = mergeVertices(geometry);
   mergedGeometry.computeTangents();
@@ -116,7 +126,10 @@ const initThree = (app: HTMLDivElement) => {
   const { wobble, plane } = createMesh();
   scene.add(wobble, plane);
 
+  const clock = new THREE.Clock();
   const animate = () => {
+    const elapsedTime = clock.getElapsedTime();
+    uniforms.uTime.value = elapsedTime;
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
   };
