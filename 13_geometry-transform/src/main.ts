@@ -54,7 +54,7 @@ const createMesh = (scene: THREE.Scene) => {
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(20, 10, 1, 1),
     new THREE.MeshStandardMaterial({
-      color: "#ffffff",
+      color: "#ebecf4",
       side: THREE.DoubleSide,
     })
   );
@@ -62,6 +62,8 @@ const createMesh = (scene: THREE.Scene) => {
   plane.rotation.x = Math.PI;
   plane.receiveShadow = true;
   scene.add(mesh, plane);
+
+  return { plane };
 };
 
 const createLights = (scene: THREE.Scene) => {
@@ -84,13 +86,13 @@ const createLights = (scene: THREE.Scene) => {
   directionalLight2.position.set(2, 1.3, -7);
   scene.add(directionalLight2);
 
-  const pointLight1 = new THREE.PointLight("#e147b0", 2.5);
+  const pointLight1 = new THREE.PointLight("#ffa900", 2.5);
   pointLight1.position.setFromSpherical(animParams.p1Spherical);
   scene.add(pointLight1);
   // const helper = new THREE.PointLightHelper(pointLight1, 0.5);
   // scene.add(helper);
 
-  const pointLight2 = new THREE.PointLight("#00ff00", 2.5);
+  const pointLight2 = new THREE.PointLight("#00ffa9", 2.5);
   pointLight2.position.setFromSpherical(animParams.p2Spherical);
   scene.add(pointLight2);
   // const helper2 = new THREE.PointLightHelper(pointLight2, 0.5);
@@ -153,7 +155,7 @@ const initThree = (app: HTMLDivElement) => {
 
   const { pointLight1, pointLight2 } = createLights(scene);
 
-  createMesh(scene);
+  const { plane } = createMesh(scene);
 
   const clock = new THREE.Clock();
   const animate = () => {
@@ -204,7 +206,7 @@ document.addEventListener("DOMContentLoaded", init);
 // -----------------------------------------------------------
 const gui = new GUI();
 
-const addGui = () => {
+const addGui = (plane: THREE.Mesh) => {
   const animationFolder = gui.addFolder("Animation");
   animationFolder.add(uniforms.uSpeed, "value", 0, 2, 0.1).name("Speed");
   animationFolder
@@ -220,6 +222,7 @@ const addGui = () => {
   const colorFolder = gui.addFolder("Color");
   colorFolder.addColor(uniforms.uColor1, "value").name("Color1");
   colorFolder.addColor(uniforms.uColor2, "value").name("Color2");
+  colorFolder.addColor(plane.material, "color");
 };
 
 const addLightGui = ({
