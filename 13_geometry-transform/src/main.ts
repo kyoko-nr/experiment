@@ -3,8 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import GUI from "lil-gui";
-import WobbleVertexShader from "./shaders/wobble/vertex.glsl";
-import { depth } from "three/tsl";
+import vertexShader from "./shaders/vertex.glsl";
 
 const size = {
   width: 0,
@@ -14,6 +13,10 @@ const size = {
 
 const uniforms = {
   uTime: new THREE.Uniform(0),
+  uSpeed: new THREE.Uniform(0.4),
+  uWaveStrength: new THREE.Uniform(0.1),
+  uWaveFrequency: new THREE.Uniform(1.5),
+  uTwistFrequency: new THREE.Uniform(2.0),
 };
 
 // -------------------------------------------------
@@ -22,20 +25,18 @@ const createMesh = () => {
   // Wobble
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
-    vertexShader: WobbleVertexShader,
+    vertexShader,
     color: "#ffffff",
     thickness: 1,
     uniforms,
   });
   const depthMaterial = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
-    vertexShader: WobbleVertexShader,
+    vertexShader,
     uniforms,
   });
-  // depthMaterial.packi
   const geometry = new THREE.IcosahedronGeometry(2.5, 50);
   const mergedGeometry = mergeVertices(geometry);
-  mergedGeometry.computeTangents();
   // Mesh
   const wobble = new THREE.Mesh(mergedGeometry, material);
   wobble.customDepthMaterial = depthMaterial;
@@ -56,14 +57,17 @@ const createMesh = () => {
   return { wobble, plane };
 };
 
-const createLights = () => {
+const createLights = (scene: THREE.Scene) => {
   const ambientLight = new THREE.AmbientLight("#ffffff", 1);
+  scene.add(ambientLight);
+
   const directionalLight1 = new THREE.DirectionalLight("#ffffff", 1.5);
   directionalLight1.castShadow = true;
   directionalLight1.shadow.mapSize.set(1024, 1024);
   directionalLight1.shadow.camera.far = 20;
   directionalLight1.shadow.normalBias = 0.05;
   directionalLight1.position.set(-3, 1.5, -4);
+  scene.add(directionalLight1);
 
   const directionalLight2 = new THREE.DirectionalLight("#ffffff", 0.5);
   directionalLight2.castShadow = true;
@@ -71,8 +75,38 @@ const createLights = () => {
   directionalLight2.shadow.camera.far = 25;
   directionalLight2.shadow.normalBias = 0.05;
   directionalLight2.position.set(2, 1.3, -7);
+  scene.add(directionalLight2);
 
-  return { ambientLight, directionalLight1, directionalLight2 };
+  const pointLightSpherical1 = new THREE.Spherical(
+    5,
+    Math.PI * 1.75,
+    -Math.PI * 0.25
+  );
+  const pointLight1 = new THREE.PointLight("#ff0000", 4);
+  pointLight1.position.setFromSpherical(pointLightSpherical1);
+  scene.add(pointLight1);
+  // const helper = new THREE.PointLightHelper(pointLight1, 0.5);
+  // scene.add(helper);
+
+  const pointLightSpherical2 = new THREE.Spherical(
+    5,
+    Math.PI * 0.8,
+    -Math.PI * 0.75
+  );
+  const pointLight2 = new THREE.PointLight("#00ff00", 3.5);
+  pointLight2.position.setFromSpherical(pointLightSpherical2);
+  scene.add(pointLight2);
+  // const helper2 = new THREE.PointLightHelper(pointLight2, 0.5);
+  // scene.add(helper2);
+
+  addLightGui({
+    dirLight1: directionalLight1,
+    dirLight2: directionalLight2,
+    pLight1: pointLight1,
+    pLightSp1: pointLightSpherical1,
+    pLight2: pointLight2,
+    pLightSp2: pointLightSpherical2,
+  });
 };
 
 /**
@@ -120,8 +154,7 @@ const initThree = (app: HTMLDivElement) => {
   const { scene, camera, renderer } = createEnvironment();
   app.appendChild(renderer.domElement);
 
-  const { ambientLight, directionalLight1, directionalLight2 } = createLights();
-  scene.add(ambientLight, directionalLight1, directionalLight2);
+  createLights(scene);
 
   const { wobble, plane } = createMesh();
   scene.add(wobble, plane);
@@ -134,6 +167,7 @@ const initThree = (app: HTMLDivElement) => {
     renderer.render(scene, camera);
   };
   animate();
+  addAnimationGui();
 
   window.addEventListener("resize", () => {
     updateSize();
@@ -142,8 +176,6 @@ const initThree = (app: HTMLDivElement) => {
     camera.aspect = size.width / size.height;
     camera.updateProjectionMatrix();
   });
-
-  addGui({ dirLight1: directionalLight1, dirLight2: directionalLight2 });
 };
 
 // -----------------------------------------------------------
@@ -160,19 +192,64 @@ const init = () => {
 document.addEventListener("DOMContentLoaded", init);
 
 // -----------------------------------------------------------
-const addGui = ({
+const gui = new GUI();
+
+const addAnimationGui = () => {
+  const animationFolder = gui.addFolder("Animation");
+  animationFolder.add(uniforms.uSpeed, "value", 0, 2, 0.1).name("Speed");
+  animationFolder
+    .add(uniforms.uWaveStrength, "value", 0, 0.5, 0.01)
+    .name("Wave Strength");
+  animationFolder
+    .add(uniforms.uWaveFrequency, "value", 0, 3, 0.01)
+    .name("Wave Frequency");
+  animationFolder
+    .add(uniforms.uTwistFrequency, "value", 0, 5, 0.1)
+    .name("Twist Frequency");
+};
+
+const addLightGui = ({
   dirLight1,
   dirLight2,
+  pLight1,
+  pLightSp1,
+  pLight2,
+  pLightSp2,
 }: {
   dirLight1: THREE.Light;
   dirLight2: THREE.Light;
+  pLight1: THREE.PointLight;
+  pLightSp1: THREE.Spherical;
+  pLight2: THREE.PointLight;
+  pLightSp2: THREE.Spherical;
 }) => {
-  const gui = new GUI();
-  const lights = gui.addFolder("Lights");
-  lights.add(dirLight1.position, "x", -20, 20, 0.1).name("DirLight1 X");
-  lights.add(dirLight1.position, "y", -20, 20, 0.1).name("DirLight1 Y");
-  lights.add(dirLight1.position, "z", -20, 20, 0.1).name("DirLight1 Z");
-  lights.add(dirLight2.position, "x", -20, 20, 0.1).name("DirLight2 X");
-  lights.add(dirLight2.position, "y", -20, 20, 0.1).name("DirLight2 Y");
-  lights.add(dirLight2.position, "z", -20, 20, 0.1).name("DirLight2 Z");
+  const dirp1 = gui.addFolder("Directional Light1");
+  dirp1.add(dirLight1.position, "x", -20, 20, 0.1).name("DirLight1 X");
+  dirp1.add(dirLight1.position, "y", -20, 20, 0.1).name("DirLight1 Y");
+  dirp1.add(dirLight1.position, "z", -20, 20, 0.1).name("DirLight1 Z");
+
+  const dirp2 = gui.addFolder("Directional Light2");
+  dirp2.add(dirLight2.position, "x", -20, 20, 0.1).name("DirLight2 X");
+  dirp2.add(dirLight2.position, "y", -20, 20, 0.1).name("DirLight2 Y");
+  dirp2.add(dirLight2.position, "z", -20, 20, 0.1).name("DirLight2 Z");
+
+  const p1 = gui.addFolder("Point Light1");
+  p1.add(pLightSp1, "phi", 0, Math.PI * 2)
+    .name("Phi")
+    .onChange(() => pLight1.position.setFromSpherical(pLightSp1));
+  p1.add(pLightSp1, "theta", -Math.PI * 0.5, Math.PI * 0.5)
+    .name("Theta")
+    .onChange(() => pLight1.position.setFromSpherical(pLightSp1));
+  p1.add(pLight1, "intensity", 0, 5);
+  p1.addColor(pLight1, "color");
+
+  const p2 = gui.addFolder("Point Light2");
+  p2.add(pLightSp2, "phi", 0, Math.PI * 2)
+    .name("Phi")
+    .onChange(() => pLight2.position.setFromSpherical(pLightSp2));
+  p2.add(pLightSp2, "theta", -Math.PI, Math.PI)
+    .name("Theta")
+    .onChange(() => pLight2.position.setFromSpherical(pLightSp2));
+  p2.add(pLight2, "intensity", 0, 5);
+  p2.addColor(pLight2, "color");
 };
