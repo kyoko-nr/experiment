@@ -4,6 +4,7 @@ import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import GUI from "lil-gui";
 import vertexShader from "./shaders/vertex.glsl";
+import fragmentShader from "./shaders/fragment.glsl";
 
 const size = {
   width: 0,
@@ -17,6 +18,13 @@ const uniforms = {
   uWaveStrength: new THREE.Uniform(0.1),
   uWaveFrequency: new THREE.Uniform(1.5),
   uTwistFrequency: new THREE.Uniform(2.0),
+  uColor1: new THREE.Uniform(new THREE.Color("#da8bea")),
+  uColor2: new THREE.Uniform(new THREE.Color("#73d9f2")),
+};
+
+const animParams = {
+  p1Spherical: new THREE.Spherical(5, Math.PI * 1.75, -Math.PI * 0.25),
+  p2Spherical: new THREE.Spherical(5, Math.PI * 0.8, -Math.PI * 0.75),
 };
 
 // -------------------------------------------------
@@ -26,7 +34,7 @@ const createMesh = () => {
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
     vertexShader,
-    color: "#ffffff",
+    fragmentShader,
     thickness: 1,
     uniforms,
   });
@@ -77,35 +85,25 @@ const createLights = (scene: THREE.Scene) => {
   directionalLight2.position.set(2, 1.3, -7);
   scene.add(directionalLight2);
 
-  const pointLightSpherical1 = new THREE.Spherical(
-    5,
-    Math.PI * 1.75,
-    -Math.PI * 0.25
-  );
   const pointLight1 = new THREE.PointLight("#ff0000", 4);
-  pointLight1.position.setFromSpherical(pointLightSpherical1);
+  pointLight1.position.setFromSpherical(animParams.p1Spherical);
   scene.add(pointLight1);
-  // const helper = new THREE.PointLightHelper(pointLight1, 0.5);
-  // scene.add(helper);
+  const helper = new THREE.PointLightHelper(pointLight1, 0.5);
+  scene.add(helper);
 
-  const pointLightSpherical2 = new THREE.Spherical(
-    5,
-    Math.PI * 0.8,
-    -Math.PI * 0.75
-  );
   const pointLight2 = new THREE.PointLight("#00ff00", 3.5);
-  pointLight2.position.setFromSpherical(pointLightSpherical2);
+  pointLight2.position.setFromSpherical(animParams.p2Spherical);
   scene.add(pointLight2);
-  // const helper2 = new THREE.PointLightHelper(pointLight2, 0.5);
-  // scene.add(helper2);
+  const helper2 = new THREE.PointLightHelper(pointLight2, 0.5);
+  scene.add(helper2);
 
   addLightGui({
     dirLight1: directionalLight1,
     dirLight2: directionalLight2,
     pLight1: pointLight1,
-    pLightSp1: pointLightSpherical1,
+    pLightSp1: animParams.p1Spherical,
     pLight2: pointLight2,
-    pLightSp2: pointLightSpherical2,
+    pLightSp2: animParams.p2Spherical,
   });
 };
 
@@ -167,7 +165,7 @@ const initThree = (app: HTMLDivElement) => {
     renderer.render(scene, camera);
   };
   animate();
-  addAnimationGui();
+  addGui();
 
   window.addEventListener("resize", () => {
     updateSize();
@@ -194,7 +192,7 @@ document.addEventListener("DOMContentLoaded", init);
 // -----------------------------------------------------------
 const gui = new GUI();
 
-const addAnimationGui = () => {
+const addGui = () => {
   const animationFolder = gui.addFolder("Animation");
   animationFolder.add(uniforms.uSpeed, "value", 0, 2, 0.1).name("Speed");
   animationFolder
@@ -206,6 +204,10 @@ const addAnimationGui = () => {
   animationFolder
     .add(uniforms.uTwistFrequency, "value", 0, 5, 0.1)
     .name("Twist Frequency");
+
+  const colorFolder = gui.addFolder("Color");
+  colorFolder.addColor(uniforms.uColor1, "value").name("Color1");
+  colorFolder.addColor(uniforms.uColor2, "value").name("Color2");
 };
 
 const addLightGui = ({
