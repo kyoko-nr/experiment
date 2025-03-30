@@ -23,8 +23,8 @@ const uniforms = {
 };
 
 const animParams = {
-  p1Spherical: new THREE.Spherical(5, Math.PI * 1.75, -Math.PI * 0.25),
-  p2Spherical: new THREE.Spherical(5, Math.PI * 0.8, -Math.PI * 0.75),
+  p1Spherical: new THREE.Spherical(4, Math.PI * 1.75, -Math.PI * 0.25),
+  p2Spherical: new THREE.Spherical(4, Math.PI * 0.8, -Math.PI * 0.75),
 };
 
 // -------------------------------------------------
@@ -85,26 +85,26 @@ const createLights = (scene: THREE.Scene) => {
   directionalLight2.position.set(2, 1.3, -7);
   scene.add(directionalLight2);
 
-  const pointLight1 = new THREE.PointLight("#ff0000", 4);
+  const pointLight1 = new THREE.PointLight("#e147b0", 2.5);
   pointLight1.position.setFromSpherical(animParams.p1Spherical);
   scene.add(pointLight1);
-  const helper = new THREE.PointLightHelper(pointLight1, 0.5);
-  scene.add(helper);
+  // const helper = new THREE.PointLightHelper(pointLight1, 0.5);
+  // scene.add(helper);
 
-  const pointLight2 = new THREE.PointLight("#00ff00", 3.5);
+  const pointLight2 = new THREE.PointLight("#00ff00", 2.5);
   pointLight2.position.setFromSpherical(animParams.p2Spherical);
   scene.add(pointLight2);
-  const helper2 = new THREE.PointLightHelper(pointLight2, 0.5);
-  scene.add(helper2);
+  // const helper2 = new THREE.PointLightHelper(pointLight2, 0.5);
+  // scene.add(helper2);
 
   addLightGui({
-    dirLight1: directionalLight1,
-    dirLight2: directionalLight2,
     pLight1: pointLight1,
     pLightSp1: animParams.p1Spherical,
     pLight2: pointLight2,
     pLightSp2: animParams.p2Spherical,
   });
+
+  return { pointLight1, pointLight2 };
 };
 
 /**
@@ -152,7 +152,7 @@ const initThree = (app: HTMLDivElement) => {
   const { scene, camera, renderer } = createEnvironment();
   app.appendChild(renderer.domElement);
 
-  createLights(scene);
+  const { pointLight1, pointLight2 } = createLights(scene);
 
   const { wobble, plane } = createMesh();
   scene.add(wobble, plane);
@@ -162,6 +162,20 @@ const initThree = (app: HTMLDivElement) => {
     const elapsedTime = clock.getElapsedTime();
     uniforms.uTime.value = elapsedTime;
     requestAnimationFrame(animate);
+
+    // Point lights1
+    const phiAmount1 = (Math.sin(elapsedTime * 0.5 + 0.2) + 1.0) * 0.5;
+    const thetaAmoun1 = (Math.sin(elapsedTime * 0.6 + 0.3) + 1.0) * 0.5;
+    animParams.p1Spherical.phi = -Math.PI * phiAmount1;
+    animParams.p1Spherical.theta = -Math.PI * thetaAmoun1 + Math.PI * 0.5;
+    pointLight1.position.setFromSpherical(animParams.p1Spherical);
+    // Point lights2
+    const phiAmount2 = (Math.sin(elapsedTime * 0.55 + 1.1) + 1.0) * 0.5;
+    const thetaAmount2 = (Math.sin(elapsedTime * 0.45 + 0.8) + 1.0) * 0.5;
+    animParams.p2Spherical.phi = -Math.PI * phiAmount2;
+    animParams.p2Spherical.theta = -Math.PI * thetaAmount2 + Math.PI * 0.5;
+    pointLight2.position.setFromSpherical(animParams.p2Spherical);
+
     renderer.render(scene, camera);
   };
   animate();
@@ -211,30 +225,16 @@ const addGui = () => {
 };
 
 const addLightGui = ({
-  dirLight1,
-  dirLight2,
   pLight1,
   pLightSp1,
   pLight2,
   pLightSp2,
 }: {
-  dirLight1: THREE.Light;
-  dirLight2: THREE.Light;
   pLight1: THREE.PointLight;
   pLightSp1: THREE.Spherical;
   pLight2: THREE.PointLight;
   pLightSp2: THREE.Spherical;
 }) => {
-  const dirp1 = gui.addFolder("Directional Light1");
-  dirp1.add(dirLight1.position, "x", -20, 20, 0.1).name("DirLight1 X");
-  dirp1.add(dirLight1.position, "y", -20, 20, 0.1).name("DirLight1 Y");
-  dirp1.add(dirLight1.position, "z", -20, 20, 0.1).name("DirLight1 Z");
-
-  const dirp2 = gui.addFolder("Directional Light2");
-  dirp2.add(dirLight2.position, "x", -20, 20, 0.1).name("DirLight2 X");
-  dirp2.add(dirLight2.position, "y", -20, 20, 0.1).name("DirLight2 Y");
-  dirp2.add(dirLight2.position, "z", -20, 20, 0.1).name("DirLight2 Z");
-
   const p1 = gui.addFolder("Point Light1");
   p1.add(pLightSp1, "phi", 0, Math.PI * 2)
     .name("Phi")
