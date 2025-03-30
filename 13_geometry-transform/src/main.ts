@@ -29,8 +29,7 @@ const animParams = {
 
 // -------------------------------------------------
 
-const createMesh = () => {
-  // Wobble
+const createMesh = (scene: THREE.Scene) => {
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
     vertexShader,
@@ -46,10 +45,10 @@ const createMesh = () => {
   const geometry = new THREE.IcosahedronGeometry(2.5, 50);
   const mergedGeometry = mergeVertices(geometry);
   // Mesh
-  const wobble = new THREE.Mesh(mergedGeometry, material);
-  wobble.customDepthMaterial = depthMaterial;
-  wobble.receiveShadow = true;
-  wobble.castShadow = true;
+  const mesh = new THREE.Mesh(mergedGeometry, material);
+  mesh.customDepthMaterial = depthMaterial;
+  mesh.receiveShadow = true;
+  mesh.castShadow = true;
 
   // Plane
   const plane = new THREE.Mesh(
@@ -62,7 +61,7 @@ const createMesh = () => {
   plane.position.set(0, 0, 3.5);
   plane.rotation.x = Math.PI;
   plane.receiveShadow = true;
-  return { wobble, plane };
+  scene.add(mesh, plane);
 };
 
 const createLights = (scene: THREE.Scene) => {
@@ -154,8 +153,7 @@ const initThree = (app: HTMLDivElement) => {
 
   const { pointLight1, pointLight2 } = createLights(scene);
 
-  const { wobble, plane } = createMesh();
-  scene.add(wobble, plane);
+  createMesh(scene);
 
   const clock = new THREE.Clock();
   const animate = () => {
