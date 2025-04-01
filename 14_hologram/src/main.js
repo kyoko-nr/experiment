@@ -1,6 +1,12 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
+import HologramVertexShader from "./shaders/hologram/vertex.glsl";
+import HologramFragmentShader from "./shaders/hologram/fragment.glsl";
+
+const uniforms = {
+  uTime: new THREE.Uniform(0),
+};
 
 const initThree = (app) => {
   const size = {
@@ -34,6 +40,9 @@ const initThree = (app) => {
   // ---------------------------------------
   const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshBasicMaterial,
+    vertexShader: HologramVertexShader,
+    fragmentShader: HologramFragmentShader,
+    uniforms,
     transparent: true,
     side: THREE.DoubleSide,
     blending: THREE.AdditiveBlending,
@@ -48,8 +57,17 @@ const initThree = (app) => {
   scene.add(torusKnot);
 
   // ---------------------------------------
+  const clock = new THREE.Clock();
   const animate = () => {
     requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    const elapsedTime = clock.getElapsedTime();
+
+    // Update models
+    torusKnot.rotation.y += delta * 0.5;
+    // Update uniforms
+    uniforms.uTime.value = elapsedTime;
+
     renderer.render(scene, camera);
   };
   animate();
