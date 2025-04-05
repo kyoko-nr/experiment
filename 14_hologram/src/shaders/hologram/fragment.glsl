@@ -2,6 +2,8 @@ uniform float uTime;
 uniform float uIndex;
 uniform float uProgress;
 uniform vec3 uColor;
+uniform float uMinY;
+uniform float uMaxY;
 
 varying vec3 vPosition;
 varying vec3 vNormal;
@@ -22,11 +24,11 @@ void main() {
   holographic += fresnel * 1.25;
   holographic *= falloff;
 
-  float posY = smoothstep(-1.5, 2.5, vPosition.y);
-  if(uIndex == 0.0 && posY < uProgress) {
+  float normalizedY = (vPosition.y - uMinY) / (uMaxY - uMinY);
+  if(uIndex == 0.0 && normalizedY < uProgress) {
     discard;
   }
-  if(uIndex == 1.0 && posY > uProgress) {
+  if(uIndex == 1.0 && normalizedY > uProgress) {
     discard;
   }
 

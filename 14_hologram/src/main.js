@@ -16,6 +16,8 @@ const uniforms = {
   uTime: new THREE.Uniform(0),
   uProgress: new THREE.Uniform(0),
   uIndex: new THREE.Uniform(0),
+  uMinY: new THREE.Uniform(0),
+  uMaxY: new THREE.Uniform(0),
 };
 
 const initThree = (app) => {
@@ -35,7 +37,7 @@ const initThree = (app) => {
     0.1,
     100
   );
-  camera.position.set(0, 0, -10);
+  camera.position.set(0, 3, -10);
   scene.add(camera);
   // Renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -86,23 +88,36 @@ const initThree = (app) => {
   cylinder.position.set(0, -2, 0);
   scene.add(cylinder);
 
+  // Geoms
+  const torusGeometry = new THREE.TorusKnotGeometry(1, 0.5, 128, 32);
+  torusGeometry.computeBoundingBox();
+  const icosahedronGeometry = new THREE.IcosahedronGeometry(2, 24);
+  icosahedronGeometry.computeBoundingBox();
+  // compute minY and maxY
+  const minY = Math.min(
+    torusGeometry.boundingBox.min.y,
+    icosahedronGeometry.boundingBox.min.y
+  );
+  const maxY = Math.max(
+    torusGeometry.boundingBox.max.y,
+    icosahedronGeometry.boundingBox.max.y
+  );
+  uniforms.uMinY.value = minY + 0.5;
+  uniforms.uMaxY.value = maxY + 0.5;
+
   // Torus
   const torusMaterial = baseMaterial.clone();
   torusMaterial.uniforms.uIndex.value = 0;
-  const torusKnot = new THREE.Mesh(
-    new THREE.TorusKnotGeometry(1, 0.5, 128, 32),
-    torusMaterial
-  );
+
+  const torusKnot = new THREE.Mesh(torusGeometry, torusMaterial);
   torusKnot.position.set(0, 0.5, 0);
   scene.add(torusKnot);
 
   // Icosahedron
   const icosahedronMaterial = baseMaterial.clone();
   icosahedronMaterial.uniforms.uIndex.value = 1;
-  const icosahedron = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(2, 24),
-    icosahedronMaterial
-  );
+
+  const icosahedron = new THREE.Mesh(icosahedronGeometry, icosahedronMaterial);
   icosahedron.position.set(0, 0.5, 0);
   scene.add(icosahedron);
 
