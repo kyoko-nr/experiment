@@ -10,7 +10,7 @@ import fragmentShader from "./shaders/particles/fragment.glsl";
 
 const WIDTH = 34;
 const particles = WIDTH * WIDTH;
-const POSITION_RANGE = 2;
+const POSITION_RANGE = 10;
 const VELOCITY_RANGE = 10;
 
 /**
@@ -30,15 +30,15 @@ export class Particles {
     // GPGPU
     this.gpgpuRenderer = new GPUComputationRenderer(WIDTH, WIDTH, renderer);
     const dtPositionTexture = this.gpgpuRenderer.createTexture();
+    const dtVelocity = this.gpgpuRenderer.createTexture();
     const count = particles * 3;
     const dtPosArray = new Float32Array(count * 4);
-    // const dtVelocity = this.gpgpuRenderer.createTexture();
     // const dtVelArray = dtVelocity.image.data as Float32Array;
     for (let i = 0; i < count; i++) {
       const i4 = i * 4;
-      dtPosArray[i4 + 0] = Math.random() * POSITION_RANGE;
-      dtPosArray[i4 + 1] = Math.random() * POSITION_RANGE;
-      dtPosArray[i4 + 2] = Math.random() * POSITION_RANGE;
+      dtPosArray[i4 + 0] = Math.random() * POSITION_RANGE - POSITION_RANGE / 2;
+      dtPosArray[i4 + 1] = Math.random() * POSITION_RANGE - POSITION_RANGE / 2;
+      dtPosArray[i4 + 2] = Math.random() * POSITION_RANGE - POSITION_RANGE / 2;
       dtPosArray[i4 + 3] = 1;
       // dtVelArray[i4 + 0] = (Math.random() - 0.5) * VELOCITY_RANGE;
       // dtVelArray[i4 + 1] = (Math.random() - 0.5) * VELOCITY_RANGE;
@@ -80,8 +80,9 @@ export class Particles {
         sizesArray[i] = Math.random();
       }
     }
-    this.geometry = new THREE.BufferGeometry();
-    this.geometry.setDrawRange(0, particles);
+    // this.geometry = new THREE.BufferGeometry();
+    this.geometry = new THREE.SphereGeometry(2, 12, 12);
+    this.geometry.setDrawRange(0, particles * 3);
     this.geometry.setAttribute("aUv", new THREE.BufferAttribute(uvArray, 2));
     this.geometry.setAttribute(
       "aSize",
@@ -105,11 +106,8 @@ export class Particles {
       wireframe: true,
     });
 
-    this.points = new THREE.Points(
-      new THREE.SphereGeometry(2, 12, 12),
-      this.material
-    );
-    console.log("this.points", this.points);
+    this.points = new THREE.Points(this.geometry, this.material);
+    console.log("this.geometry", this.geometry);
     scene.add(this.points);
   }
 
