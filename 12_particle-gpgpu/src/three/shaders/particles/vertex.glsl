@@ -1,4 +1,5 @@
 uniform sampler2D uPositionTexture;
+uniform sampler2D uVelocityTexture;
 
 attribute float aSize;
 attribute vec2 aUv;
@@ -18,5 +19,5 @@ void main() {
   gl_PointSize = 10.0 * aSize;
   // gl_PointSize *= (1.0 / - viewPosition.z);
 
-  vColor = vec3(1.0, 0.0, 0.0);
+  vColor = vec3(1.0, 0.2, 0.2);
 }
