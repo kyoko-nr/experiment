@@ -6,10 +6,10 @@ import { getSize } from "../utils/getSize";
  * Environment class
  */
 export class Environment {
-  private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
   private control: OrbitControls;
+  scene: THREE.Scene;
+  renderer: THREE.WebGLRenderer;
   /**
    * Constructor
    * @param app application root element

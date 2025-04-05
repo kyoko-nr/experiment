@@ -11,11 +11,11 @@ export const initThree = (app: HTMLDivElement) => {
 
   const environment = new Environment(app);
 
-  const particles = new Particles();
-  environment.addMesh(particles.pointsMesh);
+  const particles = new Particles(environment.renderer, environment.scene);
 
   const animate = () => {
     environment.render();
+    particles.animate();
     requestAnimationFrame(animate);
   };
   animate();
