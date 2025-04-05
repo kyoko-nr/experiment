@@ -10,9 +10,10 @@ float random(vec2 st) {
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-  // csm_Position.xyz = projectionMatrix * viewMatrix * modelPosition;
+  gl_Position = projectionMatrix * viewMatrix * modelPosition;
 
-  vPosition = position;
+  vPosition = modelPosition.xyz;
+
   vec4 newNormal = modelMatrix * vec4(normal, 0.0);
   vNormal = newNormal.xyz;
 }
