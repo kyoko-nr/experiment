@@ -30,8 +30,7 @@ void main() {
     discard;
   }
 
-  vec3 color = uColor;
-  gl_FragColor = vec4(color, holographic);
+  gl_FragColor = vec4(uColor, holographic);
 
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

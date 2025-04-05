@@ -100,7 +100,7 @@ const initThree = (app) => {
   const icosahedronMaterial = baseMaterial.clone();
   icosahedronMaterial.uniforms.uIndex.value = 1;
   const icosahedron = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(2),
+    new THREE.IcosahedronGeometry(2, 24),
     icosahedronMaterial
   );
   icosahedron.position.set(0, 0.5, 0);
@@ -114,12 +114,13 @@ const initThree = (app) => {
     const elapsedTime = clock.getElapsedTime();
 
     // Update models
-    torusKnot.rotation.y += delta * 0.5;
-    torusKnot.rotation.x += delta * 0.5;
-    icosahedron.rotation.y += delta * 0.5;
-    icosahedron.rotation.x += delta * 0.5;
+    // torusKnot.rotation.y += delta * 0.5;
+    // torusKnot.rotation.x += delta * 0.5;
+    // icosahedron.rotation.y += delta * 0.5;
+    // icosahedron.rotation.x += delta * 0.5;
     // Update uniforms
-    uniforms.uTime.value = elapsedTime;
+    torusMaterial.uniforms.uTime.value = elapsedTime;
+    icosahedronMaterial.uniforms.uTime.value = elapsedTime;
 
     renderer.render(scene, camera);
   };

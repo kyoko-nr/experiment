@@ -1,3 +1,5 @@
+uniform float uTime;
+uniform float uProgress;
 
 varying vec3 vPosition;
 varying vec3 vNormal;
@@ -9,6 +11,25 @@ float random(vec2 st) {
 
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+  // glitch
+  float glitchTime = uTime - modelPosition.y;
+  float glitchstrength = sin(glitchTime) * sin(glitchTime * 3.45) + sin(glitchTime * 8.76);
+  glitchstrength /= 3.0;
+  glitchstrength = smoothstep(0.5, 0.9, glitchstrength);
+  glitchstrength *= 2.0;
+  modelPosition.x += (random(modelPosition.xz + uTime) - 0.5) * glitchstrength;
+  modelPosition.z += (random(modelPosition.xz + uTime) - 0.5) * glitchstrength;
+
+  // test
+  float progress = uProgress * 2.5 + 1.2;
+  float glitchProgress = progress - modelPosition.y;
+  float progressStlength = sin(glitchProgress) * sin(glitchProgress * 3.45) + sin(glitchProgress * 8.76);
+  progressStlength /= 3.0;
+  progressStlength = smoothstep(0.5, 1.0, progressStlength);
+  progressStlength *= 10.0;
+  modelPosition.x += (random(modelPosition.xz + progress) - 0.5) * progressStlength;
+  modelPosition.z += (random(modelPosition.xz + uTime) - 0.5) * glitchstrength;
 
   gl_Position = projectionMatrix * viewMatrix * modelPosition;
 
