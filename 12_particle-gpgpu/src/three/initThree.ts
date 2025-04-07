@@ -18,8 +18,8 @@ export const initThree = (app: HTMLDivElement) => {
 
   const animate = () => {
     const delta = clock.getDelta();
-    environment.render();
     particles.animate(delta);
+    environment.render();
     requestAnimationFrame(animate);
   };
   animate();

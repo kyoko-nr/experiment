@@ -164,10 +164,10 @@ export class Particles {
   }
 
   animate(delta: number) {
-    this.gpgpuRenderer.compute();
-
     this.gpgpuPositionVariable.material.uniforms.uDelta.value = delta;
     this.gpgpuVelocityVariable.material.uniforms.uDelta.value = delta;
+
+    this.gpgpuRenderer.compute();
 
     const positionTexture = this.gpgpuRenderer.getCurrentRenderTarget(
       this.gpgpuPositionVariable
