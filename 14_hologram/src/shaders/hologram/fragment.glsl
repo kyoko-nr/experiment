@@ -1,5 +1,7 @@
 uniform float uTime;
 uniform float uIndex;
+uniform float uCurrentIndex;
+uniform float uNextIndex;
 uniform float uProgress;
 uniform vec3 uColor;
 uniform float uMinY;
@@ -9,6 +11,10 @@ varying vec3 vPosition;
 varying vec3 vNormal;
 
 void main() {
+  if(uIndex != uCurrentIndex && uIndex != uNextIndex) {
+    discard;
+  }
+
   float lines = 20.0;
   float offset = vPosition.y - uTime * 0.2;
   float density = mod(offset * lines, 1.0);
@@ -25,10 +31,10 @@ void main() {
   holographic *= falloff;
 
   float normalizedY = (vPosition.y - uMinY) / (uMaxY - uMinY);
-  if(uIndex == 0.0 && normalizedY < uProgress) {
+  if(uIndex == uCurrentIndex && normalizedY < uProgress) {
     discard;
   }
-  if(uIndex == 1.0 && normalizedY > uProgress) {
+  if(uIndex == uNextIndex && normalizedY > uProgress) {
     discard;
   }
 

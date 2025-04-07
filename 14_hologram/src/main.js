@@ -3,12 +3,15 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import HologramVertexShader from "./shaders/hologram/vertex.glsl";
 import HologramFragmentShader from "./shaders/hologram/fragment.glsl";
 import GUI from "lil-gui";
+import { gsap } from "gsap";
 
 const params = {
   color: "#00d5ff",
   stageColor: "#d4d4d4",
   ambientLight: "#ffffff",
   directionalLight: "#a4d5f4",
+  currentIndex: 0,
+  nextIndex: 1,
 };
 
 const uniforms = {
@@ -16,6 +19,8 @@ const uniforms = {
   uTime: new THREE.Uniform(0),
   uProgress: new THREE.Uniform(0),
   uIndex: new THREE.Uniform(0),
+  uCurrentIndex: new THREE.Uniform(params.currentIndex),
+  uNextIndex: new THREE.Uniform(params.nextIndex),
   uMinY: new THREE.Uniform(0),
   uMaxY: new THREE.Uniform(0),
 };
@@ -89,39 +94,51 @@ const initThree = (app) => {
   scene.add(cylinder);
 
   // Geoms
-  const torusGeometry = new THREE.TorusKnotGeometry(1, 0.5, 128, 32);
-  torusGeometry.computeBoundingBox();
+  const torusknotGeometry = new THREE.TorusKnotGeometry(1, 0.5, 128, 32);
+  torusknotGeometry.computeBoundingBox();
   const icosahedronGeometry = new THREE.IcosahedronGeometry(2, 24);
   icosahedronGeometry.computeBoundingBox();
+  const torusGeometry = new THREE.TorusGeometry(1.4, 0.5, 128, 32);
+  torusGeometry.computeBoundingBox();
+
   // compute minY and maxY
   const minY = Math.min(
-    torusGeometry.boundingBox.min.y,
-    icosahedronGeometry.boundingBox.min.y
+    torusknotGeometry.boundingBox.min.y,
+    icosahedronGeometry.boundingBox.min.y,
+    torusGeometry.boundingBox.min.y
   );
   const maxY = Math.max(
-    torusGeometry.boundingBox.max.y,
-    icosahedronGeometry.boundingBox.max.y
+    torusknotGeometry.boundingBox.max.y,
+    icosahedronGeometry.boundingBox.max.y,
+    torusGeometry.boundingBox.max.y
   );
   const margin = 0.1;
   const posY = 0.5;
   uniforms.uMinY.value = minY + posY - margin;
   uniforms.uMaxY.value = maxY + posY + margin;
 
-  // Torus
-  const torusMaterial = baseMaterial.clone();
-  torusMaterial.uniforms.uIndex.value = 0;
-
-  const torusKnot = new THREE.Mesh(torusGeometry, torusMaterial);
+  // Torus knot
+  const torusKnotMaterial = baseMaterial.clone();
+  torusKnotMaterial.uniforms.uIndex.value = 0;
+  const torusKnot = new THREE.Mesh(torusknotGeometry, torusKnotMaterial);
   torusKnot.position.y = posY;
   scene.add(torusKnot);
 
   // Icosahedron
   const icosahedronMaterial = baseMaterial.clone();
   icosahedronMaterial.uniforms.uIndex.value = 1;
-
   const icosahedron = new THREE.Mesh(icosahedronGeometry, icosahedronMaterial);
   icosahedron.position.y = posY;
   scene.add(icosahedron);
+
+  // Torus
+  const torusMaterial = baseMaterial.clone();
+  torusMaterial.uniforms.uIndex.value = 2;
+  const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+  torus.position.y = posY;
+  scene.add(torus);
+
+  const materials = [torusKnotMaterial, icosahedronMaterial, torusMaterial];
 
   // ---------------------------------------
   const clock = new THREE.Clock();
@@ -130,11 +147,27 @@ const initThree = (app) => {
     const delta = clock.getDelta();
     const elapsedTime = clock.getElapsedTime();
 
+    // update index and animate progress
+    const newIndex = Math.floor((elapsedTime * 0.25) % 3);
+    if (newIndex !== params.currentIndex) {
+      params.currentIndex = newIndex;
+      params.nextIndex = newIndex === 2 ? 0 : newIndex + 1;
+      materials.forEach((material) => {
+        material.uniforms.uCurrentIndex.value = params.currentIndex;
+        material.uniforms.uNextIndex.value = params.nextIndex;
+        gsap.fromTo(
+          material.uniforms.uProgress,
+          { value: 0 },
+          { value: 1, duration: 1.5, ease: "linear" }
+        );
+      });
+    }
+
     // Update models
     torusKnot.rotation.y += delta * 0.5;
     torusKnot.rotation.x += delta * 0.5;
-    icosahedron.rotation.y += delta * 0.5;
-    icosahedron.rotation.x += delta * 0.5;
+    torus.rotation.y += delta * 0.5;
+    torus.rotation.x += delta * 0.5;
     // Update uniforms
     torusMaterial.uniforms.uTime.value = elapsedTime;
     icosahedronMaterial.uniforms.uTime.value = elapsedTime;
@@ -142,6 +175,15 @@ const initThree = (app) => {
     renderer.render(scene, camera);
   };
   animate();
+  materials.forEach((material) => {
+    material.uniforms.uCurrentIndex.value = params.currentIndex;
+    material.uniforms.uNextIndex.value = params.nextIndex;
+    gsap.fromTo(
+      material.uniforms.uProgress,
+      { value: 0 },
+      { value: 1, duration: 1.5, ease: "linear" }
+    );
+  });
 
   // ---------------------------------------
   // Resize
@@ -160,28 +202,23 @@ const initThree = (app) => {
   const gui = new GUI();
   gui
     .addColor(params, "color")
-    .name("color")
+    .name("hologram color")
     .onChange((val) => {
       torusKnot.material.uniforms.uColor.value = new THREE.Color(val);
       icosahedron.material.uniforms.uColor.value = new THREE.Color(val);
       pLight.color = new THREE.Color(val);
     });
   gui
-    .add(uniforms.uProgress, "value", 0, 1)
-    .name("progress")
-    .onChange((val) => {
-      torusKnot.material.uniforms.uProgress.value = val;
-      icosahedron.material.uniforms.uProgress.value = val;
-    });
-  gui
     .addColor(params, "stageColor")
-    .name("stageColor")
+    .name("stage color")
     .onChange((val) => (cylinder.material.color = new THREE.Color(val)));
   gui
     .addColor(params, "ambientLight")
+    .name("ambient light")
     .onChange((val) => (ambientLight.color = new THREE.Color(val)));
   gui
     .addColor(params, "directionalLight")
+    .name("directional light")
     .onChange((val) => (dLight.color = new THREE.Color(val)));
 };
 
