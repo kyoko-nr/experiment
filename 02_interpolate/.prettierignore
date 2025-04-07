@@ -1,9 +1,0 @@
-# Ignore artifacts:
-dist
-node_modules
-
-# Ignore files:
-*.d.ts
-package-lock.json
-*.html
-*.json
