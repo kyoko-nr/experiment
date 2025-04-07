@@ -204,8 +204,9 @@ const initThree = (app) => {
     .addColor(params, "color")
     .name("hologram color")
     .onChange((val) => {
-      torusKnot.material.uniforms.uColor.value = new THREE.Color(val);
-      icosahedron.material.uniforms.uColor.value = new THREE.Color(val);
+      materials.forEach((material) => {
+        material.uniforms.uColor.value = new THREE.Color(val);
+      });
       pLight.color = new THREE.Color(val);
     });
   gui
