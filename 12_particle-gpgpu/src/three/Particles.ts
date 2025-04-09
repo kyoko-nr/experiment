@@ -16,6 +16,9 @@ const VELOCITY_RANGE = 5;
 
 const uniforms = {
   uDelta: new THREE.Uniform(0),
+  uSeparationDistance: new THREE.Uniform(0),
+  uAlighmentDistance: new THREE.Uniform(0),
+  uCohisionDistance: new THREE.Uniform(0),
 };
 
 /**
@@ -29,7 +32,6 @@ export class Particles {
   private gpgpuRenderer: GPUComputationRenderer;
   private gpgpuPositionVariable: Variable;
   private gpgpuVelocityVariable: Variable;
-  // private gpgpuDebug: THREE.Object3D;
 
   constructor(renderer: THREE.WebGLRenderer, scene: THREE.Scene) {
     // ----------------------------------------
@@ -69,7 +71,7 @@ export class Particles {
     );
     this.gpgpuVelocityVariable.material.uniforms = uniforms;
     this.gpgpuVelocityVariable.wrapS = THREE.RepeatWrapping;
-    this.gpgpuVelocityVariable.wrapS = THREE.RepeatWrapping;
+    this.gpgpuVelocityVariable.wrapT = THREE.RepeatWrapping;
 
     this.gpgpuRenderer.setVariableDependencies(this.gpgpuPositionVariable, [
       this.gpgpuVelocityVariable,
@@ -79,7 +81,10 @@ export class Particles {
       this.gpgpuVelocityVariable,
       this.gpgpuPositionVariable,
     ]);
-    this.gpgpuRenderer.init();
+    const error = this.gpgpuRenderer.init();
+    if (error !== null) {
+      console.log("GPGPU error:", error);
+    }
 
     // ----------------------------------------
     // Debug
@@ -160,7 +165,7 @@ export class Particles {
       size.width * size.dpr,
       size.height * size.dpr
     );
-    // this.material.uniforms.uResolution.value = resolution;
+    this.material.uniforms.uResolution.value = resolution;
   }
 
   animate(delta: number) {
