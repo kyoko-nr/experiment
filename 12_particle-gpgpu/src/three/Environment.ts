@@ -24,7 +24,7 @@ export class Environment {
       0.1,
       100
     );
-    this.camera.position.set(0, 0, 10);
+    this.camera.position.set(0, 0, 20);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(size.width, size.height);

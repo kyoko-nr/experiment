@@ -8,17 +8,28 @@ import positionShader from "./shaders/gpgpu/position.glsl";
 import velocityShader from "./shaders/gpgpu/velocity.glsl";
 import vertexShader from "./shaders/particles/vertex.glsl";
 import fragmentShader from "./shaders/particles/fragment.glsl";
+import GUI from "lil-gui";
+
+const gui = new GUI();
 
 const WIDTH = 34;
 const particles = WIDTH * WIDTH;
 const POSITION_RANGE = 10;
 const VELOCITY_RANGE = 5;
 
+const params = {
+  speed: 0.5,
+  separationDistance: 0,
+  alignmentDistance: 40,
+  cohisionDistance: 0,
+};
+
 const uniforms = {
   uDelta: new THREE.Uniform(0),
-  uSeparationDistance: new THREE.Uniform(0),
-  uAlighmentDistance: new THREE.Uniform(0),
-  uCohisionDistance: new THREE.Uniform(0),
+  uSpeed: new THREE.Uniform(params.speed),
+  uSeparationDistance: new THREE.Uniform(params.separationDistance),
+  uAlignmentDistance: new THREE.Uniform(params.alignmentDistance),
+  uCohisionDistance: new THREE.Uniform(params.cohisionDistance),
 };
 
 /**
@@ -154,6 +165,28 @@ export class Particles {
 
     this.points = new THREE.Points(this.geometry, this.material);
     scene.add(this.points);
+
+    // -------------------------
+    // GUI
+    gui
+      .add(params, "alignmentDistance")
+      .min(0)
+      .max(1000)
+      .name("Alignment distance")
+      .onChange(
+        (val) =>
+          (this.gpgpuVelocityVariable.material.uniforms.uAlignmentDistance.value =
+            val)
+      );
+    gui
+      .add(params, "speed")
+      .min(0)
+      .max(5)
+      .step(0.01)
+      .onChange((val) => {
+        this.gpgpuPositionVariable.material.uniforms.uSpeed.value = val;
+        this.gpgpuVelocityVariable.material.uniforms.uSpeed.value = val;
+      });
   }
 
   /**
