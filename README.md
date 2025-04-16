@@ -3,4 +3,58 @@
 - Personal experiment projects
 - Basically using Three.js and shaders
 
-For more information, see each project's README.md.
+### 04 Interactive background
+
+[04_interactive-background](./04_interactive-background)
+
+![interactive background](./docs/wave.jpg)
+
+### 07 Wave text
+
+[07_wave-text](./07_wave-text)
+
+![wave text](./docs/wave-text.jpg)
+
+### 08 Grid glitch
+
+[08_grid-glitch](./08_grid-glitch)
+
+![grid glitch](./docs/fisheye_grid.gif)
+
+### 09 Toonshading
+
+[09_toonshading](./09_toonshading)
+
+![toon shading](./docs/toon_halftone_shading.jpg)
+
+### 10 Raycast color
+
+[10_raycast-color](./10_raycast-color)
+
+![raycast color](./docs/raycast-color.jpg)
+
+### 11 Particles
+
+[11_particles](./11_particles)
+
+![particles](./docs/particle_scroll.gif)
+
+### 12 Particle gpgpu
+
+🚧
+
+### 13 Geometry transform
+
+[13_geometry-transform](./13_geometry-transform)
+
+![geometry transform](./docs/geom-transform.png)
+
+### 14 Hologram
+
+[14_hologram](./14_hologram)
+
+![hologram](./docs/hologram.gif)
+
+### 15_geometry-noise
+
+🚧
