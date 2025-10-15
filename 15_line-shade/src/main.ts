@@ -13,7 +13,7 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, clock } = createEnvironment({
+const { scene, camera, renderer, controls } = createEnvironment({
   app,
   sizes,
 });
@@ -35,13 +35,8 @@ const onResize = () => {
 window.addEventListener("resize", onResize);
 
 const tick = () => {
-  const delta = clock.getDelta();
-
-  capsule.rotation.x += 0.3 * delta;
-  capsule.rotation.y += 0.4 * delta;
-
+  controls.update();
   renderer.render(scene, camera);
-
   requestAnimationFrame(tick);
 };
 

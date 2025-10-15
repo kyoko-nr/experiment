@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 type EnvironmentConfig = {
   app: HTMLDivElement;
@@ -13,6 +14,7 @@ export type Environment = {
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   clock: THREE.Clock;
+  controls: OrbitControls;
 };
 
 export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environment => {
@@ -33,6 +35,9 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environmen
   camera.position.set(3, 3.5, 6);
   camera.lookAt(0, 0.75, 0);
   scene.add(camera);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 0.75, 0);
+  controls.enableDamping = true;
 
   const floorGeometry = new THREE.PlaneGeometry(12, 12);
   const floorMaterial = new THREE.ShadowMaterial({
@@ -66,5 +71,6 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environmen
     camera,
     renderer,
     clock,
+    controls,
   };
 };
