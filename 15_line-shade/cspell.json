@@ -1,0 +1,7 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": ["node_modules", "dist", "package-lock.json", "**/*.svg"],
+  "words": ["glsl", "Avenir"],
+  "dictionaries": ["typescript", "node"]
+}
