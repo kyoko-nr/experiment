@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { guiConfig } from "./gui";
 
 type EnvironmentConfig = {
   app: HTMLDivElement;
@@ -52,7 +53,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environmen
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1.4);
-  directionalLight.position.set(0.2, 5, -2);
+  directionalLight.position.set(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z);
   directionalLight.castShadow = true;
   directionalLight.shadow.mapSize.set(1024, 1024);
   directionalLight.shadow.camera.near = 0.5;

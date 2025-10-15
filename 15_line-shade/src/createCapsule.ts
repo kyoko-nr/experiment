@@ -1,44 +1,49 @@
 import * as THREE from "three";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import vertexShader from "./shaders/capsule/vertex.glsl";
+import fragmentShader from "./shaders/capsule/fragment.glsl";
+import { guiConfig } from "./gui";
 
 export const createCapsule = (): THREE.Mesh => {
   const capsuleGeometry = new THREE.CapsuleGeometry(0.3, 5, 12, 24, 128);
   capsuleGeometry.rotateZ(Math.PI * 0.5);
 
   const uniforms = {
-    uFrequency: new THREE.Uniform(2.5),
-    uWaveAmplitude: new THREE.Uniform(0.4),
+    uFrequency: new THREE.Uniform(guiConfig.capsule.uFrequency),
+    uWaveAmplitude: new THREE.Uniform(guiConfig.capsule.uWaveAmplitude),
+    uLightDir: new THREE.Uniform(
+      new THREE.Vector3(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z),
+    ),
+    uLightColor: new THREE.Uniform(new THREE.Color(guiConfig.capsule.uLightColor)),
+    uShadowColor: new THREE.Uniform(new THREE.Color(guiConfig.capsule.uShadowColor)),
   };
 
   const capsuleMaterial = new CustomShaderMaterial({
     baseMaterial: THREE.MeshStandardMaterial,
     vertexShader,
+    fragmentShader,
     uniforms,
-    color: new THREE.Color(0x2e7dab),
-    roughness: 0.4,
-    metalness: 0.15,
-    // wireframe: true,
+    roughness: 0.8,
+    metalness: 0,
   });
   capsuleMaterial.name = "CapsuleWaveMaterial";
 
   const capsule = new THREE.Mesh(capsuleGeometry, capsuleMaterial);
   capsule.receiveShadow = true;
 
-  const depthMaterial = new CustomShaderMaterial({
-    baseMaterial: THREE.MeshDepthMaterial,
-    vertexShader,
-    uniforms,
-    depthPacking: THREE.RGBADepthPacking,
-  });
-  capsule.customDepthMaterial = depthMaterial;
-
-  const distanceMaterial = new CustomShaderMaterial({
-    baseMaterial: THREE.MeshDistanceMaterial,
-    vertexShader,
-    uniforms,
-  });
-  capsule.customDistanceMaterial = distanceMaterial;
-
   return capsule;
+};
+
+export const updateCapsules = (params: {
+  capsule: THREE.Mesh;
+  directionalLight: THREE.DirectionalLight;
+}) => {
+  const { capsule, directionalLight } = params;
+  const uniforms = (capsule.material as THREE.ShaderMaterial).uniforms;
+
+  uniforms.uFrequency.value = guiConfig.capsule.uFrequency;
+  uniforms.uWaveAmplitude.value = guiConfig.capsule.uWaveAmplitude;
+  uniforms.uLightColor.value?.set(guiConfig.capsule.uLightColor);
+  uniforms.uShadowColor.value?.set(guiConfig.capsule.uShadowColor);
+  uniforms.uLightDir.value.copy(directionalLight.position);
 };
