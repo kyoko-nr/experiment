@@ -15,6 +15,7 @@ export type Environment = {
   renderer: THREE.WebGLRenderer;
   clock: THREE.Clock;
   controls: OrbitControls;
+  directionalLight: THREE.DirectionalLight;
 };
 
 export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environment => {
@@ -32,11 +33,9 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environmen
   app.appendChild(renderer.domElement);
 
   const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100);
-  camera.position.set(3, 3.5, 6);
-  camera.lookAt(0, 0.75, 0);
+  camera.position.set(0, 3.5, 6);
   scene.add(camera);
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.75, 0);
   controls.enableDamping = true;
 
   const floorGeometry = new THREE.PlaneGeometry(12, 12);
@@ -53,7 +52,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environmen
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1.4);
-  directionalLight.position.set(-4, 6, -2);
+  directionalLight.position.set(0.2, 5, -2);
   directionalLight.castShadow = true;
   directionalLight.shadow.mapSize.set(1024, 1024);
   directionalLight.shadow.camera.near = 0.5;
@@ -72,5 +71,6 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environmen
     renderer,
     clock,
     controls,
+    directionalLight,
   };
 };
