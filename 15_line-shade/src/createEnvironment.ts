@@ -10,16 +10,7 @@ type EnvironmentConfig = {
   };
 };
 
-export type Environment = {
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
-  clock: THREE.Clock;
-  controls: OrbitControls;
-  directionalLight: THREE.DirectionalLight;
-};
-
-export const createEnvironment = ({ app, sizes }: EnvironmentConfig): Environment => {
+export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   const scene = new THREE.Scene();
 
   const renderer = new THREE.WebGLRenderer({

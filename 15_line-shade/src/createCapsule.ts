@@ -16,6 +16,7 @@ export const createCapsule = (): THREE.Mesh => {
     ),
     uLightColor: new THREE.Uniform(new THREE.Color(guiConfig.capsule.uLightColor)),
     uShadowColor: new THREE.Uniform(new THREE.Color(guiConfig.capsule.uShadowColor)),
+    uElapsedTime: new THREE.Uniform(0),
   };
 
   const capsuleMaterial = new CustomShaderMaterial({
@@ -36,14 +37,15 @@ export const createCapsule = (): THREE.Mesh => {
 
 export const updateCapsules = (params: {
   capsule: THREE.Mesh;
-  directionalLight: THREE.DirectionalLight;
+  elapsedTime: number;
 }) => {
-  const { capsule, directionalLight } = params;
+  const { capsule, elapsedTime } = params;
   const uniforms = (capsule.material as THREE.ShaderMaterial).uniforms;
 
+  uniforms.uElapsedTime.value = elapsedTime;
   uniforms.uFrequency.value = guiConfig.capsule.uFrequency;
   uniforms.uWaveAmplitude.value = guiConfig.capsule.uWaveAmplitude;
   uniforms.uLightColor.value?.set(guiConfig.capsule.uLightColor);
   uniforms.uShadowColor.value?.set(guiConfig.capsule.uShadowColor);
-  uniforms.uLightDir.value.copy(directionalLight.position);
+  uniforms.uLightDir.value.copy(new THREE.Vector3(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z));
 };

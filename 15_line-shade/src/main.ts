@@ -14,7 +14,7 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight } = createEnvironment({
+const { scene, camera, renderer, controls, directionalLight, clock } = createEnvironment({
   app,
   sizes,
 });
@@ -42,7 +42,7 @@ const tick = () => {
   controls.update();
   // 毎フレーム、configから値を参照して反映
   directionalLight.position.set(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z);
-  updateCapsules({ capsule, directionalLight });
+  updateCapsules({ capsule, elapsedTime: clock.getElapsedTime() });
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 };

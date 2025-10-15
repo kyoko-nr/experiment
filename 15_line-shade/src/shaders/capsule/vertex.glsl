@@ -1,5 +1,6 @@
 uniform float uFrequency;
 uniform float uWaveAmplitude;
+uniform float uElapsedTime;
 
 varying vec3 vNormalW;
 
@@ -9,6 +10,6 @@ void main() {
 
   // 波波にする
   float wavePhase = csm_Position.x * uFrequency;
-  float waveOffset = sin(wavePhase) * uWaveAmplitude;
+  float waveOffset = sin(wavePhase + uElapsedTime) * uWaveAmplitude;
   csm_Position.y += waveOffset;
 }
