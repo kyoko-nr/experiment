@@ -10,6 +10,8 @@ type EnvironmentConfig = {
   };
 };
 
+const ORIGIN = new THREE.Vector3(0, 0, 0);
+
 export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   const scene = new THREE.Scene();
 
@@ -71,4 +73,22 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
     directionalLight,
     directionalLightHelper,
   };
+};
+
+/**
+ * カメラを原点(0, 0, 0)を見つめたまま、Y軸回りに周回させる。
+ * x と z をほんの少し揺らしてアクセントをつける。
+ */
+export const updateCamera = (camera: THREE.PerspectiveCamera, elapsedTime: number) => {
+  const radius = 6; // 周回半径（初期位置に合わせる）
+  const angularSpeed = 0.35; // 回転速度（遅め）
+
+  const baseX = Math.cos(elapsedTime * angularSpeed) * radius;
+  const baseZ = Math.sin(elapsedTime * angularSpeed) * radius;
+
+  // アクセント（ごく小さな揺れ）
+  const wobbleX = Math.cos(elapsedTime * 0.5) * 0.9 + 0.5;
+
+  camera.position.set(baseX + wobbleX, 0, baseZ);
+  camera.lookAt(ORIGIN);
 };

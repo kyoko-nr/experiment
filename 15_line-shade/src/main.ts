@@ -1,6 +1,6 @@
 import "./style.css";
-import { createCapsule, updateCapsules } from "./createCapsule";
-import { createEnvironment } from "./createEnvironment";
+import { createCapsule, updateCapsules } from "./capsules";
+import { createEnvironment, updateCamera } from "./environments";
 import { setupGUI, guiConfig } from "./gui";
 import * as THREE from "three";
 
@@ -15,7 +15,7 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight, directionalLightHelper } =
+const { scene, camera, renderer, controls, directionalLight, directionalLightHelper, clock } =
   createEnvironment({
     app,
     sizes,
@@ -42,6 +42,8 @@ window.addEventListener("resize", onResize);
 
 const tick = () => {
   controls.update();
+  const elapsed = clock.getElapsedTime();
+  updateCamera(camera, elapsed);
   // 毎フレーム、configから値を参照して反映
   directionalLight.position.set(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z);
   // ライトヘルパーの更新
