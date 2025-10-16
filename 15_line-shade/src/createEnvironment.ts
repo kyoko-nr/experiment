@@ -19,13 +19,14 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0xffffff, 1);
+  // renderer.setClearColor(0x222222, 1);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   app.appendChild(renderer.domElement);
 
   const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100);
-  camera.position.set(0, 3.5, 6);
+  camera.position.set(0, 0, 6);
   scene.add(camera);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -55,6 +56,10 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   directionalLight.shadow.camera.bottom = -5;
   scene.add(directionalLight);
 
+  // DirectionalLight のヘルパー
+  const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1, 0xff0000);
+  scene.add(directionalLightHelper);
+
   const clock = new THREE.Clock();
 
   return {
@@ -64,5 +69,6 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
     clock,
     controls,
     directionalLight,
+    directionalLightHelper,
   };
 };

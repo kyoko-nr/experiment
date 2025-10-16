@@ -4,8 +4,9 @@ import GUI from "lil-gui";
 
 // GUIの初期値（現状のデフォルトと同期）
 export const guiConfig = {
-  light: { x: -4, y: 6, z: -0.2 },
+  light: { x: -1, y: 4, z: -0.2 },
   capsule: {
+    mode: 0,
     uFrequency: 2.6,
     uWaveAmplitude: 0.45,
     uLightColor: "#f9ffa8",
@@ -18,6 +19,7 @@ export const setupGUI = () => {
 
   // Capsule shader config controls (configへの書き込み)
   const waveFolder = gui.addFolder("Capsule Wave");
+  waveFolder.add(guiConfig.capsule, "mode", { wave: 0, churros: 1 }).name("shape");
   waveFolder.add(guiConfig.capsule, "uFrequency", 0, 10, 0.01).name("uFrequency");
   waveFolder.add(guiConfig.capsule, "uWaveAmplitude", 0, 2, 0.01).name("uWaveAmplitude");
   waveFolder.addColor(guiConfig.capsule, "uLightColor").name("uLightColor");

@@ -2,6 +2,7 @@ import "./style.css";
 import { createCapsule, updateCapsules } from "./createCapsule";
 import { createEnvironment } from "./createEnvironment";
 import { setupGUI, guiConfig } from "./gui";
+import * as THREE from "three";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -14,10 +15,11 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight, clock } = createEnvironment({
-  app,
-  sizes,
-});
+const { scene, camera, renderer, controls, directionalLight, directionalLightHelper, clock } =
+  createEnvironment({
+    app,
+    sizes,
+  });
 
 const capsule = createCapsule();
 scene.add(capsule);
@@ -42,7 +44,17 @@ const tick = () => {
   controls.update();
   // 毎フレーム、configから値を参照して反映
   directionalLight.position.set(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z);
-  updateCapsules({ capsule, elapsedTime: clock.getElapsedTime() });
+  // ライトヘルパーの更新
+  directionalLightHelper.update();
+
+  // ライトの向きを算出
+  const lightDir = new THREE.Vector3();
+  const target = new THREE.Vector3();
+  directionalLight.getWorldPosition(lightDir);
+  const lightDirW = target.clone().sub(lightDir).normalize();
+
+  // capsuleの描画更新
+  updateCapsules({ capsule, elapsedTime: clock.getElapsedTime(), lightDir: lightDirW });
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 };
