@@ -4,9 +4,9 @@ import GUI from "lil-gui";
 
 // GUIの初期値（現状のデフォルトと同期）
 export const guiConfig = {
-  light: { x: -1, y: 4, z: -0.2 },
+  light: { x: -1, y: 4, z: -0.25 },
   capsule: {
-    mode: 0,
+    mode: 1,
     uFrequency: 2.6,
     uWaveAmplitude: 0.45,
     uLightColor: "#f9ffa8",

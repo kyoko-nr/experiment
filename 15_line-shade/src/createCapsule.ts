@@ -17,7 +17,6 @@ export const createCapsule = (): THREE.Mesh => {
     ),
     uLightColor: new THREE.Uniform(new THREE.Color(guiConfig.capsule.uLightColor)),
     uShadowColor: new THREE.Uniform(new THREE.Color(guiConfig.capsule.uShadowColor)),
-    uElapsedTime: new THREE.Uniform(0),
   };
 
   const capsuleMaterial = new CustomShaderMaterial({
@@ -27,10 +26,7 @@ export const createCapsule = (): THREE.Mesh => {
     uniforms,
     roughness: 0.8,
     metalness: 0,
-    side: THREE.FrontSide,
-    depthTest: true,
-    depthWrite: true,
-    transparent: false,
+    side: THREE.DoubleSide,
   });
   capsuleMaterial.name = "CapsuleWaveMaterial";
 
@@ -40,15 +36,10 @@ export const createCapsule = (): THREE.Mesh => {
   return capsule;
 };
 
-export const updateCapsules = (params: {
-  capsule: THREE.Mesh;
-  elapsedTime: number;
-  lightDir: THREE.Vector3;
-}) => {
-  const { capsule, elapsedTime, lightDir } = params;
+export const updateCapsules = (params: { capsule: THREE.Mesh; lightDir: THREE.Vector3 }) => {
+  const { capsule, lightDir } = params;
   const uniforms = (capsule.material as THREE.ShaderMaterial).uniforms;
 
-  uniforms.uElapsedTime.value = elapsedTime;
   uniforms.uDeformType.value = guiConfig.capsule.mode;
   uniforms.uFrequency.value = guiConfig.capsule.uFrequency;
   uniforms.uWaveAmplitude.value = guiConfig.capsule.uWaveAmplitude;

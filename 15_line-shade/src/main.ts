@@ -15,7 +15,7 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight, directionalLightHelper, clock } =
+const { scene, camera, renderer, controls, directionalLight, directionalLightHelper } =
   createEnvironment({
     app,
     sizes,
@@ -54,7 +54,7 @@ const tick = () => {
   const lightDirW = target.clone().sub(lightDir).normalize();
 
   // capsuleの描画更新
-  updateCapsules({ capsule, elapsedTime: clock.getElapsedTime(), lightDir: lightDirW });
+  updateCapsules({ capsule, lightDir: lightDirW });
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 };
