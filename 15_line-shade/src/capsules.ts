@@ -16,6 +16,13 @@ export const createCapsule = (): THREE.Mesh => {
     uHelixAmplitude: new THREE.Uniform(guiConfig.capsule.uHelixAmplitude),
     uHelixRadius: new THREE.Uniform(guiConfig.capsule.uHelixRadius),
     uHelixPitch: new THREE.Uniform(guiConfig.capsule.uHelixPitch),
+    uRotation: new THREE.Uniform(
+      new THREE.Vector3(
+        guiConfig.capsule.rotation.x,
+        guiConfig.capsule.rotation.y,
+        guiConfig.capsule.rotation.z,
+      ),
+    ),
     uLightDir: new THREE.Uniform(
       new THREE.Vector3(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z),
     ),
@@ -51,6 +58,11 @@ export const updateCapsules = (params: { capsule: THREE.Mesh; lightDir: THREE.Ve
   uniforms.uHelixAmplitude.value = guiConfig.capsule.uHelixAmplitude;
   uniforms.uHelixRadius.value = guiConfig.capsule.uHelixRadius;
   uniforms.uHelixPitch.value = guiConfig.capsule.uHelixPitch;
+  uniforms.uRotation.value.set(
+    guiConfig.capsule.rotation.x,
+    guiConfig.capsule.rotation.y,
+    guiConfig.capsule.rotation.z,
+  );
   uniforms.uLightColor.value?.set(guiConfig.capsule.uLightColor);
   uniforms.uShadowColor.value?.set(guiConfig.capsule.uShadowColor);
   uniforms.uLightDir.value.copy(lightDir);

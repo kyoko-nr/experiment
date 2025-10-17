@@ -13,6 +13,7 @@ export const guiConfig = {
     uHelixAmplitude: 0.3,
     uHelixRadius: 0.8,
     uHelixPitch: 0.9,
+    rotation: { x: 0, y: 0, z: 0 },
     uLightColor: "#f9ffa8",
     uShadowColor: "#66c7ff",
   },
@@ -34,6 +35,11 @@ export const setupGUI = () => {
   helixFolder.add(guiConfig.capsule, "uHelixAmplitude", 0, 2, 0.01).name("amplitude");
   helixFolder.add(guiConfig.capsule, "uHelixRadius", 0.1, 2.5, 0.01).name("radius");
   helixFolder.add(guiConfig.capsule, "uHelixPitch", -1.5, 1.5, 0.01).name("pitch");
+
+  const rotateFolder = capsuleFolder.addFolder("rotate");
+  rotateFolder.add(guiConfig.capsule.rotation, "x", -Math.PI, Math.PI, 0.01).name("rotateX");
+  rotateFolder.add(guiConfig.capsule.rotation, "y", -Math.PI, Math.PI, 0.01).name("rotateY");
+  rotateFolder.add(guiConfig.capsule.rotation, "z", -Math.PI, Math.PI, 0.01).name("rotateZ");
 
   capsuleFolder.addColor(guiConfig.capsule, "uLightColor").name("lightColor");
   capsuleFolder.addColor(guiConfig.capsule, "uShadowColor").name("shadowColor");

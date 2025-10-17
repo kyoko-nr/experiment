@@ -5,6 +5,7 @@ uniform float uHelixFrequency;
 uniform float uHelixAmplitude;
 uniform float uHelixRadius;
 uniform float uHelixPitch;
+uniform vec3 uRotation;
 
 varying vec3 vNormalW;
 
@@ -13,6 +14,7 @@ const float e = 0.0008;
 #include "./wave.glsl"
 #include "./churros.glsl"
 #include "./helix.glsl"
+#include "./rotateXYZ.glsl"
 #include "./calcnorm.glsl"
 
 void main() {
@@ -45,8 +47,10 @@ void main() {
     );
     norm = calcNorm(jacobian, normal);
   }
-  csm_Position = result;
-  csm_Normal = norm;
+  vec3 rotatedPosition = rotateXYZ(result, uRotation);
+  vec3 rotatedNormal = normalize(rotateXYZ(norm, uRotation));
+  csm_Position = rotatedPosition;
+  csm_Normal = rotatedNormal;
 
-  vNormalW = normalize(mat3(modelMatrix) * norm);
+  vNormalW = normalize(mat3(modelMatrix) * rotatedNormal);
 }
