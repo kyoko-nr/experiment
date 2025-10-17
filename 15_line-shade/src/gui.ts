@@ -5,6 +5,9 @@ import GUI from "lil-gui";
 // GUIの初期値（現状のデフォルトと同期）
 export const guiConfig = {
   light: { x: -1, y: 4, z: -0.25 },
+  environment: {
+    backgroundColor: "#ffb375",
+  },
   capsule: {
     mode: 1,
     uWaveFrequency: 3.8,
@@ -14,8 +17,8 @@ export const guiConfig = {
     uHelixRadius: 0.8,
     uHelixPitch: 0.9,
     rotation: { x: 0, y: 0, z: 0 },
-    uLightColor: "#f9ffa8",
-    uShadowColor: "#66c7ff",
+    uLightColor: "#feffad",
+    uShadowColor: "#46a6dd",
   },
 } as const;
 
@@ -36,13 +39,16 @@ export const setupGUI = () => {
   helixFolder.add(guiConfig.capsule, "uHelixRadius", 0.1, 2.5, 0.01).name("radius");
   helixFolder.add(guiConfig.capsule, "uHelixPitch", -1.5, 1.5, 0.01).name("pitch");
 
-  const rotateFolder = capsuleFolder.addFolder("rotate");
-  rotateFolder.add(guiConfig.capsule.rotation, "x", -Math.PI, Math.PI, 0.01).name("rotateX");
-  rotateFolder.add(guiConfig.capsule.rotation, "y", -Math.PI, Math.PI, 0.01).name("rotateY");
-  rotateFolder.add(guiConfig.capsule.rotation, "z", -Math.PI, Math.PI, 0.01).name("rotateZ");
+  // const rotateFolder = capsuleFolder.addFolder("rotate");
+  // rotateFolder.add(guiConfig.capsule.rotation, "x", -Math.PI, Math.PI, 0.01).name("rotateX");
+  // rotateFolder.add(guiConfig.capsule.rotation, "y", -Math.PI, Math.PI, 0.01).name("rotateY");
+  // rotateFolder.add(guiConfig.capsule.rotation, "z", -Math.PI, Math.PI, 0.01).name("rotateZ");
 
   capsuleFolder.addColor(guiConfig.capsule, "uLightColor").name("lightColor");
   capsuleFolder.addColor(guiConfig.capsule, "uShadowColor").name("shadowColor");
+
+  const environmentFolder = gui.addFolder("Environment");
+  environmentFolder.addColor(guiConfig.environment, "backgroundColor").name("background");
 
   // Directional Light position controls (configへの書き込み)
   const lightFolder = gui.addFolder("DirectionalLight");

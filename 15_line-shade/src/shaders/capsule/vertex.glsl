@@ -11,6 +11,10 @@ varying vec3 vNormalW;
 
 const float e = 0.0008;
 
+const vec3 rotateWaveAngle = vec3(0.0, 0.0, -0.4);
+const vec3 rotateChurrosAngle = vec3(-0.6, 0.0, 0.0);
+const vec3 rotateHelixAngle = vec3(0.0, 0.7, 0.5);
+
 #include "./wave.glsl"
 #include "./churros.glsl"
 #include "./helix.glsl"
@@ -20,14 +24,17 @@ const float e = 0.0008;
 void main() {
   vec3 result;
   vec3 norm;
+  vec3 angle = uRotation;
   if (uDeformType == 0) {
     result = wave(csm_Position, uWaveFrequency, uWaveAmplitude);
     mat3 jacobian = jacobianWave(csm_Position, result, e, uWaveFrequency, uWaveAmplitude);
     norm = calcNorm(jacobian, normal);
+    angle = rotateWaveAngle;
   } else if (uDeformType == 1) {
     result = churros(csm_Position);
     mat3 jacobian = jacobianChurros(csm_Position, result, e);
     norm = calcNorm(jacobian, normal);
+    angle = rotateChurrosAngle;
   } else {
     result = helix(
       csm_Position,
@@ -46,11 +53,12 @@ void main() {
       uHelixPitch
     );
     norm = calcNorm(jacobian, normal);
+    angle = rotateHelixAngle;
   }
-  vec3 rotatedPosition = rotateXYZ(result, uRotation);
-  vec3 rotatedNormal = normalize(rotateXYZ(norm, uRotation));
-  csm_Position = rotatedPosition;
-  csm_Normal = rotatedNormal;
+  result = rotateXYZ(result, angle);
+  norm = normalize(rotateXYZ(norm, angle));
+  csm_Position = result;
+  csm_Normal = norm;
 
-  vNormalW = normalize(mat3(modelMatrix) * rotatedNormal);
+  vNormalW = normalize(mat3(modelMatrix) * norm);
 }

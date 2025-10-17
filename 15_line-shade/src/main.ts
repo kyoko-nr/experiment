@@ -55,6 +55,8 @@ const tick = () => {
   directionalLight.getWorldPosition(lightDir);
   const lightDirW = target.clone().sub(lightDir).normalize();
 
+  renderer.setClearColor(guiConfig.environment.backgroundColor, 1);
+
   // capsuleの描画更新
   updateCapsules({ capsule, lightDir: lightDirW });
   renderer.render(scene, camera);

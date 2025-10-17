@@ -20,8 +20,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   });
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0xffffff, 1);
-  // renderer.setClearColor(0x222222, 1);
+  renderer.setClearColor(guiConfig.environment.backgroundColor, 1);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -60,7 +59,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
 
   // DirectionalLight のヘルパー
   const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1, 0xff0000);
-  scene.add(directionalLightHelper);
+  // scene.add(directionalLightHelper);
 
   const clock = new THREE.Clock();
 
