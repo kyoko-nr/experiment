@@ -10,8 +10,12 @@ export const createCapsule = (): THREE.Mesh => {
 
   const uniforms = {
     uDeformType: new THREE.Uniform(guiConfig.capsule.mode),
-    uFrequency: new THREE.Uniform(guiConfig.capsule.uFrequency),
+    uWaveFrequency: new THREE.Uniform(guiConfig.capsule.uWaveFrequency),
     uWaveAmplitude: new THREE.Uniform(guiConfig.capsule.uWaveAmplitude),
+    uHelixFrequency: new THREE.Uniform(guiConfig.capsule.uHelixFrequency),
+    uHelixAmplitude: new THREE.Uniform(guiConfig.capsule.uHelixAmplitude),
+    uHelixRadius: new THREE.Uniform(guiConfig.capsule.uHelixRadius),
+    uHelixPitch: new THREE.Uniform(guiConfig.capsule.uHelixPitch),
     uLightDir: new THREE.Uniform(
       new THREE.Vector3(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z),
     ),
@@ -41,8 +45,12 @@ export const updateCapsules = (params: { capsule: THREE.Mesh; lightDir: THREE.Ve
   const uniforms = (capsule.material as THREE.ShaderMaterial).uniforms;
 
   uniforms.uDeformType.value = guiConfig.capsule.mode;
-  uniforms.uFrequency.value = guiConfig.capsule.uFrequency;
+  uniforms.uWaveFrequency.value = guiConfig.capsule.uWaveFrequency;
   uniforms.uWaveAmplitude.value = guiConfig.capsule.uWaveAmplitude;
+  uniforms.uHelixFrequency.value = guiConfig.capsule.uHelixFrequency;
+  uniforms.uHelixAmplitude.value = guiConfig.capsule.uHelixAmplitude;
+  uniforms.uHelixRadius.value = guiConfig.capsule.uHelixRadius;
+  uniforms.uHelixPitch.value = guiConfig.capsule.uHelixPitch;
   uniforms.uLightColor.value?.set(guiConfig.capsule.uLightColor);
   uniforms.uShadowColor.value?.set(guiConfig.capsule.uShadowColor);
   uniforms.uLightDir.value.copy(lightDir);
