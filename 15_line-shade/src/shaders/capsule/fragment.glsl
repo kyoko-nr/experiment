@@ -11,7 +11,7 @@ void main() {
     #ifdef GL_OES_standard_derivatives
         // WebGL1 でも gl_FrontFacing は使えます
     #endif
-        norm *= (gl_FrontFacing ? 1.0 : -1.0); 
+        norm *= (gl_FrontFacing ? 1.0 : -1.0);
 
     float ndl = min(max(dot(norm, light), 0.0) * 2.5, 1.0);
 
