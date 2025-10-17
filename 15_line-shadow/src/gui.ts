@@ -27,7 +27,7 @@ export const setupGUI = () => {
 
   // Capsule shader config controls (configへの書き込み)
   const capsuleFolder = gui.addFolder("Capsule");
-  capsuleFolder.add(guiConfig.capsule, "mode", { wave: 0, churros: 1, helix: 2 }).name("shape");
+  // capsuleFolder.add(guiConfig.capsule, "mode", { wave: 0, churros: 1, helix: 2 }).name("shape");
 
   const waveFolder = capsuleFolder.addFolder("wave");
   waveFolder.add(guiConfig.capsule, "uWaveFrequency", 0, 10, 0.01).name("frequency");
