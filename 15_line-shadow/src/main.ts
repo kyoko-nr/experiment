@@ -15,11 +15,10 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight, clock } =
-  createEnvironment({
-    app,
-    sizes,
-  });
+const { scene, camera, renderer, controls, directionalLight, clock } = createEnvironment({
+  app,
+  sizes,
+});
 
 const capsule = createCapsule();
 scene.add(capsule);
