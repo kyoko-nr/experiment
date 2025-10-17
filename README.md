@@ -55,6 +55,8 @@
 
 ![hologram](./docs/hologram.gif)
 
-### 15_geometry-noise
+### 15 Line shadow
 
-🚧
+[15_line-shadow](./15_line-shadow)
+
+![line shadow](./docs/colored_shadow.gif)
