@@ -17,10 +17,10 @@ export const guiConfig = {
     uHelixRadius: 0.8,
     uHelixPitch: 0.9,
     rotation: { x: 0, y: 0, z: 0 },
-    uLightColor: "#feffad",
-    uShadowColor: "#46a6dd",
+    uLightColor: "#feffb8",
+    uShadowColor: "#3a95cb",
   },
-} as const;
+};
 
 export const setupGUI = () => {
   const gui = new GUI();

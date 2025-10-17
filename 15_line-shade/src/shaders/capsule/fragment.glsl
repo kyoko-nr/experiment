@@ -17,4 +17,7 @@ void main() {
 
     vec3 color = mix(uLightColor, uShadowColor, ndl);
     csm_DiffuseColor = vec4(color, 1.0);
+
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
 }

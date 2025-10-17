@@ -42,7 +42,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   floor.receiveShadow = true;
   scene.add(floor);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1.4);

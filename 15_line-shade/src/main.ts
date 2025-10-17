@@ -15,7 +15,7 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight, directionalLightHelper, clock } =
+const { scene, camera, renderer, controls, directionalLight, clock } =
   createEnvironment({
     app,
     sizes,
@@ -44,10 +44,11 @@ const tick = () => {
   controls.update();
   const elapsed = clock.getElapsedTime();
   updateCamera(camera, elapsed);
+
   // 毎フレーム、configから値を参照して反映
   directionalLight.position.set(guiConfig.light.x, guiConfig.light.y, guiConfig.light.z);
   // ライトヘルパーの更新
-  directionalLightHelper.update();
+  // directionalLightHelper.update();
 
   // ライトの向きを算出
   const lightDir = new THREE.Vector3();
@@ -58,6 +59,7 @@ const tick = () => {
   renderer.setClearColor(guiConfig.environment.backgroundColor, 1);
 
   // capsuleの描画更新
+  guiConfig.capsule.mode = (elapsed * 0.5) % 3;
   updateCapsules({ capsule, lightDir: lightDirW });
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
