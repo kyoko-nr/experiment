@@ -26,12 +26,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
 
   app.appendChild(renderer.domElement);
 
-  const camera = new THREE.PerspectiveCamera(
-    45,
-    sizes.width / sizes.height,
-    0.1,
-    100,
-  );
+  const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100);
   camera.position.set(0, 0, 6);
   scene.add(camera);
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -53,11 +48,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
   scene.add(directionalLight);
 
   // DirectionalLight のヘルパー
-  const directionalLightHelper = new THREE.DirectionalLightHelper(
-    directionalLight,
-    1,
-    0xff0000,
-  );
+  const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1, 0xff0000);
   // scene.add(directionalLightHelper);
 
   const clock = new THREE.Clock();
@@ -77,10 +68,7 @@ export const createEnvironment = ({ app, sizes }: EnvironmentConfig) => {
  * カメラを原点(0, 0, 0)を見つめたまま、Y軸回りに周回させる。
  * x と z をほんの少し揺らしてアクセントをつける。
  */
-export const updateCamera = (
-  camera: THREE.PerspectiveCamera,
-  elapsedTime: number,
-) => {
+export const updateCamera = (camera: THREE.PerspectiveCamera, elapsedTime: number) => {
   const radius = 6; // 周回半径（初期位置に合わせる）
   const angularSpeed = 0.35; // 回転速度（遅め）
 

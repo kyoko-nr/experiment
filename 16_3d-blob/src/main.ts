@@ -1,7 +1,7 @@
 import "./style.css";
-import * as THREE from "three";
+import { createBlob, updateBlob } from "./blobs";
 import { createEnvironment } from "./environments";
-import { createBlob } from "./blobs";
+import { setupGUI } from "./gui";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -14,14 +14,15 @@ const sizes = {
   height: window.innerHeight,
 };
 
-const { scene, camera, renderer, controls, directionalLight, clock } =
-  createEnvironment({
-    app,
-    sizes,
-  });
+const { scene, camera, renderer, controls, clock } = createEnvironment({
+  app,
+  sizes,
+});
 
 const blob = createBlob();
 scene.add(blob);
+
+setupGUI();
 
 const onResize = () => {
   sizes.width = window.innerWidth;
@@ -38,7 +39,9 @@ window.addEventListener("resize", onResize);
 
 const tick = () => {
   controls.update();
-  clock.getElapsedTime();
+  const elapsed = clock.getElapsedTime();
+
+  updateBlob(blob, elapsed);
 
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
