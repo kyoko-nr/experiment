@@ -6,11 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "fix": "pnpm run __lint && pnpm run __format",
+    "__lint": "eslint",
+    "__format": "biome format --write"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
     "@types/three": "^0.185.0",
+    "clsx": "^2.1.1",
+    "jotai": "^2.20.1",
     "leva": "^0.10.1",
     "next": "16.2.9",
     "react": "19.2.4",
@@ -18,6 +22,7 @@
     "three": "^0.185.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
