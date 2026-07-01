@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 18_model-boxing
 
-## Getting Started
+Next.js + React Three Fiber + Three.js WebGPU/TSL の実験プロジェクトです。
 
-First, run the development server:
+## ディレクトリ構成
+
+```txt
+18_model-boxing/
+├── app/
+├── public/
+├── src/
+│   ├── components/
+│   ├── controls/
+│   ├── scene/
+│   ├── shaders/
+│   └── state/
+├── package.json
+└── tsconfig.json
+```
+
+## 責務
+
+- `app/`: Next.js App Router の入口。ルーティング、layout、global CSS を置く。
+- `src/`: 実験本体。Next.js のルーティング層から切り離した実装を置く。
+- `src/components/`: React の表示用コンポーネント。Three.js、Leva、Jotai、TSL 固有の処理は直接持たない。
+- `src/controls/`: Leva の UI と control 定義。Jotai state への反映もここで扱う。
+- `src/scene/`: Three.js / React Three Fiber の Canvas、Scene、Mesh、renderer 設定を置く。
+- `src/shaders/`: TSL node や shader graph を置く。UI や Leva には依存させない。
+- `src/state/`: Jotai の atom、派生 atom、状態操作 helper を置く。
+
+## 開発
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+http://localhost:3000 を開いて確認します。
