@@ -51,7 +51,7 @@ const createMesh = (scene: THREE.Scene) => {
   mesh.castShadow = true;
 
   // Plane
-  const plane = new THREE.Mesh(
+  const plane = new THREE.Mesh<THREE.PlaneGeometry, THREE.MeshStandardMaterial>(
     new THREE.PlaneGeometry(20, 10, 1, 1),
     new THREE.MeshStandardMaterial({
       color: "#ebecf4",
@@ -134,7 +134,8 @@ const createEnvironment = () => {
   renderer.setPixelRatio(size.dpr);
   // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
-  return { scene, camera, renderer };
+  controls.enableDamping = true;
+  return { scene, camera, renderer, controls };
 };
 
 // -----------------------------------------------------------
@@ -150,7 +151,7 @@ const updateSize = () => {
  * @param app
  */
 const initThree = (app: HTMLDivElement) => {
-  const { scene, camera, renderer } = createEnvironment();
+  const { scene, camera, renderer, controls } = createEnvironment();
   app.appendChild(renderer.domElement);
 
   const { pointLight1, pointLight2 } = createLights(scene);
@@ -176,10 +177,11 @@ const initThree = (app: HTMLDivElement) => {
     animParams.p2Spherical.theta = -Math.PI * thetaAmount2 + Math.PI * 0.5;
     pointLight2.position.setFromSpherical(animParams.p2Spherical);
 
+    controls.update();
     renderer.render(scene, camera);
   };
   animate();
-  addGui();
+  addGui(plane);
 
   window.addEventListener("resize", () => {
     updateSize();
@@ -206,7 +208,9 @@ document.addEventListener("DOMContentLoaded", init);
 // -----------------------------------------------------------
 const gui = new GUI();
 
-const addGui = (plane: THREE.Mesh) => {
+const addGui = (
+  plane: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshStandardMaterial>
+) => {
   const animationFolder = gui.addFolder("Animation");
   animationFolder.add(uniforms.uSpeed, "value", 0, 2, 0.1).name("Speed");
   animationFolder
