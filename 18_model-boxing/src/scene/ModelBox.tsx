@@ -2,7 +2,11 @@ import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Mesh } from "three";
-import { BoxGeometry, MeshBasicNodeMaterial, type Node } from "three/webgpu";
+import {
+  MeshBasicNodeMaterial,
+  TorusKnotGeometry,
+  type Node,
+} from "three/webgpu";
 import {
   boxRotationSpeedAtom,
   boxScaleAtom,
@@ -18,10 +22,7 @@ export const ModelBox = () => {
   const shaderMix = useAtomValue(shaderMixAtom);
   const wireframe = useAtomValue(wireframeAtom);
 
-  const geometry = useMemo(
-    () => new BoxGeometry(1.6, 1.6, 1.6, 12, 12, 12),
-    [],
-  );
+  const geometry = useMemo(() => new TorusKnotGeometry(0.5, 0.2, 128), []);
   const material = useMemo(() => {
     const nextMaterial = new MeshBasicNodeMaterial();
     nextMaterial.colorNode = createBoxColorNode(shaderMix) as Node<"vec3">;
