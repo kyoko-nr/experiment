@@ -174,7 +174,7 @@ export class Particles {
       .max(1000)
       .name("Alignment distance")
       .onChange(
-        (val) =>
+        (val: number) =>
           (this.gpgpuVelocityVariable.material.uniforms.uAlignmentDistance.value =
             val)
       );
@@ -183,7 +183,7 @@ export class Particles {
       .min(0)
       .max(5)
       .step(0.01)
-      .onChange((val) => {
+      .onChange((val: number) => {
         this.gpgpuPositionVariable.material.uniforms.uSpeed.value = val;
         this.gpgpuVelocityVariable.material.uniforms.uSpeed.value = val;
       });

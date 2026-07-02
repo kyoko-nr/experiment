@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { SimplexNoise } from "three/examples/jsm/Addons.js";
-import { getGui } from "../gui/gui";
 import { interactP } from "../../interaction";
 
 const noise = new SimplexNoise();
@@ -25,14 +24,3 @@ export const animatePlane = (plane: THREE.Mesh) => {
   }
   position.needsUpdate = true;
 }
-
-const createGui = () => {
-  const gui = getGui();
-  const folder = gui.addFolder("animation");
-  folder.add(animConfs, "height", 0, 10, 0.1);
-  folder.add(animConfs, "xVolume", 0, 10, 0.1);
-  folder.add(animConfs, "yVolume", 0, 10, 0.1);
-  folder.add(animConfs, "speed", 0.00001, 0.001, 0.00001);
-}
-
-// createGui();

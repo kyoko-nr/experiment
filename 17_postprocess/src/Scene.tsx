@@ -4,7 +4,7 @@ import { BloomComponent } from "./effects/Bloom";
 import { GridComponent } from "./effects/Grid";
 import { NoiseComponent } from "./effects/Noise";
 import { PixelationComponent } from "./effects/Pixelation";
-import { ScanlineComponent } from "./effects/ScanLine";
+import { ScanlineComponent } from "./effects/Scanline";
 import { NaturalLightComponent } from "./NaturalLight";
 import { VignetteComponent } from "./effects/Vignette";
 import { useControls } from "leva";

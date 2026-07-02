@@ -41,6 +41,7 @@ export class Environment {
    * Render scene
    */
   render() {
+    this.control.update();
     this.renderer.render(this.scene, this.camera);
   }
 

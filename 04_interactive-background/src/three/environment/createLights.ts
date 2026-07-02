@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { getGui } from "../gui/gui";
 
 const baseConf = {
   color: 0x0E09DC,
@@ -31,15 +30,4 @@ export const createLights = () => {
   const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
 
   return [...lights, ambLight];
-}
-
-const createGui = (lights: THREE.Object3D[]) => {
-  const gui = getGui();
-  for(const [index, light] of Object.entries(lights)) {
-    const folder = gui.addFolder(`light${(Number(index) + 1)}`);
-    folder.addColor(light, "color");
-    folder.add(light.position, "x", -100, 100, 0.1);
-    folder.add(light.position, "y", -100, 100, 0.1);
-    folder.add(light.position, "z", -100, 100, 0.1);
-  }
 }
