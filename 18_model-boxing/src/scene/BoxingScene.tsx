@@ -6,6 +6,7 @@ import {
   WebGPURenderer,
 } from "three/webgpu";
 import { ModelBox } from "./ModelBox";
+import { PresentationControls } from "@react-three/drei";
 
 type WebGPURendererParameters = ConstructorParameters<typeof WebGPURenderer>[0];
 
@@ -24,12 +25,14 @@ export const BoxingScene = () => {
           return renderer;
         }}
       >
-        <color attach="background" args={["#08090d"]} />
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[2, 3, 4]} intensity={1.8} />
-        <Suspense fallback={null}>
-          <ModelBox />
-        </Suspense>
+        <PresentationControls speed={2}>
+          <color attach="background" args={["#08090d"]} />
+          <ambientLight intensity={0.8} />
+          <directionalLight position={[2, 3, 4]} intensity={1.8} />
+          <Suspense fallback={null}>
+            <ModelBox />
+          </Suspense>
+        </PresentationControls>
       </Canvas>
     </div>
   );
