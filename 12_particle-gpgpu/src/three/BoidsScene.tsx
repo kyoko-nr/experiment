@@ -1,5 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { WebGPURenderer } from "three/webgpu";
+import { Boids } from "./Boids";
 
 type WebGPURendererParameters = ConstructorParameters<typeof WebGPURenderer>[0];
 
@@ -16,11 +17,7 @@ export const BoidsScene = () => {
           return renderer;
         }}
       >
-        <color attach="background" args={["#08090d"]} />
-        <mesh>
-          <boxGeometry args={[2, 2, 2]} />
-          <meshNormalMaterial />
-        </mesh>
+        <Boids />
       </Canvas>
     </div>
   );

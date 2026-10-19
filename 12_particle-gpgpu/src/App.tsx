@@ -1,4 +1,4 @@
-import { BoidsScene } from "./scene/BoidsScene";
+import { BoidsScene } from "./three/BoidsScene";
 
 export const App = () => {
   return (
