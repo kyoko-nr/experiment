@@ -23,21 +23,27 @@ import {
   type WebGPURenderer,
 } from "three/webgpu";
 
-const COUNT = 300;
-const AREA = 10;
+const COUNT = 500;
+const AREA = 30;
 
 const TARGET_SPEED = 2;
 const TARGET_RADIUS = 5;
 
 // separation
 const SEP_RADIUS = 2;
-const SEP_WEIGHT = 0.4;
+const SEP_WEIGHT = 0.1;
 // align
-const ALIGN_RADIUS = 6;
-const ALIGN_WEIGHT = 0.5;
+const ALIGN_RADIUS = 3;
+const ALIGN_WEIGHT = 0.05;
+// cohesion
+const COH_RADIUS = 5;
+const COH_WEIGHT = 0.01;
+// center
+const CENTER_RADIUS = 10;
+const CENTER_WEIGHT = 0.001;
 // predetor
-const PREDETOR_RADIUS = 6;
-const PREDETOR_WEIGHT = 0.1;
+const PREDETOR_RADIUS = 5;
+const PREDETOR_WEIGHT = 2;
 
 export const Boids = () => {
   const targetRef = useRef<Mesh>(null);
@@ -60,9 +66,9 @@ export const Boids = () => {
       positionArray[i * 3 + 1] = rand(AREA);
       positionArray[i * 3 + 2] = rand(AREA);
       // 速度
-      velocityArray[i * 3 + 0] = rand(5);
-      velocityArray[i * 3 + 1] = rand(5);
-      velocityArray[i * 3 + 2] = rand(5);
+      velocityArray[i * 3 + 0] = rand(2);
+      velocityArray[i * 3 + 1] = rand(2);
+      velocityArray[i * 3 + 2] = rand(2);
     }
     const positionBuffer = instancedArray(positionArray, "vec3");
     const velocityBuffer = instancedArray(velocityArray, "vec3");
@@ -89,6 +95,8 @@ export const Boids = () => {
       const sepSum = vec3(0).toVar();
       const velSum = vec3(0).toVar();
       const velCount = float(0).toVar();
+      const cohSum = vec3(0).toVar();
+      const cohCount = float(0).toVar();
 
       Loop({ start: uint(0), end: uint(COUNT), type: "uint" }, ({ i }) => {
         If(i.equal(instanceIndex), () => {
@@ -106,11 +114,19 @@ export const Boids = () => {
         });
 
         // ALIGNMENT
-        // vel += (avg(others.vel) - self.vel) * dt
+        // vel += (avg(others.vel) - self.vel) * weight
         If(dist.lessThan(ALIGN_RADIUS), () => {
           // 近くの仲間と向きを合わせる
           velSum.addAssign(velocityBuffer.element(i));
           velCount.addAssign(1);
+        });
+
+        // COHESION
+        // vel += (avg(others.pos) - self.pos) * weight
+        If(dist.lessThan(COH_RADIUS), () => {
+          // 仲間の中心に集まる
+          cohSum.addAssign(otherPos);
+          cohCount.addAssign(1);
         });
       });
 
@@ -122,6 +138,18 @@ export const Boids = () => {
         const avg = velSum.div(velCount);
         const ali = avg.sub(selfVel);
         selfVel.addAssign(ali.mul(ALIGN_WEIGHT));
+      });
+      // cohesion
+      If(cohCount.greaterThan(0), () => {
+        const center = cohSum.div(cohCount);
+        // const center = vec3(0);
+        const coh = center.sub(selfPos);
+        selfVel.addAssign(coh.mul(COH_WEIGHT));
+      });
+      // 外側に行き過ぎたら真ん中に戻る
+      const toCenter = vec3(0).sub(selfPos);
+      If(toCenter.length().greaterThan(CENTER_RADIUS), () => {
+        selfVel.addAssign(toCenter.mul(CENTER_WEIGHT));
       });
       // PREDETOR
       const predVec = selfPos.sub(uTarget);
@@ -153,11 +181,11 @@ export const Boids = () => {
     uDelta.value = delta * 1;
     // ターゲットを動かす
     const t = clock.elapsedTime * TARGET_SPEED;
-    const x = Math.cos(t) * TARGET_RADIUS;
+    const x = Math.cos(t * 0.5) * TARGET_RADIUS;
     const y = Math.sin(t) * TARGET_RADIUS;
-    const z = (Math.cos(t) + Math.sin(t)) * TARGET_RADIUS;
+    const z = (Math.cos(t * 0.2) + Math.sin(t)) * TARGET_RADIUS * 0.3;
     targetRef.current?.position.set(x, y, z);
-    uTarget.value.set(x, y, 0);
+    uTarget.value.set(x, y, z);
     (gl as unknown as WebGPURenderer).compute(computePos);
   });
 
