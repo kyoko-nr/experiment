@@ -10,16 +10,18 @@ import {
   instancedArray,
   instanceIndex,
   Loop,
-  positionLocal,
+  smoothstep,
   uint,
   uniform,
+  uv,
   vec3,
 } from "three/tsl";
 import {
-  ConeGeometry,
+  BoxGeometry,
   type Mesh,
   MeshNormalNodeMaterial,
   SphereGeometry,
+  SpriteNodeMaterial,
   Vector3,
   type WebGPURenderer,
 } from "three/webgpu";
@@ -114,7 +116,7 @@ export const Boids = () => {
   // ------ ターゲット ------
   const { targetGeom, targetMat } = useMemo(
     () => ({
-      targetGeom: new SphereGeometry(0.2, 24, 24),
+      targetGeom: new SphereGeometry(0.2, 12, 12),
       targetMat: new MeshNormalNodeMaterial(),
     }),
     [],
@@ -122,7 +124,7 @@ export const Boids = () => {
 
   // ------ Boids ------
   // count / area が変わったらバッファから作り直す
-  const { boidGeom, boidMat, computePos } = useMemo(() => {
+  const { boidMat, computePos } = useMemo(() => {
     const {
       uDelta,
       uTarget,
@@ -139,32 +141,48 @@ export const Boids = () => {
       uMaxSpeed,
     } = uniforms;
 
+    // ----- 最初の形 -----
+    const initial = new BoxGeometry(10, 10, 10, 10, 10, 10);
+    const initialPos = initial.attributes.position;
+
     const positionArray = new Float32Array(count * 3);
     const velocityArray = new Float32Array(count * 3);
+    const initialPosArray = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
+      const v = i % initialPos.count;
       // 位置
-      positionArray[i * 3 + 0] = rand(area);
-      positionArray[i * 3 + 1] = rand(area);
-      positionArray[i * 3 + 2] = rand(area);
+      const x = initialPos.getX(v) + rand(0.5);
+      const y = initialPos.getY(v) + rand(0.5);
+      const z = initialPos.getZ(v) + rand(0.5);
+      positionArray[i * 3 + 0] = x;
+      positionArray[i * 3 + 1] = y;
+      positionArray[i * 3 + 2] = z;
+      initialPosArray[i * 3 + 0] = x;
+      initialPosArray[i * 3 + 1] = y;
+      initialPosArray[i * 3 + 2] = z;
       // 速度
       velocityArray[i * 3 + 0] = rand(2);
       velocityArray[i * 3 + 1] = rand(2);
       velocityArray[i * 3 + 2] = rand(2);
     }
+    initial.dispose();
     const positionBuffer = instancedArray(positionArray, "vec3");
     const velocityBuffer = instancedArray(velocityArray, "vec3");
+    const initialBuffer = instancedArray(initialPosArray, "vec3");
 
-    const boidGeom = new ConeGeometry(0.1, 0.2, 3);
-
-    const boidMat = new MeshNormalNodeMaterial();
-    boidMat.positionNode = positionLocal.add(
-      positionBuffer.element(instanceIndex),
-    );
+    const boidMat = new SpriteNodeMaterial();
+    boidMat.positionNode = positionBuffer.element(instanceIndex);
+    boidMat.scaleNode = float(0.1);
+    const d = uv().sub(0.5).length();
+    boidMat.opacityNode = smoothstep(0.5, 0.2, d);
+    boidMat.transparent = true;
+    boidMat.depthWrite = false;
 
     const computePos = Fn(() => {
       // ------ Boids ------
       const selfPos = positionBuffer.element(instanceIndex);
       const selfVel = velocityBuffer.element(instanceIndex);
+      const selfInitial = initialBuffer.element(instanceIndex);
       const sepSum = vec3(0).toVar();
       const velSum = vec3(0).toVar();
       const velCount = float(0).toVar();
@@ -218,10 +236,10 @@ export const Boids = () => {
         const coh = center.sub(selfPos);
         selfVel.addAssign(coh.mul(uCohWeight));
       });
-      // 外側に行き過ぎたら真ん中に戻る
-      const toCenter = vec3(0).sub(selfPos);
-      If(toCenter.length().greaterThan(uCenterRadius), () => {
-        selfVel.addAssign(toCenter.mul(uCenterWeight));
+      // 外側に行き過ぎたら初期位置に戻る
+      const toInitial = selfInitial.sub(selfPos);
+      If(toInitial.length().greaterThan(uCenterRadius), () => {
+        selfVel.addAssign(toInitial.mul(uCenterWeight));
       });
       // PREDATOR
       const predVec = selfPos.sub(uTarget);
@@ -242,17 +260,16 @@ export const Boids = () => {
       selfPos.addAssign(selfVel.mul(uDelta));
     })().compute(count);
 
-    return { boidGeom, boidMat, computePos };
+    return { boidMat, computePos };
   }, [uniforms, count, area]);
 
   // 作り直したときに古いものを破棄する
   useEffect(() => {
     return () => {
-      boidGeom.dispose();
       boidMat.dispose();
       computePos.dispose();
     };
-  }, [boidGeom, boidMat, computePos]);
+  }, [boidMat, computePos]);
 
   useEffect(() => {
     return () => {
@@ -275,7 +292,7 @@ export const Boids = () => {
 
   return (
     <>
-      <instancedMesh args={[boidGeom, boidMat, count]} frustumCulled={false} />
+      <sprite args={[boidMat]} count={count} frustumCulled={false} />
       <mesh ref={targetRef} args={[targetGeom, targetMat]} />
     </>
   );
