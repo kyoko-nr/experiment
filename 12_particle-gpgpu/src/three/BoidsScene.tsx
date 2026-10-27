@@ -17,6 +17,7 @@ export const BoidsScene = () => {
           return renderer;
         }}
       >
+        <color attach="background" args={["#8891a0"]} />
         <Boids />
       </Canvas>
     </div>

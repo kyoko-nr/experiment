@@ -28,7 +28,6 @@ import {
 import {
   alignRadiusAtom,
   alignWeightAtom,
-  areaAtom,
   centerRadiusAtom,
   centerWeightAtom,
   cohRadiusAtom,
@@ -48,7 +47,6 @@ export const Boids = () => {
 
   // バッファを作り直す必要があるもの
   const count = useAtomValue(countAtom);
-  const area = useAtomValue(areaAtom);
   // JS 側(useFrame)で使うもの
   const targetSpeed = useAtomValue(targetSpeedAtom);
   const targetRadius = useAtomValue(targetRadiusAtom);
@@ -172,9 +170,9 @@ export const Boids = () => {
 
     const boidMat = new SpriteNodeMaterial();
     boidMat.positionNode = positionBuffer.element(instanceIndex);
-    boidMat.scaleNode = float(0.1);
+    boidMat.scaleNode = float(0.2);
     const d = uv().sub(0.5).length();
-    boidMat.opacityNode = smoothstep(0.5, 0.2, d);
+    boidMat.opacityNode = smoothstep(0.5, 0.3, d);
     boidMat.transparent = true;
     boidMat.depthWrite = false;
 
@@ -258,10 +256,14 @@ export const Boids = () => {
         selfVel.assign(selfVel.normalize().mul(uMaxSpeed));
       });
       selfPos.addAssign(selfVel.mul(uDelta));
+
+      // 色を変更する
+      const pos = positionBuffer.element(instanceIndex);
+      boidMat.colorNode = pos.normalize().mul(0.5).add(0.5).mul(1.2);
     })().compute(count);
 
     return { boidMat, computePos };
-  }, [uniforms, count, area]);
+  }, [uniforms, count]);
 
   // 作り直したときに古いものを破棄する
   useEffect(() => {
