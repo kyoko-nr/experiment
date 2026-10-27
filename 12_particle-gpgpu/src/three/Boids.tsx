@@ -19,7 +19,9 @@ import {
 import {
   BoxGeometry,
   type Mesh,
+  MeshNormalMaterial,
   MeshNormalNodeMaterial,
+  MeshStandardMaterial,
   SphereGeometry,
   SpriteNodeMaterial,
   Vector3,
@@ -40,6 +42,7 @@ import {
   sepWeightAtom,
   targetRadiusAtom,
   targetSpeedAtom,
+  targetVisibleAtom,
 } from "../state/boidsAtoms";
 
 export const Boids = () => {
@@ -48,6 +51,7 @@ export const Boids = () => {
   // バッファを作り直す必要があるもの
   const count = useAtomValue(countAtom);
   // JS 側(useFrame)で使うもの
+  const targetVisible = useAtomValue(targetVisibleAtom);
   const targetSpeed = useAtomValue(targetSpeedAtom);
   const targetRadius = useAtomValue(targetRadiusAtom);
   // uniform で GPU に渡すもの
@@ -114,8 +118,8 @@ export const Boids = () => {
   // ------ ターゲット ------
   const { targetGeom, targetMat } = useMemo(
     () => ({
-      targetGeom: new SphereGeometry(0.2, 12, 12),
-      targetMat: new MeshNormalNodeMaterial(),
+      targetGeom: new SphereGeometry(0.3, 12, 12),
+      targetMat: new MeshNormalMaterial(),
     }),
     [],
   );
@@ -295,7 +299,11 @@ export const Boids = () => {
   return (
     <>
       <sprite args={[boidMat]} count={count} frustumCulled={false} />
-      <mesh ref={targetRef} args={[targetGeom, targetMat]} />
+      <mesh
+        ref={targetRef}
+        args={[targetGeom, targetMat]}
+        visible={targetVisible}
+      />
     </>
   );
 };

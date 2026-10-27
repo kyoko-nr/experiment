@@ -4,6 +4,7 @@ import { atom } from "jotai";
 export const BOIDS_DEFAULTS = {
   count: 1800,
   area: 50,
+  targetVisible: true,
   targetSpeed: 0.5,
   targetRadius: 15,
   sepRadius: 1.5,
@@ -25,6 +26,8 @@ export const countAtom = atom(BOIDS_DEFAULTS.count);
 export const areaAtom = atom(BOIDS_DEFAULTS.area);
 
 // target
+/** ターゲット(predator)の球を表示するか */
+export const targetVisibleAtom = atom(BOIDS_DEFAULTS.targetVisible);
 export const targetSpeedAtom = atom(BOIDS_DEFAULTS.targetSpeed);
 export const targetRadiusAtom = atom(BOIDS_DEFAULTS.targetRadius);
 

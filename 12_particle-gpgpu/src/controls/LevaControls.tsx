@@ -18,11 +18,13 @@ import {
   sepWeightAtom,
   targetRadiusAtom,
   targetSpeedAtom,
+  targetVisibleAtom,
 } from "../state/boidsAtoms";
 
 export const LevaControls = () => {
   const setCount = useSetAtom(countAtom);
   const setArea = useSetAtom(areaAtom);
+  const setTargetVisible = useSetAtom(targetVisibleAtom);
   const setTargetSpeed = useSetAtom(targetSpeedAtom);
   const setTargetRadius = useSetAtom(targetRadiusAtom);
   const setSepRadius = useSetAtom(sepRadiusAtom);
@@ -42,6 +44,7 @@ export const LevaControls = () => {
     area: { value: D.area, min: 1, max: 100, step: 1 },
     maxSpeed: { value: D.maxSpeed, min: 0, max: 10, step: 0.01 },
     Target: folder({
+      targetVisible: { label: "visible", value: D.targetVisible },
       targetSpeed: {
         label: "speed",
         value: D.targetSpeed,
@@ -142,6 +145,7 @@ export const LevaControls = () => {
   useEffect(() => {
     setCount(controls.count);
     setArea(controls.area);
+    setTargetVisible(controls.targetVisible);
     setTargetSpeed(controls.targetSpeed);
     setTargetRadius(controls.targetRadius);
     setSepRadius(controls.sepRadius);
@@ -159,6 +163,7 @@ export const LevaControls = () => {
     controls,
     setCount,
     setArea,
+    setTargetVisible,
     setTargetSpeed,
     setTargetRadius,
     setSepRadius,
