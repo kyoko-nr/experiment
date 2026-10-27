@@ -12,6 +12,8 @@ import {
   countAtom,
   BOIDS_DEFAULTS as D,
   maxSpeedAtom,
+  mouseRadiusAtom,
+  mouseWeightAtom,
   predatorRadiusAtom,
   predatorWeightAtom,
   sepRadiusAtom,
@@ -37,6 +39,8 @@ export const LevaControls = () => {
   const setCenterWeight = useSetAtom(centerWeightAtom);
   const setPredatorRadius = useSetAtom(predatorRadiusAtom);
   const setPredatorWeight = useSetAtom(predatorWeightAtom);
+  const setMouseRadius = useSetAtom(mouseRadiusAtom);
+  const setMouseWeight = useSetAtom(mouseWeightAtom);
   const setMaxSpeed = useSetAtom(maxSpeedAtom);
 
   const controls = useControls("Boids", {
@@ -140,6 +144,22 @@ export const LevaControls = () => {
         step: 0.1,
       },
     }),
+    Mouse: folder({
+      mouseRadius: {
+        label: "radius",
+        value: D.mouseRadius,
+        min: 0,
+        max: 20,
+        step: 0.1,
+      },
+      mouseWeight: {
+        label: "weight",
+        value: D.mouseWeight,
+        min: 0,
+        max: 10,
+        step: 0.1,
+      },
+    }),
   });
 
   useEffect(() => {
@@ -158,6 +178,8 @@ export const LevaControls = () => {
     setCenterWeight(controls.centerWeight);
     setPredatorRadius(controls.predatorRadius);
     setPredatorWeight(controls.predatorWeight);
+    setMouseRadius(controls.mouseRadius);
+    setMouseWeight(controls.mouseWeight);
     setMaxSpeed(controls.maxSpeed);
   }, [
     controls,
@@ -176,6 +198,8 @@ export const LevaControls = () => {
     setCenterWeight,
     setPredatorRadius,
     setPredatorWeight,
+    setMouseRadius,
+    setMouseWeight,
     setMaxSpeed,
   ]);
 

@@ -20,8 +20,8 @@ import {
   BoxGeometry,
   type Mesh,
   MeshNormalMaterial,
-  MeshNormalNodeMaterial,
-  MeshStandardMaterial,
+  Plane,
+  Raycaster,
   SphereGeometry,
   SpriteNodeMaterial,
   Vector3,
@@ -36,6 +36,8 @@ import {
   cohWeightAtom,
   countAtom,
   maxSpeedAtom,
+  mouseRadiusAtom,
+  mouseWeightAtom,
   predatorRadiusAtom,
   predatorWeightAtom,
   sepRadiusAtom,
@@ -65,6 +67,8 @@ export const Boids = () => {
   const centerWeight = useAtomValue(centerWeightAtom);
   const predatorRadius = useAtomValue(predatorRadiusAtom);
   const predatorWeight = useAtomValue(predatorWeightAtom);
+  const mouseRadius = useAtomValue(mouseRadiusAtom);
+  const mouseWeight = useAtomValue(mouseWeightAtom);
   const maxSpeed = useAtomValue(maxSpeedAtom);
 
   // uniform は一度だけ作り、値だけを書き換える
@@ -84,6 +88,9 @@ export const Boids = () => {
       uPredatorRadius: uniform(0),
       uPredatorWeight: uniform(0),
       uMaxSpeed: uniform(0),
+      uMouse: uniform(new Vector3()),
+      uMouseRadius: uniform(0),
+      uMouseWeight: uniform(0),
     }),
     [],
   );
@@ -100,6 +107,8 @@ export const Boids = () => {
     uniforms.uPredatorRadius.value = predatorRadius;
     uniforms.uPredatorWeight.value = predatorWeight;
     uniforms.uMaxSpeed.value = maxSpeed;
+    uniforms.uMouseRadius.value = mouseRadius;
+    uniforms.uMouseWeight.value = mouseWeight;
   }, [
     uniforms,
     sepRadius,
@@ -112,6 +121,8 @@ export const Boids = () => {
     centerWeight,
     predatorRadius,
     predatorWeight,
+    mouseRadius,
+    mouseWeight,
     maxSpeed,
   ]);
 
@@ -141,6 +152,9 @@ export const Boids = () => {
       uPredatorRadius,
       uPredatorWeight,
       uMaxSpeed,
+      uMouse,
+      uMouseRadius,
+      uMouseWeight,
     } = uniforms;
 
     // ----- 最初の形 -----
@@ -254,6 +268,17 @@ export const Boids = () => {
           );
         },
       );
+      // MOUSE PREDATOR
+      const mouseVec = selfPos.sub(uMouse);
+      const mouseDist = mouseVec.length();
+      If(
+        mouseDist.lessThan(uMouseRadius).and(mouseDist.greaterThan(0.0001)),
+        () => {
+          selfVel.addAssign(
+            mouseVec.normalize().div(mouseDist).mul(uMouseWeight),
+          );
+        },
+      );
       // 速度に経過時間を追加して自分の位置に足す
       const speed = selfVel.length();
       If(speed.greaterThan(uMaxSpeed), () => {
@@ -268,6 +293,9 @@ export const Boids = () => {
 
     return { boidMat, computePos };
   }, [uniforms, count]);
+
+  const raycaster = useMemo(() => new Raycaster(), []);
+  const plane = useMemo(() => new Plane(new Vector3(0, 0, 1), 0), []);
 
   // 作り直したときに古いものを破棄する
   useEffect(() => {
@@ -284,7 +312,7 @@ export const Boids = () => {
     };
   }, [targetGeom, targetMat]);
 
-  useFrame(({ gl, clock }, delta) => {
+  useFrame(({ gl, clock, pointer, camera }, delta) => {
     uniforms.uDelta.value = delta * 1;
     // ターゲットを動かす
     const t = clock.elapsedTime * targetSpeed;
@@ -293,6 +321,9 @@ export const Boids = () => {
     const z = (Math.cos(t * 0.2) + Math.sin(t)) * targetRadius * 0.3;
     targetRef.current?.position.set(x, y, z);
     uniforms.uTarget.value.set(x, y, z);
+    // マウスを検知する
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.ray.intersectPlane(plane, uniforms.uMouse.value);
     (gl as unknown as WebGPURenderer).compute(computePos);
   });
 

@@ -4,7 +4,7 @@ import { atom } from "jotai";
 export const BOIDS_DEFAULTS = {
   count: 1800,
   area: 50,
-  targetVisible: true,
+  targetVisible: false,
   targetSpeed: 0.5,
   targetRadius: 15,
   sepRadius: 1.5,
@@ -16,7 +16,9 @@ export const BOIDS_DEFAULTS = {
   centerRadius: 1.5,
   centerWeight: 0.2,
   predatorRadius: 3,
-  predatorWeight: 1,
+  predatorWeight: 0.8,
+  mouseRadius: 4,
+  mouseWeight: 0.8,
   maxSpeed: 6.0,
 };
 
@@ -46,5 +48,8 @@ export const centerWeightAtom = atom(BOIDS_DEFAULTS.centerWeight);
 // predator
 export const predatorRadiusAtom = atom(BOIDS_DEFAULTS.predatorRadius);
 export const predatorWeightAtom = atom(BOIDS_DEFAULTS.predatorWeight);
+// mouse
+export const mouseRadiusAtom = atom(BOIDS_DEFAULTS.mouseRadius);
+export const mouseWeightAtom = atom(BOIDS_DEFAULTS.mouseWeight);
 
 export const maxSpeedAtom = atom(BOIDS_DEFAULTS.maxSpeed);
