@@ -53,9 +53,11 @@
 
 ### 12 Particle gpgpu
 
+[12_particle-gpgpu](./12_particle-gpgpu)
+
 [Live](https://experiment-12-particle-gpgpu.vercel.app)
 
-🚧
+![boids](./docs/boids.gif)
 
 ### 13 Geometry transform
 
