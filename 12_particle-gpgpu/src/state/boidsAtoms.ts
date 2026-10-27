@@ -17,7 +17,7 @@ export const BOIDS_DEFAULTS = {
   centerWeight: 0.2,
   predatorRadius: 3,
   predatorWeight: 0.8,
-  mouseRadius: 4,
+  mouseRadius: 5,
   mouseWeight: 0.8,
   maxSpeed: 6.0,
 };
