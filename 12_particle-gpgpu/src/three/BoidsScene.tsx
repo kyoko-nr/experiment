@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { WebGPURenderer } from "three/webgpu";
 import { Boids } from "./Boids";
+import { PostEffects } from "./PostEffects";
 
 type WebGPURendererParameters = ConstructorParameters<typeof WebGPURenderer>[0];
 
@@ -17,8 +18,9 @@ export const BoidsScene = () => {
           return renderer;
         }}
       >
-        <color attach="background" args={["#8891a0"]} />
+        <color attach="background" args={["#161f2f"]} />
         <Boids />
+        <PostEffects />
       </Canvas>
     </div>
   );

@@ -170,7 +170,7 @@ export const Boids = () => {
 
     const boidMat = new SpriteNodeMaterial();
     boidMat.positionNode = positionBuffer.element(instanceIndex);
-    boidMat.scaleNode = float(0.2);
+    boidMat.scaleNode = float(0.15);
     const d = uv().sub(0.5).length();
     boidMat.opacityNode = smoothstep(0.5, 0.3, d);
     boidMat.transparent = true;
