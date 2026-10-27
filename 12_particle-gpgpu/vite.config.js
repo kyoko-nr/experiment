@@ -1,5 +1,6 @@
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import glsl from "vite-plugin-glsl";
 
 export default defineConfig({
   root: "src/",
@@ -7,5 +8,5 @@ export default defineConfig({
   server: {
     host: true,
   },
-  plugins: [glsl()],
+  plugins: [react(), tailwindcss()],
 });
