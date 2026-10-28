@@ -172,7 +172,7 @@ export const Boids = () => {
       curveSegments: 4,
       font: font,
     });
-    initial.translate(-9, -2, 0);
+    initial.center();
     const sampler = new MeshSurfaceSampler(new Mesh(initial)).build();
     const p = new Vector3();
 
