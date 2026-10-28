@@ -2,23 +2,23 @@ import { atom } from "jotai";
 
 /** boids パラメータの初期値 */
 export const BOIDS_DEFAULTS = {
-  count: 1800,
+  count: 3000,
   area: 50,
   targetVisible: false,
   targetSpeed: 0.5,
-  targetRadius: 15,
-  sepRadius: 1.5,
-  sepWeight: 0.005,
-  alignRadius: 1,
+  targetRadius: 8,
+  sepRadius: 0.3,
+  sepWeight: 0.05,
+  alignRadius: 0.5,
   alignWeight: 0.05,
-  cohRadius: 7,
+  cohRadius: 0.5,
   cohWeight: 0.01,
-  centerRadius: 1.5,
-  centerWeight: 0.2,
+  centerRadius: 2.5,
+  centerWeight: 0.1,
   predatorRadius: 3,
   predatorWeight: 0.8,
-  mouseRadius: 5,
-  mouseWeight: 0.8,
+  mouseRadius: 2.5,
+  mouseWeight: 0.5,
   maxSpeed: 6.0,
 };
 

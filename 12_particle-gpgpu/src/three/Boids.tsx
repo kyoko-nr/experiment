@@ -1,6 +1,11 @@
 import { useFrame } from "@react-three/fiber";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
+import {
+  FontLoader,
+  MeshSurfaceSampler,
+  TextGeometry,
+} from "three/examples/jsm/Addons.js";
 import { randFloatSpread as rand } from "three/src/math/MathUtils.js";
 import {
   Continue,
@@ -17,8 +22,7 @@ import {
   vec3,
 } from "three/tsl";
 import {
-  BoxGeometry,
-  type Mesh,
+  Mesh,
   MeshNormalMaterial,
   Plane,
   Raycaster,
@@ -46,6 +50,7 @@ import {
   targetSpeedAtom,
   targetVisibleAtom,
 } from "../state/boidsAtoms";
+import fontData from "./fonts/helvetiker_regular.typeface.json";
 
 export const Boids = () => {
   const targetRef = useRef<Mesh>(null);
@@ -158,24 +163,41 @@ export const Boids = () => {
     } = uniforms;
 
     // ----- 最初の形 -----
-    const initial = new BoxGeometry(10, 10, 10, 10, 10, 10);
-    const initialPos = initial.attributes.position;
+    // const initial = new BoxGeometry(10, 10, 10, 10, 10, 10);
+    // const initialPos = initial.attributes.position;
+    const font = new FontLoader().parse(fontData);
+    const initial = new TextGeometry("BOIDS", {
+      size: 6,
+      depth: 0.2,
+      curveSegments: 4,
+      font: font,
+    });
+    initial.translate(-9, -2, 0);
+    const sampler = new MeshSurfaceSampler(new Mesh(initial)).build();
+    const p = new Vector3();
 
     const positionArray = new Float32Array(count * 3);
     const velocityArray = new Float32Array(count * 3);
     const initialPosArray = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const v = i % initialPos.count;
-      // 位置
-      const x = initialPos.getX(v) + rand(0.5);
-      const y = initialPos.getY(v) + rand(0.5);
-      const z = initialPos.getZ(v) + rand(0.5);
-      positionArray[i * 3 + 0] = x;
-      positionArray[i * 3 + 1] = y;
-      positionArray[i * 3 + 2] = z;
-      initialPosArray[i * 3 + 0] = x;
-      initialPosArray[i * 3 + 1] = y;
-      initialPosArray[i * 3 + 2] = z;
+      // const v = i % initialPos.count;
+      // // 位置
+      // const x = initialPos.getX(v) + rand(0.5);
+      // const y = initialPos.getY(v) + rand(0.5);
+      // const z = initialPos.getZ(v) + rand(0.5);
+      // positionArray[i * 3 + 0] = x;
+      // positionArray[i * 3 + 1] = y;
+      // positionArray[i * 3 + 2] = z;
+      // initialPosArray[i * 3 + 0] = x;
+      // initialPosArray[i * 3 + 1] = y;
+      // initialPosArray[i * 3 + 2] = z;
+      sampler.sample(p);
+      positionArray[i * 3 + 0] = p.x;
+      positionArray[i * 3 + 1] = p.y;
+      positionArray[i * 3 + 2] = p.z;
+      initialPosArray[i * 3 + 0] = p.x;
+      initialPosArray[i * 3 + 1] = p.y;
+      initialPosArray[i * 3 + 2] = p.z;
       // 速度
       velocityArray[i * 3 + 0] = rand(2);
       velocityArray[i * 3 + 1] = rand(2);
@@ -193,6 +215,9 @@ export const Boids = () => {
     boidMat.opacityNode = smoothstep(0.5, 0.3, d);
     boidMat.transparent = true;
     boidMat.depthWrite = false;
+    // 色を変更する
+    const pos = positionBuffer.element(instanceIndex);
+    boidMat.colorNode = pos.normalize().mul(0.5).add(0.5).mul(1.2);
 
     const computePos = Fn(() => {
       // ------ Boids ------
@@ -254,9 +279,12 @@ export const Boids = () => {
       });
       // 外側に行き過ぎたら初期位置に戻る
       const toInitial = selfInitial.sub(selfPos);
-      If(toInitial.length().greaterThan(uCenterRadius), () => {
-        selfVel.addAssign(toInitial.mul(uCenterWeight));
-      });
+      const desired = toInitial.mul(uCenterRadius);
+      const steer = desired.sub(selfVel);
+      selfVel.addAssign(steer.mul(uCenterWeight));
+      // If(toInitial.length().greaterThan(uCenterRadius), () => {
+      //   selfVel.addAssign(toInitial.mul(uCenterWeight));
+      // });
       // PREDATOR
       const predVec = selfPos.sub(uTarget);
       const predDist = predVec.length();
@@ -285,10 +313,6 @@ export const Boids = () => {
         selfVel.assign(selfVel.normalize().mul(uMaxSpeed));
       });
       selfPos.addAssign(selfVel.mul(uDelta));
-
-      // 色を変更する
-      const pos = positionBuffer.element(instanceIndex);
-      boidMat.colorNode = pos.normalize().mul(0.5).add(0.5).mul(1.2);
     })().compute(count);
 
     return { boidMat, computePos };
@@ -329,12 +353,14 @@ export const Boids = () => {
 
   return (
     <>
-      <sprite args={[boidMat]} count={count} frustumCulled={false} />
-      <mesh
-        ref={targetRef}
-        args={[targetGeom, targetMat]}
-        visible={targetVisible}
-      />
+      <Suspense>
+        <sprite args={[boidMat]} count={count} frustumCulled={false} />
+        <mesh
+          ref={targetRef}
+          args={[targetGeom, targetMat]}
+          visible={targetVisible}
+        />
+      </Suspense>
     </>
   );
 };
