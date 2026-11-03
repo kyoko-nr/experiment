@@ -1,10 +1,14 @@
 // import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useAtomValue } from "jotai";
+import { useEffect, useMemo, useRef } from "react";
 import { type Mesh, SphereGeometry } from "three";
 import { MeshStandardNodeMaterial } from "three/webgpu";
+import { metalnessAtom, roughnessAtom } from "../state/morphAtoms";
 
 export const Morph = () => {
   const meshRef = useRef<Mesh>(null);
+  const metalness = useAtomValue(metalnessAtom);
+  const roughness = useAtomValue(roughnessAtom);
 
   const { material } = useMemo(() => {
     const material = new MeshStandardNodeMaterial({
@@ -14,6 +18,11 @@ export const Morph = () => {
     });
     return { material };
   }, []);
+
+  useEffect(() => {
+    material.metalness = metalness;
+    material.roughness = roughness;
+  }, [material, metalness, roughness]);
 
   // useFrame(({ clock }) => {
   //   const elapsed = clock.elapsedTime;
