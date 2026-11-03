@@ -1,4 +1,4 @@
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import { RoomEnvironment } from "three/examples/jsm/Addons.js";
 import { PMREMGenerator, Vector3, WebGPURenderer } from "three/webgpu";
@@ -37,7 +37,7 @@ const SceneInner = () => {
       { size: 2048 },
     );
     scene.environment = environment.texture;
-    scene.background = environment.texture;
+    // scene.background = environment.texture;
 
     return () => {
       scene.environment = null;
@@ -45,6 +45,11 @@ const SceneInner = () => {
       generator.dispose();
     };
   }, [scene, gl]);
+
+  useFrame(({ clock }) => {
+    const elapsed = clock.elapsedTime;
+    scene.environmentRotation.set(0, elapsed * 0.3, 0);
+  });
 
   return (
     <>
