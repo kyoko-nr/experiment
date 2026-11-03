@@ -1,5 +1,7 @@
-import { Canvas } from "@react-three/fiber";
-import { WebGPURenderer } from "three/webgpu";
+import { Canvas, useThree } from "@react-three/fiber";
+import { useEffect } from "react";
+import { RoomEnvironment } from "three/examples/jsm/Addons.js";
+import { PMREMGenerator, Vector3, WebGPURenderer } from "three/webgpu";
 import { Morph } from "./Morph";
 
 type WebGPURendererParameters = ConstructorParameters<typeof WebGPURenderer>[0];
@@ -17,9 +19,39 @@ export const BlobScene = () => {
           return renderer;
         }}
       >
-        <color attach="background" args={["#161f2f"]} />
-        <Morph />
+        <SceneInner />
       </Canvas>
     </div>
+  );
+};
+
+const SceneInner = () => {
+  const { scene, gl } = useThree();
+  useEffect(() => {
+    const generator = new PMREMGenerator(gl as unknown as WebGPURenderer);
+    const environment = generator.fromScene(
+      new RoomEnvironment(),
+      0,
+      0.1,
+      100,
+      { size: 2048 },
+    );
+    scene.environment = environment.texture;
+    scene.background = environment.texture;
+
+    return () => {
+      scene.environment = null;
+      environment.dispose();
+      generator.dispose();
+    };
+  }, [scene, gl]);
+
+  return (
+    <>
+      <ambientLight />
+      <directionalLight position={new Vector3(1, 1, 1)} intensity={1} />
+      <color attach="background" args={["#161f2f"]} />
+      <Morph />
+    </>
   );
 };

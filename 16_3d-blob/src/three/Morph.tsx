@@ -1,19 +1,26 @@
-import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
-import { BoxGeometry, type Mesh, MeshNormalMaterial } from "three";
+// import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import { type Mesh, SphereGeometry } from "three";
+import { MeshStandardNodeMaterial } from "three/webgpu";
 
 export const Morph = () => {
   const meshRef = useRef<Mesh>(null);
 
-  useFrame(({ clock }) => {
-    const elapsed = clock.elapsedTime;
-    meshRef.current?.rotation.set(0, elapsed, elapsed * 0.5);
-  });
+  const { material } = useMemo(() => {
+    const material = new MeshStandardNodeMaterial({
+      metalness: 1,
+      roughness: 0,
+      color: "#808080",
+    });
+    return { material };
+  }, []);
+
+  // useFrame(({ clock }) => {
+  //   const elapsed = clock.elapsedTime;
+  //   meshRef.current?.rotation.set(0, elapsed, elapsed * 0.5);
+  // });
 
   return (
-    <mesh
-      ref={meshRef}
-      args={[new BoxGeometry(1, 1, 1), new MeshNormalMaterial()]}
-    />
+    <mesh ref={meshRef} args={[new SphereGeometry(1, 64, 64), material]} />
   );
 };
