@@ -46,11 +46,6 @@ const SceneInner = () => {
     };
   }, [scene, gl]);
 
-  // useFrame(({ clock }) => {
-  //   const elapsed = clock.elapsedTime;
-  //   scene.environmentRotation.set(0, elapsed * 0.3, 0);
-  // });
-
   return (
     <>
       <color attach="background" args={["#161f2f"]} />
