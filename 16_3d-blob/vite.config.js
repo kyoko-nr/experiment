@@ -9,5 +9,5 @@ export default defineConfig({
     host: true,
   },
   plugins: [react(), tailwindcss()],
-  assetsInclude: ['**/*.glb'],
+  assetsInclude: ["**/*.glb"],
 });
