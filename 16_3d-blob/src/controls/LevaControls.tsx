@@ -16,7 +16,7 @@ export const LevaControls = () => {
   const controls = useControls("Material", {
     metalness: { value: D.metalness, min: 0, max: 1, step: 0.01 },
     roughness: { value: D.roughness, min: 0, max: 1, step: 0.01 },
-    morph: { value: D.morph, min: 0, max: 1, step: 0.01 },
+    morph: { value: D.morph, min: 0, max: 2, step: 0.01 },
   });
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { Canvas, useThree } from "@react-three/fiber";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { RoomEnvironment } from "three/examples/jsm/Addons.js";
 import { PMREMGenerator, WebGPURenderer } from "three/webgpu";
 import { Morph } from "./Morph";
@@ -49,7 +49,9 @@ const SceneInner = () => {
   return (
     <>
       <color attach="background" args={["#161f2f"]} />
-      <Morph />
+      <Suspense fallback={null}>
+        <Morph />
+      </Suspense>
     </>
   );
 };
