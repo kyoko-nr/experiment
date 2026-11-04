@@ -87,7 +87,9 @@
 
 [16_3d-blob](./16_3d-blob)
 
-🚧
+[Live](https://experiment-16-3d-blob.vercel.app)
+
+![mercury morph](./docs/mercury-morph.gif)
 
 ### 17 Postprocess
 
