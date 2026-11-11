@@ -91,6 +91,8 @@
 
 ![mercury morph](./docs/mercury-morph.gif)
 
+HDRI: [Citrus Orchard Road (Pure Sky)](https://polyhaven.com/a/citrus_orchard_road_puresky) by Poly Haven (CC0)
+
 ### 17 Postprocess
 
 [17_postprocess](./17_postprocess)
