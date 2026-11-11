@@ -1,7 +1,8 @@
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { Suspense, useEffect } from "react";
-import { RoomEnvironment } from "three/examples/jsm/Addons.js";
-import { PMREMGenerator, WebGPURenderer } from "three/webgpu";
+import { HDRLoader } from "three/examples/jsm/Addons.js";
+import { EquirectangularReflectionMapping, WebGPURenderer } from "three/webgpu";
+import hdrSrc from "../assets/env.hdr?url";
 import { Morph } from "./Morph";
 
 type WebGPURendererParameters = ConstructorParameters<typeof WebGPURenderer>[0];
@@ -26,25 +27,18 @@ export const BlobScene = () => {
 };
 
 const SceneInner = () => {
-  const { scene, gl } = useThree();
+  const { scene } = useThree();
+  const hdr = useLoader(HDRLoader, hdrSrc);
+  hdr.mapping = EquirectangularReflectionMapping;
   useEffect(() => {
-    const generator = new PMREMGenerator(gl as unknown as WebGPURenderer);
-    const environment = generator.fromScene(
-      new RoomEnvironment(),
-      0,
-      0.1,
-      100,
-      { size: 2048 },
-    );
-    scene.environment = environment.texture;
-    scene.background = environment.texture;
+    scene.environment = hdr;
+    scene.background = hdr;
 
     return () => {
       scene.environment = null;
-      environment.dispose();
-      generator.dispose();
+      scene.background = null;
     };
-  }, [scene, gl]);
+  }, [scene, hdr]);
 
   return (
     <>
