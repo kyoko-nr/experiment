@@ -1,5 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { WebGPURenderer } from "three/webgpu";
+import { Iridenscence } from "./Iridenscence";
 
 type WebGPURendererParameters = ConstructorParameters<typeof WebGPURenderer>[0];
 
@@ -17,6 +18,7 @@ export const IridescenceScene = () => {
         }}
       >
         <color attach="background" args={["#161f2f"]} />
+        <Iridenscence />
       </Canvas>
     </div>
   );
